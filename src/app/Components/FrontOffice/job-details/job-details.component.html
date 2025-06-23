@@ -1,0 +1,280 @@
+<div class="job-details-container">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Loading job details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-state">
+    <svg class="error-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+    </svg>
+    <h2>Job Not Found</h2>
+    <p>The job offer you're looking for doesn't exist or has been removed.</p>
+    <button class="back-btn" (click)="goBack()">Back to Job Offers</button>
+  </div>
+
+  <!-- Job Details Content -->
+  <div *ngIf="jobOffer && !loading" class="job-details-content">
+    <!-- Header Section -->
+    <div class="header-section">
+      <button class="back-btn" (click)="goBack()">
+        <svg class="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Back to Job Offers
+      </button>
+      
+      <div class="job-header">
+        <div class="job-title-section">
+          <h1>{{ jobOffer.title }}</h1>
+          <p class="company-name">{{ jobOffer.company }}</p>
+        </div>
+        <div class="job-badges">
+          <span class="status-badge" [class]="getStatusColor(jobOffer.status)">
+            {{ jobOffer.status }}
+          </span>
+          <span class="type-badge" [class]="getTypeColor(jobOffer.type)">
+            {{ jobOffer.type }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="content-grid">
+        <!-- Left Column - Job Details -->
+        <div class="job-details-section">
+          <div class="section-card">
+            <h2>Job Description</h2>
+            <p class="description-text">{{ jobOffer.description }}</p>
+          </div>
+
+          <div class="section-card">
+            <h2>Requirements</h2>
+            <ul class="requirements-list">
+              <li *ngFor="let requirement of jobOffer.requirements">{{ requirement }}</li>
+            </ul>
+          </div>
+
+          <div class="section-card">
+            <h2>Job Details</h2>
+            <div class="details-grid">
+              <div class="detail-item">
+                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <div class="detail-content">
+                  <span class="detail-label">Location</span>
+                  <span class="detail-value">{{ jobOffer.location }}</span>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                </svg>
+                <div class="detail-content">
+                  <span class="detail-label">Salary</span>
+                  <span class="detail-value">{{ jobOffer.salary }}</span>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V7a2 2 0 012-2h4a2 2 0 012 2v4m-6 0v4a2 2 0 002 2h4a2 2 0 002-2v-4m-6 0v4a2 2 0 002 2h4a2 2 0 002-2v-4"></path>
+                </svg>
+                <div class="detail-content">
+                  <span class="detail-label">Posted Date</span>
+                  <span class="detail-value">{{ jobOffer.postedDate | date:'fullDate' }}</span>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V7a2 2 0 012-2h4a2 2 0 012 2v4m-6 0v4a2 2 0 002 2h4a2 2 0 002-2v-4m-6 0v4a2 2 0 002 2h4a2 2 0 002-2v-4"></path>
+                </svg>
+                <div class="detail-content">
+                  <span class="detail-label">Application Deadline</span>
+                  <span class="detail-value">{{ jobOffer.deadline | date:'fullDate' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Application Card -->
+        <div class="application-section">
+          <div class="application-card">
+            <h3>Apply for this position</h3>
+            <p class="application-subtitle">Join our team and take the next step in your career</p>
+            
+            <div class="application-stats">
+              <div class="stat-item">
+                <span class="stat-number">{{ jobOffer.applicationsCount }}</span>
+                <span class="stat-label">Applications</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">{{ jobOffer.type }}</span>
+                <span class="stat-label">Job Type</span>
+              </div>
+            </div>
+
+            <button class="apply-btn" (click)="openApplicationModal()">
+              <svg class="apply-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+              </svg>
+              Apply Now
+            </button>
+
+            <div class="application-info">
+              <div class="info-item">
+                <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>Quick application process</span>
+              </div>
+              <div class="info-item">
+                <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>CV upload required</span>
+              </div>
+              <div class="info-item">
+                <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>Cover letter required</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Modal -->
+  <div *ngIf="showApplicationModal" class="application-modal">
+    <div class="modal-overlay" (click)="closeApplicationModal()"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Apply for {{ jobOffer?.title }}</h2>
+        <button class="close-btn" (click)="closeApplicationModal()">
+          <svg class="close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <form class="application-form" (ngSubmit)="submitApplication()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="firstName">First Name *</label>
+            <input 
+              type="text" 
+              id="firstName" 
+              [(ngModel)]="applicationForm.firstName" 
+              name="firstName"
+              required
+              class="form-input"
+              placeholder="Enter your first name"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Last Name *</label>
+            <input 
+              type="text" 
+              id="lastName" 
+              [(ngModel)]="applicationForm.lastName" 
+              name="lastName"
+              required
+              class="form-input"
+              placeholder="Enter your last name"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input 
+              type="email" 
+              id="email" 
+              [(ngModel)]="applicationForm.email" 
+              name="email"
+              required
+              class="form-input"
+              placeholder="Enter your email address"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone Number *</label>
+            <input 
+              type="tel" 
+              id="phone" 
+              [(ngModel)]="applicationForm.phone" 
+              name="phone"
+              required
+              class="form-input"
+              placeholder="Enter your phone number"
+            >
+          </div>
+
+          <div class="form-group full-width">
+            <label for="cvFile">Upload CV/Resume *</label>
+            <div class="file-upload-area">
+              <input 
+                type="file" 
+                id="cvFile" 
+                (change)="onFileSelected($event)"
+                accept=".pdf,.doc,.docx"
+                class="file-input"
+              >
+              <div class="upload-content">
+                <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                <p>Click to upload or drag and drop</p>
+                <span class="file-types">PDF, DOC, DOCX (max 5MB)</span>
+              </div>
+            </div>
+            <div *ngIf="applicationForm.cvFileName" class="file-info">
+              <span class="file-name">{{ applicationForm.cvFileName }}</span>
+              <button type="button" class="remove-file-btn" (click)="removeFile()">
+                <svg class="remove-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="coverLetter">Cover Letter *</label>
+            <textarea 
+              id="coverLetter" 
+              [(ngModel)]="applicationForm.coverLetter" 
+              name="coverLetter"
+              required
+              class="form-textarea"
+              placeholder="Tell us why you're interested in this position and why you'd be a great fit..."
+              rows="6"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="closeApplicationModal()">Cancel</button>
+          <button type="submit" class="submit-btn">
+            <svg class="submit-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+            Submit Application
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> 

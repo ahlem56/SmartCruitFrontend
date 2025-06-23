@@ -1,0 +1,22 @@
+<div class="profile-bg">
+  <div class="profile-card" *ngIf="userProfile">
+    <div class="profile-header">
+      <img [src]="userProfile.profilePictureUrl || 'assets/FrontOffice/images/default.avif'" alt="Profile Picture" class="profile-pic">
+      <div class="profile-main-info">
+        <h2>{{ userProfile.fullName }}</h2>
+        <p class="profile-email"><i class="fas fa-envelope"></i> {{ userProfile.email }}</p>
+      </div>
+      <button class="edit-btn" title="Edit Profile"><i class="fas fa-edit"></i></button>
+    </div>
+    <div class="profile-divider"></div>
+    <div class="profile-details">
+      <div class="profile-detail"><i class="fas fa-phone-alt"></i> <span>Phone:</span> {{ userProfile.phoneNumber }}</div>
+      <div class="profile-detail"><i class="fas fa-map-marker-alt"></i> <span>Address:</span> {{ userProfile.address }}</div>
+      <div class="profile-detail"><i class="fas fa-briefcase"></i> <span>Current Position:</span> {{ userProfile.currentPosition }}</div>
+      <div class="profile-detail"><i class="fas fa-bullseye"></i> <span>Preferred Job Title:</span> {{ userProfile.preferredJobTitle }}</div>
+      <div class="profile-detail"><i class="fas fa-graduation-cap"></i> <span>Education:</span> {{ userProfile.educationLevel }}</div>
+      <div class="profile-detail"><i class="fas fa-calendar-alt"></i> <span>Joined on:</span> {{ userProfile.createdAt | date:'longDate' }}</div>
+    </div>
+  </div>
+</div>
+  

@@ -1,0 +1,380 @@
+<div class="job-offers-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-content">
+      <h1 class="page-title">Job Offers Management</h1>
+      <p class="page-subtitle">Manage and monitor all job offers in your system</p>
+    </div>
+    <button class="add-button" (click)="addNewJobOffer()">
+      <svg class="add-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      Add New Job Offer
+    </button>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="search-box">
+      <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+      <input 
+        type="text" 
+        placeholder="Search job offers..." 
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+        class="search-input"
+      >
+    </div>
+    
+    <div class="filter-controls">
+      <select [(ngModel)]="statusFilter" (change)="onStatusFilterChange()" class="filter-select">
+        <option value="All">All Status</option>
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+        <option value="Draft">Draft</option>
+      </select>
+      
+      <select [(ngModel)]="typeFilter" (change)="onTypeFilterChange()" class="filter-select">
+        <option value="All">All Types</option>
+        <option value="Full-time">Full-time</option>
+        <option value="Part-time">Part-time</option>
+        <option value="Contract">Contract</option>
+        <option value="Internship">Internship</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Job Offers List -->
+    <div class="job-offers-list" *ngIf="!isEditing && !isAdding">
+      <div class="list-header">
+        <h2>Job Offers ({{ filteredJobOffers.length }})</h2>
+      </div>
+      
+      <div class="job-offers-grid">
+        <div *ngFor="let jobOffer of filteredJobOffers" class="job-offer-card">
+          <div class="card-header">
+            <div class="job-title-section">
+              <h3 class="job-title">{{ jobOffer.title }}</h3>
+              <p class="company-name">{{ jobOffer.company }}</p>
+            </div>
+            <div class="status-badge" [class]="getStatusColor(jobOffer.status)">
+              {{ jobOffer.status }}
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <div class="job-details">
+              <div class="detail-item">
+                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <span>{{ jobOffer.location }}</span>
+              </div>
+              
+              <div class="detail-item">
+                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                </svg>
+                <span>{{ jobOffer.salary }}</span>
+              </div>
+              
+              <div class="detail-item">
+                <span class="type-badge" [class]="getTypeColor(jobOffer.type)">
+                  {{ jobOffer.type }}
+                </span>
+              </div>
+            </div>
+            
+            <div class="job-stats">
+              <div class="stat-item">
+                <span class="stat-label">Applications:</span>
+                <span class="stat-value">{{ jobOffer.applicationsCount }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Posted:</span>
+                <span class="stat-value">{{ jobOffer.postedDate | date:'shortDate' }}</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Deadline:</span>
+                <span class="stat-value">{{ jobOffer.deadline | date:'shortDate' }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-actions">
+            <button class="action-btn view-btn" (click)="viewJobOffer(jobOffer)">
+              <svg class="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+              </svg>
+              View
+            </button>
+            <button class="action-btn edit-btn" (click)="editJobOffer(jobOffer)">
+              <svg class="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+              </svg>
+              Edit
+            </button>
+            <button class="action-btn delete-btn" (click)="deleteJobOffer(jobOffer.id)">
+              <svg class="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div *ngIf="filteredJobOffers.length === 0" class="empty-state">
+        <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <h3>No job offers found</h3>
+        <p>Try adjusting your search criteria or add a new job offer.</p>
+      </div>
+    </div>
+
+    <!-- Add/Edit Form -->
+    <div class="form-section" *ngIf="isEditing || isAdding">
+      <div class="form-header">
+        <h2>{{ isAdding ? 'Add New Job Offer' : 'Edit Job Offer' }}</h2>
+        <button class="close-btn" (click)="cancelEdit()">
+          <svg class="close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <form class="job-offer-form" (ngSubmit)="saveJobOffer()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="title">Job Title *</label>
+            <input 
+              type="text" 
+              id="title" 
+              [(ngModel)]="formData.title" 
+              name="title"
+              required
+              class="form-input"
+              placeholder="Enter job title"
+            >
+          </div>
+          
+          <div class="form-group">
+            <label for="company">Company *</label>
+            <input 
+              type="text" 
+              id="company" 
+              [(ngModel)]="formData.company" 
+              name="company"
+              required
+              class="form-input"
+              placeholder="Enter company name"
+            >
+          </div>
+          
+          <div class="form-group">
+            <label for="location">Location *</label>
+            <input 
+              type="text" 
+              id="location" 
+              [(ngModel)]="formData.location" 
+              name="location"
+              required
+              class="form-input"
+              placeholder="Enter job location"
+            >
+          </div>
+          
+          <div class="form-group">
+            <label for="type">Job Type *</label>
+            <select 
+              id="type" 
+              [(ngModel)]="formData.type" 
+              name="type"
+              required
+              class="form-select"
+            >
+              <option value="Full-time">Full-time</option>
+              <option value="Part-time">Part-time</option>
+              <option value="Contract">Contract</option>
+              <option value="Internship">Internship</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="salary">Salary *</label>
+            <input 
+              type="text" 
+              id="salary" 
+              [(ngModel)]="formData.salary" 
+              name="salary"
+              required
+              class="form-input"
+              placeholder="e.g., $50,000 - $70,000"
+            >
+          </div>
+          
+          <div class="form-group">
+            <label for="status">Status *</label>
+            <select 
+              id="status" 
+              [(ngModel)]="formData.status" 
+              name="status"
+              required
+              class="form-select"
+            >
+              <option value="Draft">Draft</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="description">Job Description *</label>
+            <textarea 
+              id="description" 
+              [(ngModel)]="formData.description" 
+              name="description"
+              required
+              class="form-textarea"
+              placeholder="Enter detailed job description"
+              rows="4"
+            ></textarea>
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="requirements">Requirements (comma-separated) *</label>
+            <textarea 
+              id="requirements" 
+              [(ngModel)]="formData.requirements" 
+              name="requirements"
+              required
+              class="form-textarea"
+              placeholder="e.g., Angular, TypeScript, 3+ years experience"
+              rows="3"
+            ></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="deadline">Application Deadline *</label>
+            <input 
+              type="date" 
+              id="deadline" 
+              [(ngModel)]="formData.deadline" 
+              name="deadline"
+              required
+              class="form-input"
+            >
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+          <button type="submit" class="save-btn">
+            <svg class="save-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            {{ isAdding ? 'Create Job Offer' : 'Update Job Offer' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- View Details Modal -->
+    <div class="view-modal" *ngIf="selectedJobOffer && !isEditing && !isAdding">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>{{ selectedJobOffer.title }}</h2>
+          <button class="close-btn" (click)="cancelEdit()">
+            <svg class="close-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="modal-body">
+          <div class="detail-section">
+            <h3>Job Details</h3>
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span class="detail-label">Company:</span>
+                <span class="detail-value">{{ selectedJobOffer.company }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Location:</span>
+                <span class="detail-value">{{ selectedJobOffer.location }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Type:</span>
+                <span class="type-badge" [class]="getTypeColor(selectedJobOffer.type)">
+                  {{ selectedJobOffer.type }}
+                </span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Salary:</span>
+                <span class="detail-value">{{ selectedJobOffer.salary }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Status:</span>
+                <span class="status-badge" [class]="getStatusColor(selectedJobOffer.status)">
+                  {{ selectedJobOffer.status }}
+                </span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Applications:</span>
+                <span class="detail-value">{{ selectedJobOffer.applicationsCount }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="detail-section">
+            <h3>Description</h3>
+            <p class="description-text">{{ selectedJobOffer.description }}</p>
+          </div>
+          
+          <div class="detail-section">
+            <h3>Requirements</h3>
+            <ul class="requirements-list">
+              <li *ngFor="let requirement of selectedJobOffer.requirements">{{ requirement }}</li>
+            </ul>
+          </div>
+          
+          <div class="detail-section">
+            <h3>Timeline</h3>
+            <div class="timeline-grid">
+              <div class="timeline-item">
+                <span class="timeline-label">Posted:</span>
+                <span class="timeline-value">{{ selectedJobOffer.postedDate | date:'fullDate' }}</span>
+              </div>
+              <div class="timeline-item">
+                <span class="timeline-label">Deadline:</span>
+                <span class="timeline-value">{{ selectedJobOffer.deadline | date:'fullDate' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-actions">
+          <button class="action-btn edit-btn" (click)="editJobOffer(selectedJobOffer)">
+            <svg class="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+            Edit Job Offer
+          </button>
+          <button class="action-btn delete-btn" (click)="deleteJobOffer(selectedJobOffer.id)">
+            <svg class="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+            Delete Job Offer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

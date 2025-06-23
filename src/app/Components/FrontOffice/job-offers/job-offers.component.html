@@ -1,0 +1,506 @@
+<div class="job-offers-container">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-background"></div>
+    <div class="container">
+      <div class="hero-content">
+        <h1>Find Your Perfect Job</h1>
+        <p>Discover thousands of opportunities from top companies worldwide</p>
+        
+        <!-- Search Bar -->
+        <div class="search-container">
+          <div class="search-input">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Job title, keywords, or company..." />
+          </div>
+          <div class="search-input">
+            <i class="fas fa-map-marker-alt"></i>
+            <input type="text" placeholder="Location" />
+          </div>
+          <button class="search-btn">
+            <i class="fas fa-search"></i>
+            Search Jobs
+          </button>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="stats-container">
+          <div class="stat-item">
+            <span class="stat-number">50K+</span>
+            <span class="stat-label">Active Jobs</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">10K+</span>
+            <span class="stat-label">Companies</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">1M+</span>
+            <span class="stat-label">Job Seekers</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="main-content">
+    <div class="container">
+      <div class="content-layout">
+        <!-- Sidebar Filters -->
+        <aside class="filters-sidebar">
+          <div class="filter-section">
+            <h3>Filters</h3>
+            
+            <!-- Job Type -->
+            <div class="filter-group">
+              <h4>Job Type</h4>
+              <label class="checkbox-item">
+                <input type="checkbox" checked />
+                <span class="checkmark"></span>
+                Full Time
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+                Part Time
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+                Contract
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+                Remote
+              </label>
+            </div>
+
+            <!-- Experience Level -->
+            <div class="filter-group">
+              <h4>Experience Level</h4>
+              <label class="checkbox-item">
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+                Entry Level
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" checked />
+                <span class="checkmark"></span>
+                Mid Level
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+                Senior Level
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+                Executive
+              </label>
+            </div>
+
+            <!-- Salary Range -->
+            <div class="filter-group">
+              <h4>Salary Range</h4>
+              <label class="checkbox-item">
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+                $0 - $50k
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" checked />
+                <span class="checkmark"></span>
+                $50k - $100k
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+                $100k - $150k
+              </label>
+              <label class="checkbox-item">
+                <input type="checkbox" />
+                <span class="checkmark"></span>
+                $150k+
+              </label>
+            </div>
+
+            <!-- Clear Filters -->
+            <button class="clear-filters-btn">Clear All Filters</button>
+          </div>
+        </aside>
+
+        <!-- Job Listings -->
+        <main class="job-listings">
+          <!-- Header Controls -->
+          <div class="listings-header">
+            <div class="results-info">
+              <h2>Job Results</h2>
+              <span class="results-count">Showing 1-12 of 2,847 jobs</span>
+            </div>
+            <div class="sort-controls">
+              <select class="sort-select">
+                <option>Most Recent</option>
+                <option>Salary: High to Low</option>
+                <option>Salary: Low to High</option>
+                <option>Most Relevant</option>
+              </select>
+              <div class="view-toggle">
+                <button class="view-btn active" data-view="grid">
+                  <i class="fas fa-th-large"></i>
+                </button>
+                <button class="view-btn" data-view="list">
+                  <i class="fas fa-list"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Filters -->
+          <div class="active-filters">
+            <span class="filter-tag">
+              Full Time
+              <i class="fas fa-times"></i>
+            </span>
+            <span class="filter-tag">
+              Mid Level
+              <i class="fas fa-times"></i>
+            </span>
+            <span class="filter-tag">
+              $50k - $100k
+              <i class="fas fa-times"></i>
+            </span>
+          </div>
+
+          <!-- Job Cards Grid -->
+          <div class="job-cards-grid">
+            <!-- Job Card 1 -->
+            <div class="job-card featured">
+              <div class="card-header">
+                <div class="company-info">
+                  <div class="company-logo">
+                    <i class="fab fa-google"></i>
+                  </div>
+                  <div class="company-details">
+                    <h3>Senior Frontend Developer</h3>
+                    <p class="company-name">Google</p>
+                  </div>
+                </div>
+                <div class="job-badge">Full Time</div>
+              </div>
+              
+              <div class="card-body">
+                <div class="job-meta">
+                  <div class="meta-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Mountain View, CA</span>
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>$120k - $180k</span>
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Posted 2 days ago</span>
+                  </div>
+                </div>
+                
+                <div class="job-tags">
+                  <span class="tag">React</span>
+                  <span class="tag">TypeScript</span>
+                  <span class="tag">Node.js</span>
+                </div>
+                
+                <p class="job-description">
+                  We're looking for a Senior Frontend Developer to join our team and help build amazing user experiences...
+                </p>
+              </div>
+              
+              <div class="card-footer">
+                <button class="apply-btn">Apply Now</button>
+                <button class="save-btn">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+              
+              <div class="featured-badge">
+                <i class="fas fa-star"></i>
+                Featured
+              </div>
+            </div>
+
+            <!-- Job Card 2 -->
+            <div class="job-card">
+              <div class="card-header">
+                <div class="company-info">
+                  <div class="company-logo">
+                    <i class="fab fa-microsoft"></i>
+                  </div>
+                  <div class="company-details">
+                    <h3>UX/UI Designer</h3>
+                    <p class="company-name">Microsoft</p>
+                  </div>
+                </div>
+                <div class="job-badge">Full Time</div>
+              </div>
+              
+              <div class="card-body">
+                <div class="job-meta">
+                  <div class="meta-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Seattle, WA</span>
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>$90k - $140k</span>
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Posted 1 day ago</span>
+                  </div>
+                </div>
+                
+                <div class="job-tags">
+                  <span class="tag">Figma</span>
+                  <span class="tag">Sketch</span>
+                  <span class="tag">Prototyping</span>
+                </div>
+                
+                <p class="job-description">
+                  Join our design team to create intuitive and beautiful user interfaces for millions of users...
+                </p>
+              </div>
+              
+              <div class="card-footer">
+                <button class="apply-btn">Apply Now</button>
+                <button class="save-btn">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Job Card 3 -->
+            <div class="job-card">
+              <div class="card-header">
+                <div class="company-info">
+                  <div class="company-logo">
+                    <i class="fab fa-apple"></i>
+                  </div>
+                  <div class="company-details">
+                    <h3>iOS Developer</h3>
+                    <p class="company-name">Apple</p>
+                  </div>
+                </div>
+                <div class="job-badge">Full Time</div>
+              </div>
+              
+              <div class="card-body">
+                <div class="job-meta">
+                  <div class="meta-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Cupertino, CA</span>
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>$130k - $200k</span>
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Posted 3 days ago</span>
+                  </div>
+                </div>
+                
+                <div class="job-tags">
+                  <span class="tag">Swift</span>
+                  <span class="tag">iOS</span>
+                  <span class="tag">Xcode</span>
+                </div>
+                
+                <p class="job-description">
+                  Develop cutting-edge iOS applications that millions of users will love and use daily...
+                </p>
+              </div>
+              
+              <div class="card-footer">
+                <button class="apply-btn">Apply Now</button>
+                <button class="save-btn">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Job Card 4 -->
+            <div class="job-card">
+              <div class="card-header">
+                <div class="company-info">
+                  <div class="company-logo">
+                    <i class="fab fa-amazon"></i>
+                  </div>
+                  <div class="company-details">
+                    <h3>Backend Engineer</h3>
+                    <p class="company-name">Amazon</p>
+                  </div>
+                </div>
+                <div class="job-badge">Full Time</div>
+              </div>
+              
+              <div class="card-body">
+                <div class="job-meta">
+                  <div class="meta-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Seattle, WA</span>
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>$140k - $220k</span>
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Posted 5 days ago</span>
+                  </div>
+                </div>
+                
+                <div class="job-tags">
+                  <span class="tag">Java</span>
+                  <span class="tag">AWS</span>
+                  <span class="tag">Microservices</span>
+                </div>
+                
+                <p class="job-description">
+                  Build scalable backend services that power Amazon's global e-commerce platform...
+                </p>
+              </div>
+              
+              <div class="card-footer">
+                <button class="apply-btn">Apply Now</button>
+                <button class="save-btn">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Job Card 5 -->
+            <div class="job-card">
+              <div class="card-header">
+                <div class="company-info">
+                  <div class="company-logo">
+                    <i class="fab fa-facebook"></i>
+                  </div>
+                  <div class="company-details">
+                    <h3>Data Scientist</h3>
+                    <p class="company-name">Meta</p>
+                  </div>
+                </div>
+                <div class="job-badge">Full Time</div>
+              </div>
+              
+              <div class="card-body">
+                <div class="job-meta">
+                  <div class="meta-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Menlo Park, CA</span>
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>$150k - $250k</span>
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Posted 1 week ago</span>
+                  </div>
+                </div>
+                
+                <div class="job-tags">
+                  <span class="tag">Python</span>
+                  <span class="tag">Machine Learning</span>
+                  <span class="tag">SQL</span>
+                </div>
+                
+                <p class="job-description">
+                  Analyze massive datasets to drive insights and improve user experiences across Meta's platforms...
+                </p>
+              </div>
+              
+              <div class="card-footer">
+                <button class="apply-btn">Apply Now</button>
+                <button class="save-btn">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Job Card 6 -->
+            <div class="job-card">
+              <div class="card-header">
+                <div class="company-info">
+                  <div class="company-logo">
+                    <i class="fab fa-netflix"></i>
+                  </div>
+                  <div class="company-details">
+                    <h3>DevOps Engineer</h3>
+                    <p class="company-name">Netflix</p>
+                  </div>
+                </div>
+                <div class="job-badge">Full Time</div>
+              </div>
+              
+              <div class="card-body">
+                <div class="job-meta">
+                  <div class="meta-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Los Gatos, CA</span>
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-dollar-sign"></i>
+                    <span>$160k - $240k</span>
+                  </div>
+                  <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Posted 4 days ago</span>
+                  </div>
+                </div>
+                
+                <div class="job-tags">
+                  <span class="tag">Docker</span>
+                  <span class="tag">Kubernetes</span>
+                  <span class="tag">AWS</span>
+                </div>
+                
+                <p class="job-description">
+                  Ensure Netflix's global streaming platform runs smoothly and efficiently at scale...
+                </p>
+              </div>
+              
+              <div class="card-footer">
+                <button class="apply-btn">Apply Now</button>
+                <button class="save-btn">
+                  <i class="far fa-heart"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination">
+            <button class="page-btn prev">
+              <i class="fas fa-chevron-left"></i>
+              Previous
+            </button>
+            <div class="page-numbers">
+              <button class="page-btn active">1</button>
+              <button class="page-btn">2</button>
+              <button class="page-btn">3</button>
+              <span class="page-dots">...</span>
+              <button class="page-btn">12</button>
+            </div>
+            <button class="page-btn next">
+              Next
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </main>
+      </div>
+    </div>
+  </section>
+</div>

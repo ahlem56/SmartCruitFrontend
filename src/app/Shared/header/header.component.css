@@ -1,0 +1,261 @@
+/* Font Awesome for Icons */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css');
+
+/* =============================================================
+   SMARTCRUIT - HEADER STYLESHEET
+   Description: Modern and professional header design
+   Author: SmartCruit UI Team
+============================================================= */
+
+/* ========== Global Styles ========== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ========== Main Header ========== */
+.main-header {
+  background-color: #ffffff;
+  padding: 16px 40px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.08);
+}
+
+.main-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.logo img {
+  height: 55px;
+  width: auto;
+  object-fit: contain;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+  margin: 0 40px;
+}
+
+.nav-links a {
+  position: relative;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  padding: 6px 4px;
+  transition: color 0.3s ease;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: #007bff;
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #007bff;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.auth-buttons .btn {
+  padding: 10px 20px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.login-btn {
+  background: transparent;
+  color: #007bff;
+  border: 2px solid #007bff;
+}
+
+.login-btn:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.signup-btn {
+  background-color: #007bff;
+  color: white;
+  border: 2px solid #007bff;
+}
+
+.signup-btn:hover {
+  background-color: #0056cc;
+  border-color: #0056cc;
+}
+
+/* ========== User Bar ========== */
+.user-bar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.notification-icon {
+  position: relative;
+  margin-right: 18px;
+  cursor: pointer;
+}
+.notification-icon i {
+  font-size: 22px;
+  color: #007bff;
+  transition: color 0.2s;
+}
+.notification-icon:hover i {
+  color: #0056cc;
+}
+.notification-icon .badge {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background: #ff3b3b;
+  color: #fff;
+  font-size: 11px;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-weight: bold;
+  z-index: 2;
+  border: 2px solid #fff;
+}
+
+.user-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.user-trigger {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 10px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+.user-trigger:hover, .user-dropdown:focus-within .user-trigger {
+  background: #f0f4ff;
+}
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #007bff;
+  background: #fff;
+}
+.user-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+}
+.user-trigger i.fas.fa-chevron-down {
+  color: #007bff;
+  font-size: 15px;
+  margin-left: 4px;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 110%;
+  right: 0;
+  min-width: 180px;
+  background: #fff;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+  border-radius: 10px;
+  padding: 10px 0;
+  z-index: 100;
+  animation: fadeIn 0.2s;
+  border: 1px solid #e0eaff;
+}
+.user-dropdown:hover .dropdown-menu,
+.user-dropdown:focus-within .dropdown-menu {
+  display: block;
+}
+.dropdown-menu a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  color: #333;
+  text-decoration: none;
+  font-size: 15px;
+  transition: background 0.2s, color 0.2s;
+}
+.dropdown-menu a:hover {
+  background: #f0f4ff;
+  color: #007bff;
+}
+.dropdown-menu i {
+  font-size: 16px;
+  color: #007bff;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== Responsive Design ========== */
+@media (max-width: 1024px) {
+  .nav-links {
+    margin: 0 20px;
+  }
+  .nav-links a {
+    padding: 6px 4px;
+  }
+}
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+  .main-header {
+    padding: 12px 20px;
+  }
+  .logo img {
+    height: 35px;
+  }
+}
+@media (max-width: 480px) {
+  .container {
+    padding: 0 15px;
+  }
+  .auth-buttons {
+    gap: 8px;
+  }
+  .auth-buttons .btn {
+    padding: 8px 16px;
+  }
+  .logo img {
+    display: none;
+  }
+}

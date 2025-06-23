@@ -1,0 +1,261 @@
+<div class="artistic-signup-container">
+  <!-- Animated Background Elements -->
+  <div class="floating-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    <div class="shape shape-4"></div>
+    <div class="shape shape-5"></div>
+    <div class="shape shape-6"></div>
+  </div>
+  
+  <!-- Particle System -->
+  <div class="particles">
+    <div class="particle" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]"></div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="signup-content">
+    <!-- Left: Artistic Visual -->
+    <div class="artistic-panel">
+      <div class="geometric-background">
+        <svg class="geometric-svg" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#007bff;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#00c6ff;stop-opacity:1" />
+            </linearGradient>
+            <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#74b9ff;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#0984e3;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <polygon points="50,100 150,50 250,100 200,200" fill="url(#grad1)" opacity="0.8"/>
+          <circle cx="300" cy="150" r="60" fill="url(#grad2)" opacity="0.6"/>
+          <rect x="80" y="300" width="120" height="80" rx="20" fill="url(#grad1)" opacity="0.7"/>
+          <polygon points="200,400 300,350 350,450 250,500" fill="url(#grad2)" opacity="0.5"/>
+        </svg>
+      </div>
+      
+      <div class="artistic-content">
+        <div class="logo-container" (click)="goToHome()">
+          <img src="/assets/FrontOffice/images/smartcruit.png" alt="SmartCruit" class="artistic-logo" />
+        </div>
+        <h1 class="artistic-title">Join the Future of Hiring</h1>
+        <p class="artistic-subtitle">Create your profile and unlock endless opportunities</p>
+        
+        <!-- Animated Icons -->
+        <div class="floating-icons">
+          <div class="icon-item" style="--delay: 0s">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <div class="icon-item" style="--delay: 1s">
+            <i class="fas fa-briefcase"></i>
+          </div>
+          <div class="icon-item" style="--delay: 2s">
+            <i class="fas fa-trophy"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Glassmorphism Signup Card -->
+    <div class="glass-card">
+      <div class="card-glow"></div>
+      <div class="card-content">
+        <div class="form-header">
+          <h2>Create Account</h2>
+          <p>Start your career journey today</p>
+        </div>
+        
+        <form class="artistic-form" (ngSubmit)="onSubmit()">
+          <!-- Full Name -->
+          <div class="input-wrapper">
+            <div class="input-container" [class.error]="hasError('fullName')">
+              <i class="fas fa-user input-icon"></i>
+              <input 
+                type="text" 
+                placeholder="Full Name" 
+                [(ngModel)]="signupForm.fullName"
+                name="fullName"
+                required 
+              />
+              <div class="input-line"></div>
+            </div>
+            <div class="error-message" *ngIf="hasError('fullName')">
+              {{ getErrorMessage('fullName') }}
+            </div>
+          </div>
+          
+          <!-- Email -->
+          <div class="input-wrapper">
+            <div class="input-container" [class.error]="hasError('email')">
+              <i class="fas fa-envelope input-icon"></i>
+              <input 
+                type="email" 
+                placeholder="Email address" 
+                [(ngModel)]="signupForm.email"
+                name="email"
+                required 
+              />
+              <div class="input-line"></div>
+            </div>
+            <div class="error-message" *ngIf="hasError('email')">
+              {{ getErrorMessage('email') }}
+            </div>
+          </div>
+          
+          <!-- Password -->
+          <div class="input-wrapper">
+            <div class="input-container" [class.error]="hasError('password')">
+              <i class="fas fa-lock input-icon"></i>
+              <input 
+                [type]="showPassword ? 'text' : 'password'"
+                placeholder="Password" 
+                [(ngModel)]="signupForm.password"
+                name="password"
+                required 
+              />
+              <div class="input-line"></div>
+              <button 
+                type="button" 
+                class="toggle-password" 
+                (click)="togglePasswordVisibility()"
+              >
+                <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+              </button>
+            </div>
+            <div class="error-message" *ngIf="hasError('password')">
+              {{ getErrorMessage('password') }}
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="input-wrapper">
+            <div class="input-container" [class.error]="hasError('confirmPassword')">
+              <i class="fas fa-lock input-icon"></i>
+              <input 
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                placeholder="Confirm Password" 
+                [(ngModel)]="signupForm.confirmPassword"
+                name="confirmPassword"
+                required 
+              />
+              <div class="input-line"></div>
+              <button 
+                type="button" 
+                class="toggle-password" 
+                (click)="toggleConfirmPasswordVisibility()"
+              >
+                <i [class]="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+              </button>
+            </div>
+            <div class="error-message" *ngIf="hasError('confirmPassword')">
+              {{ getErrorMessage('confirmPassword') }}
+            </div>
+          </div>
+          
+          <!-- Address -->
+          <div class="input-wrapper">
+            <div class="input-container" [class.error]="hasError('address')">
+              <i class="fas fa-map-marker-alt input-icon"></i>
+              <input 
+                type="text" 
+                placeholder="Address" 
+                [(ngModel)]="signupForm.address"
+                name="address"
+                required 
+              />
+              <div class="input-line"></div>
+            </div>
+            <div class="error-message" *ngIf="hasError('address')">
+              {{ getErrorMessage('address') }}
+            </div>
+          </div>
+          
+          <!-- Birth Date -->
+          <div class="input-wrapper">
+            <div class="input-container" [class.error]="hasError('birthDate')">
+              <i class="fas fa-calendar-alt input-icon"></i>
+              <input 
+                type="date" 
+                [(ngModel)]="signupForm.birthDate"
+                name="birthDate"
+                required 
+              />
+              <div class="input-line"></div>
+            </div>
+            <div class="error-message" *ngIf="hasError('birthDate')">
+              {{ getErrorMessage('birthDate') }}
+            </div>
+          </div>
+          
+          <!-- Phone Number -->
+          <div class="input-wrapper">
+            <div class="input-container" [class.error]="hasError('phone')">
+              <i class="fas fa-phone input-icon"></i>
+              <input 
+                type="tel" 
+                placeholder="Phone Number" 
+                [(ngModel)]="signupForm.phone"
+                name="phone"
+                required 
+              />
+              <div class="input-line"></div>
+            </div>
+            <div class="error-message" *ngIf="hasError('phone')">
+              {{ getErrorMessage('phone') }}
+            </div>
+          </div>
+          
+          <!-- Terms and Conditions -->
+          <div class="form-options">
+            <label class="checkbox-wrapper" [class.error]="hasError('termsAccepted')">
+              <input 
+                type="checkbox" 
+                [(ngModel)]="signupForm.termsAccepted"
+                name="termsAccepted"
+                required 
+              />
+              <span class="checkmark"></span>
+              I agree to the  <a href="#" class="terms-link"> Terms & Conditions</a>
+            </label>
+            <div class="error-message" *ngIf="hasError('termsAccepted')">
+              {{ getErrorMessage('termsAccepted') }}
+            </div>
+          </div>
+          
+          <button type="submit" class="submit-btn" [disabled]="isLoading">
+            <span *ngIf="!isLoading">Create Account</span>
+            <span *ngIf="isLoading" class="loading-text">
+              <i class="fas fa-spinner fa-spin"></i>
+              Creating Account...
+            </span>
+            <div class="btn-glow"></div>
+          </button>
+        </form>
+        <div class="signup-prompt">
+          <p>Already have an account? <a (click)="goToLogin()" class="signup-link">Sign in</a></p>
+        </div>
+        <div class="social-section">
+          <div class="divider">
+            <span>or sign up with</span>
+          </div>
+          <div class="social-buttons">
+            <button type="button" class="social-btn google" (click)="signupWithGoogle()">
+              <i class="fab fa-google"></i>
+            </button>
+            <button type="button" class="social-btn facebook" (click)="signupWithFacebook()">
+              <i class="fab fa-facebook-f"></i>
+            </button>
+            <button type="button" class="social-btn linkedin" (click)="signupWithLinkedIn()">
+              <i class="fab fa-linkedin-in"></i>
+            </button>
+          </div>
+        </div>
+        
+        
+      </div>
+    </div>
+  </div>
+</div> 
