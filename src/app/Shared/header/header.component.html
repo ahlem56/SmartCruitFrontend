@@ -4,40 +4,122 @@
       <img src="assets/FrontOffice/images/smartcruit.png" alt="SmartCruit Logo" />
     </div>
 
-    <nav class="nav-links">
-      <a routerLink="/home">Home</a>
-      <a routerLink="/job-offers">Find Jobs</a>
-      <a href="#">Customer Support</a>
-      <a href="/aboutUs">About Us</a>
-      <a href="#">Testimonials</a>
-    </nav>
+    <!-- Authenticated Navigation -->
+    <ng-container *ngIf="(currentUser$ | async) as user; else publicHeader">
+      <nav class="nav-links">
+        <!-- ADMIN -->
+        <ng-container *ngIf="user.role === 'admin'; else notAdmin">
+          <a routerLink="/backoffice/dashboard" routerLinkActive="active">
+            Dashboard
+          </a>
+          <a routerLink="/backoffice/employers" routerLinkActive="active">
+            Employers
+          </a>
+          <a routerLink="/backoffice/company" routerLinkActive="active">
+            Companies
+          </a>
+        </ng-container>
 
-    <div class="auth-buttons" *ngIf="!(currentUser$ | async); else loggedIn">
-      <a routerLink="/login" class="btn login-btn">Login</a>
-      <a routerLink="/signup" class="btn signup-btn">Sign Up</a>
-    </div>
-    
-    <ng-template #loggedIn>
+        <!-- EMPLOYER / CANDIDATE -->
+        <ng-template #notAdmin>
+          <!-- Employer -->
+          <ng-container *ngIf="user.role === 'employer'; else candidateNav">
+            <a routerLink="/employer/dashboard" routerLinkActive="active">
+              Dashboard
+            </a>
+            <a routerLink="/employer/job-offers" routerLinkActive="active">
+              Job Offers
+            </a>
+            <a href="#" routerLinkActive="active">
+              Reports
+            </a>
+          </ng-container>
+
+          <!-- Candidate -->
+          <ng-template #candidateNav>
+            <a routerLink="/home" routerLinkActive="active">
+              Home
+            </a>
+            <a routerLink="/job-offers" routerLinkActive="active">
+              Find Jobs
+            </a>
+            <a href="/support" routerLinkActive="active">
+              Support
+            </a>
+            <a routerLink="/aboutUs" routerLinkActive="active">
+              About Us
+            </a>
+            <a href="#" routerLinkActive="active">
+              Testimonials
+            </a>
+          </ng-template>
+        </ng-template>
+      </nav>
+
+      <!-- Logged-In Dropdown -->
       <div class="user-bar">
-        <!-- Notification Icon -->
         <div class="notification-icon">
           <i class="fas fa-bell"></i>
-          <span class="badge">3</span>
         </div>
-        <!-- User Info Dropdown -->
         <div class="user-dropdown">
           <div class="user-trigger">
-            <img class="user-avatar" src="assets/FrontOffice/images/default.avif" alt="User Avatar" />
-            <span class="user-name">{{ (currentUser$ | async)?.fullName }}</span>
+            <img
+              class="user-avatar"
+              [src]="user.profilePictureUrl || 'assets/FrontOffice/images/default.avif'"
+              alt="User Avatar"
+            />
+            <span class="user-name">{{ user.fullName }}</span>
             <i class="fas fa-chevron-down"></i>
           </div>
           <div class="dropdown-menu">
-            <a routerLink="/profile"><i class="fas fa-user"></i> Profile</a>
-            <a href="#"><i class="fas fa-comments"></i> Chat</a>
-            <a href="#"><i class="fas fa-cog"></i> Settings</a>
-            <a routerLink="/login" (click)="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <a routerLink="/profile">
+              <i class="fas fa-user"></i> 
+              Profile
+            </a>
+            <a *ngIf="recipientId" [routerLink]="['/chat']" [queryParams]="{ to: recipientId }">
+              <i class="fas fa-comments"></i> 
+              Messages
+            </a>
+            
+            <a href="#">
+              <i class="fas fa-cog"></i> 
+              Settings
+            </a>
+            <a routerLink="/login" (click)="logout()">
+              <i class="fas fa-sign-out-alt"></i> 
+              Logout
+            </a>
           </div>
         </div>
+      </div>
+    </ng-container>
+
+    <!-- Public Header (Unauthenticated) -->
+    <ng-template #publicHeader>
+      <nav class="nav-links">
+        <a routerLink="/home" routerLinkActive="active">
+          Home
+        </a>
+        <a routerLink="/job-offers" routerLinkActive="active">
+          Find Jobs
+        </a>
+        <a href="#" routerLinkActive="active">
+          Support
+        </a>
+        <a routerLink="/aboutUs" routerLinkActive="active">
+          About Us
+        </a>
+        <a href="#" routerLinkActive="active">
+          Testimonials
+        </a>
+      </nav>
+      <div class="auth-buttons">
+        <a routerLink="/login" class="btn login-btn">
+          Login
+        </a>
+        <a routerLink="/signup" class="btn signup-btn">
+          Sign Up
+        </a>
       </div>
     </ng-template>
   </div>

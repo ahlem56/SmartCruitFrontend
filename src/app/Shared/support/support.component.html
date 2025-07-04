@@ -1,0 +1,74 @@
+<div class="support-main-container">
+  <div class="support-card">
+    <div class="support-content-grid">
+      <!-- Support Form -->
+      <div class="support-form-section">
+        <h2 class="support-title"><i class="fas fa-headset"></i> Customer Support</h2>
+        <p class="support-subtitle">We're here to help! Fill out the form and our team will get back to you as soon as possible.</p>
+        <div *ngIf="submitted" class="success-message">
+          <i class="fas fa-check-circle"></i>
+          <h3>Request Submitted!</h3>
+          <p>Your support request has been received. Our team will contact you soon.<br>Need urgent help? <a href="mailto:support@smartcruit.com">Email us</a> or call <a href="tel:+123456789">+1 234 567 89</a>.</p>
+        </div>
+        <form *ngIf="!submitted" (ngSubmit)="submitForm()" class="support-form" enctype="multipart/form-data">
+          <div class="form-row">
+            <label for="fullName"><i class="fas fa-user"></i> Full Name</label>
+            <input id="fullName" [(ngModel)]="supportForm.fullName" name="fullName" required>
+          </div>
+          <div class="form-row">
+            <label for="email"><i class="fas fa-envelope"></i> Email</label>
+            <input id="email" type="email" [(ngModel)]="supportForm.email" name="email" required>
+          </div>
+          <div class="form-row">
+            <label for="subject"><i class="fas fa-tag"></i> Subject</label>
+            <input id="subject" [(ngModel)]="supportForm.subject" name="subject" required>
+          </div>
+          <div class="form-row">
+            <label for="message"><i class="fas fa-comment-dots"></i> Message</label>
+            <textarea id="message" rows="6" [(ngModel)]="supportForm.message" name="message" required></textarea>
+          </div>
+          <div class="form-row">
+            <label for="attachment"><i class="fas fa-paperclip"></i> Attachment (optional)</label>
+            <input id="attachment" type="file" (change)="onFileSelected($event)" name="attachment" accept="image/*,.pdf,.doc,.docx">
+            <span *ngIf="attachmentName" class="file-name"><i class="fas fa-file"></i> {{ attachmentName }}</span>
+            <button *ngIf="attachmentName" type="button" class="remove-file-btn" (click)="removeAttachment()"><i class="fas fa-times"></i></button>
+          </div>
+          <button type="submit" class="support-submit-btn"><i class="fas fa-paper-plane"></i> Send Message</button>
+        </form>
+        <div class="support-hours">
+          <i class="fas fa-clock"></i> <b>Support Hours:</b> Mon-Fri, 9:00–18:00 (GMT)
+        </div>
+        <div class="support-response-time">
+          <i class="fas fa-bolt"></i> <b>Avg. Response:</b> within 24 hours
+        </div>
+        <div class="support-contact-channels">
+          <a href="mailto:support@smartcruit.com" class="contact-link"><i class="fas fa-envelope"></i> Email</a>
+          <a href="tel:+123456789" class="contact-link"><i class="fas fa-phone"></i> Call</a>
+          <a href="#" class="contact-link"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        </div>
+        <div class="live-chat-placeholder">
+          <i class="fas fa-comments"></i> <span>Live Chat coming soon!</span>
+        </div>
+      </div>
+      <!-- FAQ & Info -->
+      <div class="support-faq-section">
+        <h3 class="faq-title"><i class="fas fa-question-circle"></i> Frequently Asked Questions</h3>
+        <div class="faq-list">
+          <div class="faq-item" *ngFor="let faq of faqs; let i = index">
+            <div class="faq-question" (click)="toggleFaq(i)">
+              <i class="fas" [ngClass]="faq.open ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+              {{ faq.question }}
+            </div>
+            <div class="faq-answer" *ngIf="faq.open">
+              {{ faq.answer }}
+            </div>
+          </div>
+        </div>
+        <div class="more-help">
+          <i class="fas fa-info-circle"></i> Can't find your answer? <a href="#" (click)="scrollToForm($event)">Contact us</a>.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  

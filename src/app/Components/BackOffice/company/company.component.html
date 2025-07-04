@@ -1,0 +1,715 @@
+<div class="company-container">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <h1 class="page-title">
+          <i class="fas fa-building"></i>
+          Company Management
+        </h1>
+        <p class="page-subtitle">Manage and organize your company profiles with ease</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-primary" (click)="openCompanyModal(false)">
+          <i class="fas fa-plus"></i>
+          <span>Add New Company</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Companies List Section -->
+  <div class="content-section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <i class="fas fa-list-ul"></i>
+        Companies Directory
+      </h2>
+      <div class="section-controls">
+        <div class="search-container">
+          <i class="fas fa-search search-icon"></i>
+          <input 
+            type="text" 
+            class="search-input" 
+            placeholder="Search companies by name, industry, or description..." 
+            [(ngModel)]="searchTerm"
+          >
+        </div>
+        <div class="filter-controls">
+          <select class="filter-select">
+            <option value="">All Industries</option>
+            <option value="technology">Technology</option>
+            <option value="healthcare">Healthcare</option>
+            <option value="finance">Finance</option>
+            <option value="education">Education</option>
+            <option value="retail">Retail</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Companies Grid -->
+    <div class="companies-grid" *ngIf="filteredCompanies.length > 0">
+      <div class="company-card" *ngFor="let company of filteredCompanies">
+        <div class="card-header">
+          <div class="company-logo-container">
+            <img *ngIf="company.logoUrl" [src]="company.logoUrl" alt="Company Logo" class="company-logo">
+            <div *ngIf="!company.logoUrl" class="logo-placeholder">
+              <i class="fas fa-building"></i>
+            </div>
+          </div>
+          <div class="company-badge">
+            <span class="badge industry-badge">{{ company.industry || 'N/A' }}</span>
+          </div>
+        </div>
+        
+        <div class="card-body">
+          <h3 class="company-name">{{ company.name }}</h3>
+          <p class="company-description">
+            {{ company.description || 'No description available' | slice:0:100 }}
+            <span *ngIf="company.description?.length > 100">...</span>
+          </p>
+          
+          <div class="company-details">
+            <div class="detail-item" *ngIf="company.contactEmail">
+              <i class="fas fa-envelope"></i>
+              <span>{{ company.contactEmail }}</span>
+            </div>
+            <div class="detail-item" *ngIf="company.contactPhone">
+              <i class="fas fa-phone"></i>
+              <span>{{ company.contactPhone }}</span>
+            </div>
+            <div class="detail-item" *ngIf="company.address">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>{{ company.address }}</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-footer">
+          <div class="social-links" *ngIf="company.website || company.linkedInUrl || company.twitterUrl || company.facebookUrl">
+            <a *ngIf="company.website" [href]="company.website" target="_blank" class="social-link" title="Website">
+              <i class="fas fa-globe"></i>
+            </a>
+            <a *ngIf="company.linkedInUrl" [href]="company.linkedInUrl" target="_blank" class="social-link" title="LinkedIn">
+              <i class="fab fa-linkedin"></i>
+            </a>
+            <a *ngIf="company.twitterUrl" [href]="company.twitterUrl" target="_blank" class="social-link" title="Twitter">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a *ngIf="company.facebookUrl" [href]="company.facebookUrl" target="_blank" class="social-link" title="Facebook">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </div>
+          
+          <div class="card-actions">
+            <button class="btn-icon btn-view" (click)="viewCompanyDetails(company)" title="View Details">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="btn-icon btn-edit" (click)="openCompanyModal(true, company)" title="Edit Company">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn-icon btn-delete" (click)="deleteCompany(company.companyId)" title="Delete Company">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredCompanies.length === 0">
+      <div class="empty-icon">
+        <i class="fas fa-building"></i>
+      </div>
+      <h3>No Companies Found</h3>
+      <p>Start by adding your first company to the directory</p>
+      <button class="btn-primary" (click)="openCompanyModal(false)">
+        <i class="fas fa-plus"></i>
+        Add Your First Company
+      </button>
+    </div>
+  </div>
+
+  <!-- Create/Edit Company Modal -->
+  <div class="modal-overlay" *ngIf="showCompanyModal" (click)="closeCompanyModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fas" [ngClass]="isEditMode ? 'fa-edit' : 'fa-plus-circle'"></i>
+          <h2>{{ isEditMode ? 'Edit Company' : 'Create New Company' }}</h2>
+        </div>
+        <button class="modal-close" (click)="closeCompanyModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="modal-content">
+        <form (ngSubmit)="isEditMode ? updateCompany() : createCompany()" class="company-form">
+          <div class="form-layout">
+            <!-- Left Column - Main Form -->
+            <div class="form-main">
+              <!-- Basic Information Section -->
+              <div class="form-section">
+                <div class="section-header">
+                  <i class="fas fa-info-circle"></i>
+                  <h3>Basic Information</h3>
+                </div>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="companyName">
+                      <i class="fas fa-font"></i>
+                      Company Name *
+                    </label>
+                    <input 
+                      id="companyName"
+                      type="text" 
+                      [(ngModel)]="modalCompany.name" 
+                      name="name" 
+                      required
+                      placeholder="Enter company name"
+                      class="form-input"
+                    >
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="companyIndustry">
+                      <i class="fas fa-industry"></i>
+                      Industry
+                    </label>
+                    <select 
+                      id="companyIndustry"
+                      [(ngModel)]="modalCompany.industry" 
+                      name="industry"
+                      class="form-select"
+                    >
+                      <option value="">Select Industry</option>
+                      <option value="Technology">Technology</option>
+                      <option value="Healthcare">Healthcare</option>
+                      <option value="Finance">Finance</option>
+                      <option value="Education">Education</option>
+                      <option value="Retail">Retail</option>
+                      <option value="Manufacturing">Manufacturing</option>
+                      <option value="Consulting">Consulting</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  
+                  <div class="form-group full-width">
+                    <label for="companyDescription">
+                      <i class="fas fa-align-left"></i>
+                      Description
+                    </label>
+                    <textarea 
+                      id="companyDescription"
+                      [(ngModel)]="modalCompany.description" 
+                      name="description"
+                      placeholder="Describe your company, mission, and values..."
+                      class="form-textarea"
+                      rows="4"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Contact Information Section -->
+              <div class="form-section">
+                <div class="section-header">
+                  <i class="fas fa-address-book"></i>
+                  <h3>Contact Information</h3>
+                </div>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="contactEmail">
+                      <i class="fas fa-envelope"></i>
+                      Email Address
+                    </label>
+                    <input 
+                      id="contactEmail"
+                      type="email" 
+                      [(ngModel)]="modalCompany.contactEmail" 
+                      name="contactEmail"
+                      placeholder="contact@company.com"
+                      class="form-input"
+                    >
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="contactPhone">
+                      <i class="fas fa-phone"></i>
+                      Phone Number
+                    </label>
+                    <input 
+                      id="contactPhone"
+                      type="tel" 
+                      [(ngModel)]="modalCompany.contactPhone" 
+                      name="contactPhone"
+                      placeholder="+1 (555) 123-4567"
+                      class="form-input"
+                    >
+                  </div>
+                  
+                  <div class="form-group full-width">
+                    <label for="companyAddress">
+                      <i class="fas fa-map-marker-alt"></i>
+                      Address
+                    </label>
+                    <input 
+                      id="companyAddress"
+                      type="text" 
+                      [(ngModel)]="modalCompany.address" 
+                      name="address"
+                      placeholder="Enter company address"
+                      class="form-input"
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Digital Presence Section -->
+              <div class="form-section">
+                <div class="section-header">
+                  <i class="fas fa-globe"></i>
+                  <h3>Digital Presence</h3>
+                </div>
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="companyWebsite">
+                      <i class="fas fa-globe"></i>
+                      Website
+                    </label>
+                    <input 
+                      id="companyWebsite"
+                      type="url" 
+                      [(ngModel)]="modalCompany.website" 
+                      name="website"
+                      placeholder="https://www.company.com"
+                      class="form-input"
+                    >
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="linkedInUrl">
+                      <i class="fab fa-linkedin"></i>
+                      LinkedIn
+                    </label>
+                    <input 
+                      id="linkedInUrl"
+                      type="url" 
+                      [(ngModel)]="modalCompany.linkedInUrl" 
+                      name="linkedInUrl"
+                      placeholder="https://linkedin.com/company/..."
+                      class="form-input"
+                    >
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="twitterUrl">
+                      <i class="fab fa-twitter"></i>
+                      Twitter
+                    </label>
+                    <input 
+                      id="twitterUrl"
+                      type="url" 
+                      [(ngModel)]="modalCompany.twitterUrl" 
+                      name="twitterUrl"
+                      placeholder="https://twitter.com/..."
+                      class="form-input"
+                    >
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="facebookUrl">
+                      <i class="fab fa-facebook"></i>
+                      Facebook
+                    </label>
+                    <input 
+                      id="facebookUrl"
+                      type="url" 
+                      [(ngModel)]="modalCompany.facebookUrl" 
+                      name="facebookUrl"
+                      placeholder="https://facebook.com/..."
+                      class="form-input"
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column - Logo & Preview -->
+            <div class="form-sidebar">
+              <!-- Logo Upload Section -->
+              <div class="form-section">
+                <div class="section-header">
+                  <i class="fas fa-image"></i>
+                  <h3>Company Logo</h3>
+                </div>
+                
+                <div class="logo-upload-container">
+                  <div 
+                    class="logo-upload-area" 
+                    (click)="logoInput.click()" 
+                    (dragover)="$event.preventDefault()" 
+                    (drop)="onLogoFileSelected($event)"
+                    [class.has-logo]="logoPreviewUrl"
+                  >
+                    <input 
+                      #logoInput 
+                      type="file" 
+                      accept="image/*" 
+                      (change)="onLogoFileSelected($event)" 
+                      class="logo-file-input"
+                    >
+                    
+                    <ng-container *ngIf="logoPreviewUrl; else uploadPlaceholder">
+                      <img [src]="logoPreviewUrl" alt="Logo Preview" class="logo-preview">
+                      <button type="button" class="remove-logo-btn" (click)="removeLogoFile()">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </ng-container>
+                    
+                    <ng-template #uploadPlaceholder>
+                      <div class="upload-placeholder">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click or drag image here</p>
+                        <span>PNG, JPG up to 5MB</span>
+                      </div>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Live Preview Section -->
+              <div class="form-section">
+                <div class="section-header">
+                  <i class="fas fa-eye"></i>
+                  <h3>Live Preview</h3>
+                </div>
+                
+                <div class="preview-card">
+                  <div class="preview-header">
+                    <img *ngIf="logoPreviewUrl" [src]="logoPreviewUrl" alt="Company Logo" class="preview-logo">
+                    <div *ngIf="!logoPreviewUrl" class="preview-logo-placeholder">
+                      <i class="fas fa-building"></i>
+                    </div>
+                    <div class="preview-info">
+                      <h4 class="preview-name">{{ modalCompany.name || 'Company Name' }}</h4>
+                      <span class="preview-industry" *ngIf="modalCompany.industry">{{ modalCompany.industry }}</span>
+                    </div>
+                  </div>
+                  
+                  <div class="preview-body">
+                    <p class="preview-description">
+                      {{ modalCompany.description || 'Company description will appear here...' | slice:0:120 }}
+                      <span *ngIf="modalCompany.description?.length > 120">...</span>
+                    </p>
+                    
+                    <div class="preview-details">
+                      <div class="preview-detail" *ngIf="modalCompany.contactEmail">
+                        <i class="fas fa-envelope"></i>
+                        <span>{{ modalCompany.contactEmail }}</span>
+                      </div>
+                      <div class="preview-detail" *ngIf="modalCompany.contactPhone">
+                        <i class="fas fa-phone"></i>
+                        <span>{{ modalCompany.contactPhone }}</span>
+                      </div>
+                      <div class="preview-detail" *ngIf="modalCompany.website">
+                        <i class="fas fa-globe"></i>
+                        <a [href]="modalCompany.website" target="_blank" class="preview-link">Visit Website</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="closeCompanyModal()">
+              <i class="fas fa-times"></i>
+              Cancel
+            </button>
+            <button type="submit" class="btn-primary">
+              <i class="fas" [ngClass]="isEditMode ? 'fa-save' : 'fa-plus'"></i>
+              {{ isEditMode ? 'Update Company' : 'Create Company' }}
+            </button>
+            
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Company Details Modal -->
+  <div class="modal-overlay" *ngIf="showCompanyDetails" (click)="closeDetailsModal()">
+    <div class="details-modal-container" (click)="$event.stopPropagation()">
+      <!-- Modal Header -->
+      <div class="details-modal-header">
+        <div class="company-header-info">
+          <div class="company-logo-large">
+            <img *ngIf="selectedCompany.logoUrl" [src]="selectedCompany.logoUrl" alt="Company Logo" class="company-logo-img">
+            <div *ngIf="!selectedCompany.logoUrl" class="company-logo-placeholder-large">
+              <i class="fas fa-building"></i>
+            </div>
+          </div>
+          <div class="company-header-text">
+            <h2 class="company-title">{{ selectedCompany.name }}</h2>
+            <div class="company-meta">
+              <span class="badge industry-badge-large">{{ selectedCompany.industry || 'N/A' }}</span>
+              <span class="company-id">ID: {{ selectedCompany.companyId }}</span>
+            </div>
+          </div>
+        </div>
+        <button class="modal-close" (click)="closeDetailsModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="details-modal-content">
+        <div class="details-layout">
+          <!-- Left Column - Main Information -->
+          <div class="details-main">
+            <!-- Company Overview -->
+            <div class="details-section">
+              <div class="section-header">
+                <i class="fas fa-info-circle"></i>
+                <h3>Company Overview</h3>
+              </div>
+              <div class="overview-content">
+                <p class="company-description-full" *ngIf="selectedCompany.description">
+                  {{ selectedCompany.description }}
+                </p>
+                <p class="no-description" *ngIf="!selectedCompany.description">
+                  No description available for this company.
+                </p>
+              </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="details-section">
+              <div class="section-header">
+                <i class="fas fa-address-book"></i>
+                <h3>Contact Information</h3>
+              </div>
+              <div class="contact-grid">
+                <div class="contact-item" *ngIf="selectedCompany.contactEmail">
+                  <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                  </div>
+                  <div class="contact-details">
+                    <label>Email Address</label>
+                    <a [href]="'mailto:' + selectedCompany.contactEmail" class="contact-link">
+                      {{ selectedCompany.contactEmail }}
+                    </a>
+                  </div>
+                </div>
+                
+                <div class="contact-item" *ngIf="selectedCompany.contactPhone">
+                  <div class="contact-icon">
+                    <i class="fas fa-phone"></i>
+                  </div>
+                  <div class="contact-details">
+                    <label>Phone Number</label>
+                    <a [href]="'tel:' + selectedCompany.contactPhone" class="contact-link">
+                      {{ selectedCompany.contactPhone }}
+                    </a>
+                  </div>
+                </div>
+                
+                <div class="contact-item" *ngIf="selectedCompany.address">
+                  <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                  </div>
+                  <div class="contact-details">
+                    <label>Address</label>
+                    <span class="contact-text">{{ selectedCompany.address }}</span>
+                  </div>
+                </div>
+                
+                <div class="contact-item" *ngIf="selectedCompany.website">
+                  <div class="contact-icon">
+                    <i class="fas fa-globe"></i>
+                  </div>
+                  <div class="contact-details">
+                    <label>Website</label>
+                    <a [href]="selectedCompany.website" target="_blank" class="contact-link">
+                      {{ selectedCompany.website }}
+                      <i class="fas fa-external-link-alt"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Social Media -->
+            <div class="details-section" *ngIf="selectedCompany.linkedInUrl || selectedCompany.twitterUrl || selectedCompany.facebookUrl">
+              <div class="section-header">
+                <i class="fas fa-share-alt"></i>
+                <h3>Social Media</h3>
+              </div>
+              <div class="social-grid">
+                <a *ngIf="selectedCompany.linkedInUrl" [href]="selectedCompany.linkedInUrl" target="_blank" class="social-card linkedin">
+                  <div class="social-icon">
+                    <i class="fab fa-linkedin"></i>
+                  </div>
+                  <div class="social-info">
+                    <span class="social-platform">LinkedIn</span>
+                    <span class="social-url">{{ selectedCompany.linkedInUrl }}</span>
+                  </div>
+                  <i class="fas fa-external-link-alt social-external"></i>
+                </a>
+                
+                <a *ngIf="selectedCompany.twitterUrl" [href]="selectedCompany.twitterUrl" target="_blank" class="social-card twitter">
+                  <div class="social-icon">
+                    <i class="fab fa-twitter"></i>
+                  </div>
+                  <div class="social-info">
+                    <span class="social-platform">Twitter</span>
+                    <span class="social-url">{{ selectedCompany.twitterUrl }}</span>
+                  </div>
+                  <i class="fas fa-external-link-alt social-external"></i>
+                </a>
+                
+                <a *ngIf="selectedCompany.facebookUrl" [href]="selectedCompany.facebookUrl" target="_blank" class="social-card facebook">
+                  <div class="social-icon">
+                    <i class="fab fa-facebook"></i>
+                  </div>
+                  <div class="social-info">
+                    <span class="social-platform">Facebook</span>
+                    <span class="social-url">{{ selectedCompany.facebookUrl }}</span>
+                  </div>
+                  <i class="fas fa-external-link-alt social-external"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column - Statistics & Actions -->
+          <div class="details-sidebar">
+            <!-- Quick Stats -->
+            <div class="details-section">
+              <div class="section-header">
+                <i class="fas fa-chart-bar"></i>
+                <h3>Quick Stats</h3>
+              </div>
+              <div class="stats-grid">
+                <div class="stat-item">
+                  <div class="stat-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                  </div>
+                  <div class="stat-content">
+                    <span class="stat-value">Active</span>
+                    <span class="stat-label">Status</span>
+                  </div>
+                </div>
+                
+                <div class="stat-item">
+                  <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                  </div>
+                  <div class="stat-content">
+                    <span class="stat-value">{{ selectedCompany.createdAt ? (selectedCompany.createdAt | date:'short') : 'N/A' }}</span>
+                    <span class="stat-label">Created</span>
+                  </div>
+                </div>
+                
+                <div class="stat-item">
+                  <div class="stat-icon">
+                    <i class="fas fa-edit"></i>
+                  </div>
+                  <div class="stat-content">
+                    <span class="stat-value">{{ selectedCompany.updatedAt ? (selectedCompany.updatedAt | date:'short') : 'N/A' }}</span>
+                    <span class="stat-label">Last Updated</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="details-section">
+              <div class="section-header">
+                <i class="fas fa-tools"></i>
+                <h3>Quick Actions</h3>
+              </div>
+              <div class="actions-grid">
+                <button class="action-card edit-action" (click)="openCompanyModal(true, selectedCompany)">
+                  <div class="action-icon">
+                    <i class="fas fa-edit"></i>
+                  </div>
+                  <span class="action-text">Edit Company</span>
+                </button>
+                
+                <button class="action-card view-jobs" (click)="viewCompanyJobs(selectedCompany)">
+                  <div class="action-icon">
+                    <i class="fas fa-briefcase"></i>
+                  </div>
+                  <span class="action-text">View Jobs</span>
+                </button>
+                
+                <button class="action-card export-data" (click)="exportCompanyData(selectedCompany)">
+                  <div class="action-icon">
+                    <i class="fas fa-download"></i>
+                  </div>
+                  <span class="action-text">Export Data</span>
+                </button>
+                
+                <button class="action-card delete-action" (click)="deleteCompany(selectedCompany.companyId)">
+                  <div class="action-icon">
+                    <i class="fas fa-trash"></i>
+                  </div>
+                  <span class="action-text">Delete Company</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Company Insights -->
+            <div class="details-section">
+              <div class="section-header">
+                <i class="fas fa-lightbulb"></i>
+                <h3>Company Insights</h3>
+              </div>
+              <div class="insights-content">
+                <div class="insight-item">
+                  <div class="insight-icon">
+                    <i class="fas fa-industry"></i>
+                  </div>
+                  <div class="insight-text">
+                    <strong>Industry:</strong> {{ selectedCompany.industry || 'Not specified' }}
+                  </div>
+                </div>
+                
+                <div class="insight-item">
+                  <div class="insight-icon">
+                    <i class="fas fa-globe"></i>
+                  </div>
+                  <div class="insight-text">
+                    <strong>Online Presence:</strong> 
+                    <span class="presence-status" [class.active]="selectedCompany.website || selectedCompany.linkedInUrl || selectedCompany.twitterUrl || selectedCompany.facebookUrl">
+                      {{ (selectedCompany.website || selectedCompany.linkedInUrl || selectedCompany.twitterUrl || selectedCompany.facebookUrl) ? 'Active' : 'Limited' }}
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="insight-item">
+                  <div class="insight-icon">
+                    <i class="fas fa-address-card"></i>
+                  </div>
+                  <div class="insight-text">
+                    <strong>Contact Info:</strong> 
+                    <span class="contact-status" [class.complete]="selectedCompany.contactEmail && selectedCompany.contactPhone">
+                      {{ (selectedCompany.contactEmail && selectedCompany.contactPhone) ? 'Complete' : 'Partial' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

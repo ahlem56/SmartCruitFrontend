@@ -1,0 +1,51 @@
+<!-- src/app/chat/chat.component.html -->
+<div class="messenger-wrapper">
+  <!-- Left Sidebar: Contacts -->
+  <div class="sidebar">
+    <h3>Chats</h3>
+    <ul class="contact-list">
+      <li
+        *ngFor="let contact of contacts"
+        [class.active]="contact.userId === recipientId"
+        (click)="selectConversation(contact)"
+      >
+      <img [src]="contact.profilePictureUrl || getUserAvatarFallback(contact.userId)" alt="avatar" class="avatar" />
+      <span>{{ contact.name || 'Employer #' + contact.userId }}</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Right Chat Area -->
+  <div class="chat-container">
+    <div class="chat-header" *ngIf="selectedContact">
+      <h3>Chat with {{ selectedContact.name || ('Employer #' + selectedContact.userId) }}</h3>
+    </div>
+
+    <div class="messages" *ngIf="selectedContact">
+      <div
+        *ngFor="let msg of messages"
+        [class.own]="msg.senderId === currentUserId"
+        class="message"
+      >
+        <img class="avatar" [src]="getUserAvatar(msg.senderId)" alt="avatar" />
+        <div class="bubble">
+          <div class="meta">
+            <span class="sender">{{ msg.senderId === currentUserId ? 'You' : msg.senderName }}</span>
+            <span class="timestamp">{{ msg.timestamp | date: 'shortTime' }}</span>
+          </div>
+          <p class="content">{{ msg.content }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input area -->
+    <div class="input-area" *ngIf="selectedContact">
+      <input
+        [(ngModel)]="newMessage"
+        (keydown.enter)="sendMessage()"
+        placeholder="Type your message..."
+      />
+      <button (click)="sendMessage()">Send</button>
+    </div>
+  </div>
+</div>

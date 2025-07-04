@@ -43,8 +43,25 @@ export class LoginComponent implements AfterViewInit {
     this.userService.googleLogin(idToken).subscribe({
       next: (res: any) => {
         this.userService.saveToken(res.token);
-        this.userService.saveUser({ fullName: res.fullName, email: res.email });
-        this.router.navigate(['/home']);
+        const normalizedRole = res.role.toLowerCase();
+
+this.userService.saveUser({
+  fullName: res.fullName,
+  email: res.email,
+  role: normalizedRole as 'employer' | 'candidate' | 'admin',
+  userId: res.userId  
+});
+
+if (normalizedRole === 'admin') {
+  this.router.navigate(['/backoffice/dashboard']);
+} else if (normalizedRole === 'employer') {
+  this.router.navigate(['/employer/dashboard']);
+} else {
+  this.router.navigate(['/home']);
+}
+
+
+        
       },
       error: (err) => {
         console.error('❌ Google login failed:', err);
@@ -54,16 +71,60 @@ export class LoginComponent implements AfterViewInit {
   }
 
   // ✅ Add this method
+  onLogin() {
+    console.log('🚀 Form submitted with:', this.email, this.password);
+    this.userService.login({ email: this.email, password: this.password }).subscribe({
+      next: (res: any) => {
+        console.log('✅ Backend response:', res);
+        this.userService.saveToken(res.token);
+  
+        const normalizedRole = res.role.toLowerCase();
+        this.userService.saveUser({
+          fullName: res.fullName,
+          email: res.email,
+          role: normalizedRole as 'employer' | 'candidate' | 'admin',
+          userId: res.userId  
+        });
+  
+        if (normalizedRole === 'admin') {
+          this.router.navigate(['/backoffice/dashboard']);
+        } else if (normalizedRole === 'employer') {
+          this.router.navigate(['/employer/dashboard']);
+        } else {
+          this.router.navigate(['/home']);
+        }
+        
+      },
+      error: () => {
+        alert('Invalid email or password.');
+      }
+    });
+  }
+  
   onFacebookLogin(): void {
     this.socialAuthService.signIn(FacebookLoginProvider.PROVIDER_ID).then((user: SocialUser) => {
       console.log('✅ Facebook user:', user);
-
-      // Send Facebook token to backend
+  
       this.userService.facebookLogin(user.authToken).subscribe({
         next: (res: any) => {
           this.userService.saveToken(res.token);
-          this.userService.saveUser({ fullName: res.fullName, email: res.email });
-          this.router.navigate(['/home']);
+  
+          const normalizedRole = res.role.toLowerCase();
+          this.userService.saveUser({
+            fullName: res.fullName,
+            email: res.email,
+            role: normalizedRole as 'employer' | 'candidate',
+            userId: res.userId  
+          });
+  
+          if (normalizedRole === 'admin') {
+            this.router.navigate(['/backoffice/dashboard']);
+          } else if (normalizedRole === 'employer') {
+            this.router.navigate(['/employer/dashboard']);
+          } else {
+            this.router.navigate(['/home']);
+          }
+          
         },
         error: (err) => {
           console.error('❌ Facebook login failed:', err);
@@ -72,18 +133,6 @@ export class LoginComponent implements AfterViewInit {
       });
     });
   }
-
-  onLogin() {
-    this.userService.login({ email: this.email, password: this.password }).subscribe({
-      next: (res: any) => {
-        console.log('✅ Backend response:', res); // <== Add this
-        this.userService.saveToken(res.token);
-        this.userService.saveUser({ fullName: res.fullName, email: res.email });
-        this.router.navigate(['/home']);
-      },
-      error: () => {
-        alert('Invalid email or password.');
-      }
-    });
-  }
+  
+  
 }

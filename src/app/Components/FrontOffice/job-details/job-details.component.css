@@ -705,3 +705,102 @@
     padding: 1rem;
   }
 } 
+/* Employer & Company Section */
+.employer-company-section {
+  background-color: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.employer-company-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.employer-box,
+.company-box {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+.employer-avatar-lg {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+}
+
+.employer-details h3,
+.company-box h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.employer-details p,
+.company-box p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.social-links {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.social-links a {
+  color: #6c757d;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.social-links a.linkedin:hover {
+  color: #0a66c2;
+}
+
+.social-links a.twitter:hover {
+  color: #1da1f2;
+}
+
+.social-links a.facebook:hover {
+  color: #3b5998;
+}
+.chat-btn {
+  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #007bff 0%, #00c6ff 100%);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2);
+  text-decoration: none;
+}
+
+.chat-btn i {
+  font-size: 1.1rem;
+}
+
+.chat-btn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #0056cc 0%, #00aaff 100%);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}

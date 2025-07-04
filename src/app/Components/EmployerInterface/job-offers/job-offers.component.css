@@ -730,3 +730,20 @@
     padding: 1rem;
   }
 }
+
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: color 0.2s ease;
+}
+
+.back-btn:hover {
+  color: #0056cc;
+  text-decoration: underline;
+}

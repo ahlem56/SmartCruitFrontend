@@ -1,0 +1,84 @@
+<div class="candidates-main-container">
+  <div class="candidates-header artistic-header">
+    <div class="header-content">
+      <h2><i class="fas fa-users"></i> Applicants for "{{ jobTitle }}"</h2>
+      <p class="total-candidates"><i class="fas fa-user-friends"></i> Total Candidates: {{ candidates.length }}</p>
+    </div>
+    <svg class="header-art" viewBox="0 0 400 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="200" cy="40" rx="180" ry="30" fill="#e3f0ff"/>
+      <ellipse cx="320" cy="60" rx="60" ry="12" fill="#007bff22"/>
+      <ellipse cx="80" cy="60" rx="40" ry="10" fill="#00c6ff22"/>
+    </svg>
+  </div>
+
+  <div class="candidates-controls">
+    <input type="text" class="search-input" placeholder="Search by name or email..." [(ngModel)]="searchTerm">
+    <select class="skill-filter" [(ngModel)]="selectedSkill">
+      <option value="">All Skills</option>
+      <option *ngFor="let skill of allSkills" [value]="skill">{{ skill }}</option>
+    </select>
+  </div>
+
+  <div *ngIf="filteredCandidates.length > 0; else noCandidates" class="candidates-table-wrapper">
+    <table class="candidates-table advanced-table">
+      <thead>
+        <tr>
+          <th>Profile</th>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Experience</th>
+          <th>Skills</th>
+          <th>Match %</th>
+          <th>CV</th>
+          <th>Contact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let candidate of filteredCandidates; let i = index">
+          <td><img [src]="candidate.profilePicture || 'assets/FrontOffice/images/default.avif'" class="avatar" alt="Profile" /></td>
+          <td class="candidate-name">{{ candidate.fullName }}</td>
+          <td><span class="candidate-email"><i class="fas fa-envelope"></i> {{ candidate.email }}</span></td>
+          <td><span class="candidate-phone"><i class="fas fa-phone"></i> {{ candidate.phone }}</span></td>
+          <td><span class="candidate-experience"><i class="fas fa-briefcase"></i> {{ candidate.experience }}</span></td>
+          <td>
+            <span *ngFor="let skill of candidate.skills" class="skill-badge">{{ skill }}</span>
+          </td>
+          <td>
+            <div class="match-circle-table">
+              <svg class="match-svg-table" viewBox="0 0 44 44">
+                <circle class="match-bg" cx="22" cy="22" r="20" />
+                <circle class="match-bar" cx="22" cy="22" r="20" [attr.stroke-dasharray]="125.6" [attr.stroke-dashoffset]="125.6 - (candidate.matchingPercentage/100)*125.6" />
+              </svg>
+              <div class="match-label-table">{{ candidate.matchingPercentage }}%</div>
+            </div>
+          </td>
+          <td class="cv-actions">
+            <ng-container *ngIf="candidate.cvUrl; else noCv">
+              <a [href]="candidate.cvUrl" target="_blank" class="cv-btn-table" title="View CV">
+                <i class="fas fa-eye"></i>
+              </a>
+              <a [href]="candidate.cvUrl" download class="cv-btn-table" title="Download CV">
+                <i class="fas fa-download"></i>
+              </a>
+            </ng-container>
+            <ng-template #noCv>
+              <span class="no-cv-text">N/A</span>
+            </ng-template>
+          </td>
+          
+          <td>
+            <a *ngIf="candidate.email" [href]="'mailto:' + candidate.email" class="contact-btn-table"><i class="fas fa-paper-plane"></i> Contact</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #noCandidates>
+    <div class="no-results-artistic">
+      <svg width="120" height="80" viewBox="0 0 120 80" fill="none"><ellipse cx="60" cy="70" rx="50" ry="10" fill="#e3f0ff"/><ellipse cx="90" cy="75" rx="20" ry="4" fill="#007bff22"/><ellipse cx="30" cy="75" rx="12" ry="3" fill="#00c6ff22"/></svg>
+      <p>No candidates have applied yet for this offer.<br>Share your job offer to attract more talent!</p>
+    </div>
+  </ng-template>
+</div>

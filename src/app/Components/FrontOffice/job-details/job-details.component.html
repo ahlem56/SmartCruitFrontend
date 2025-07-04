@@ -35,77 +35,86 @@
           <span class="status-badge" [class]="getStatusColor(jobOffer.status)">
             {{ jobOffer.status }}
           </span>
-          <span class="type-badge" [class]="getTypeColor(jobOffer.type)">
-            {{ jobOffer.type }}
+          <span class="type-badge" [class]="getTypeColor(jobOffer.jobType)">
+            {{ jobOffer.jobType }}
           </span>
         </div>
       </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-      <div class="content-grid">
-        <!-- Left Column - Job Details -->
-        <div class="job-details-section">
-          <div class="section-card">
-            <h2>Job Description</h2>
-            <p class="description-text">{{ jobOffer.description }}</p>
-          </div>
-
-          <div class="section-card">
-            <h2>Requirements</h2>
-            <ul class="requirements-list">
-              <li *ngFor="let requirement of jobOffer.requirements">{{ requirement }}</li>
-            </ul>
-          </div>
-
-          <div class="section-card">
-            <h2>Job Details</h2>
-            <div class="details-grid">
-              <div class="detail-item">
-                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-                <div class="detail-content">
+       <!-- Main Content -->
+       <div class="main-content">
+        <div class="content-grid">
+          <!-- Left Column - Job Details -->
+          <div class="job-details-section">
+            <div class="section-card">
+              <h2>Job Description</h2>
+              <p class="description-text">{{ jobOffer.description }}</p>
+            </div>
+  
+            <div class="section-card">
+              <h2>Requirements</h2>
+              <ul class="requirements-list">
+                <li *ngFor="let requirement of jobOffer.requiredSkills">{{ requirement }}</li>
+              </ul>
+            </div>
+  
+            <div class="section-card" *ngIf="jobOffer.requiredLanguages?.length">
+              <h2>Required Languages</h2>
+              <ul class="requirements-list">
+                <li *ngFor="let lang of jobOffer.requiredLanguages">{{ lang }}</li>
+              </ul>
+            </div>
+  
+            <div class="section-card" *ngIf="jobOffer.benefits?.length">
+              <h2>Benefits</h2>
+              <ul class="requirements-list">
+                <li *ngFor="let benefit of jobOffer.benefits">{{ benefit }}</li>
+              </ul>
+            </div>
+  
+            <div class="section-card">
+              <h2>Job Details</h2>
+              <div class="details-grid">
+                <div class="detail-item">
                   <span class="detail-label">Location</span>
-                  <span class="detail-value">{{ jobOffer.location }}</span>
+                  <span class="detail-value">{{ jobOffer.jobLocation }}</span>
                 </div>
-              </div>
-
-              <div class="detail-item">
-                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                </svg>
-                <div class="detail-content">
+  
+                <div class="detail-item">
                   <span class="detail-label">Salary</span>
-                  <span class="detail-value">{{ jobOffer.salary }}</span>
+                  <span class="detail-value">{{ jobOffer.salary }} TND</span>
                 </div>
-              </div>
-
-              <div class="detail-item">
-                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V7a2 2 0 012-2h4a2 2 0 012 2v4m-6 0v4a2 2 0 002 2h4a2 2 0 002-2v-4m-6 0v4a2 2 0 002 2h4a2 2 0 002-2v-4"></path>
-                </svg>
-                <div class="detail-content">
+  
+                <div class="detail-item">
                   <span class="detail-label">Posted Date</span>
                   <span class="detail-value">{{ jobOffer.postedDate | date:'fullDate' }}</span>
                 </div>
-              </div>
-
-              <div class="detail-item">
-                <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V7a2 2 0 012-2h4a2 2 0 012 2v4m-6 0v4a2 2 0 002 2h4a2 2 0 002-2v-4m-6 0v4a2 2 0 002 2h4a2 2 0 002-2v-4"></path>
-                </svg>
-                <div class="detail-content">
+  
+                <div class="detail-item">
                   <span class="detail-label">Application Deadline</span>
                   <span class="detail-value">{{ jobOffer.deadline | date:'fullDate' }}</span>
+                </div>
+  
+                <div class="detail-item">
+                  <span class="detail-label">Open Positions</span>
+                  <span class="detail-value">{{ jobOffer.numberOfOpenPositions }}</span>
+                </div>
+  
+                <div class="detail-item">
+                  <span class="detail-label">Education Level</span>
+                  <span class="detail-value">{{ jobOffer.educationLevel }}</span>
+                </div>
+  
+                <div class="detail-item">
+                  <span class="detail-label">Experience Level</span>
+                  <span class="detail-value">{{ jobOffer.experienceLevel }}</span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
+          
         <!-- Right Column - Application Card -->
         <div class="application-section">
           <div class="application-card">
@@ -118,7 +127,7 @@
                 <span class="stat-label">Applications</span>
               </div>
               <div class="stat-item">
-                <span class="stat-number">{{ jobOffer.type }}</span>
+                <span class="stat-number">{{ jobOffer.jobType }}</span>
                 <span class="stat-label">Job Type</span>
               </div>
             </div>
@@ -151,6 +160,59 @@
               </div>
             </div>
           </div>
+          <!-- Employer & Company Section -->
+<!-- Employer & Company Section -->
+<div class="section-card employer-company-section" *ngIf="jobOffer?.employer || jobOffer?.company">
+  <h2>Posted By</h2>
+
+  <div class="employer-company-wrapper">
+    <div *ngIf="jobOffer.employer" class="employer-box">
+      <img
+        *ngIf="jobOffer.employer.profilePictureUrl"
+        [src]="jobOffer.employer.profilePictureUrl"
+        alt="Employer Avatar"
+        class="employer-avatar-lg"
+      />
+      <div class="employer-details">
+        <h3>{{ jobOffer.employer.fullName || 'Employer #' + jobOffer.employer.userId }}</h3>
+        <p><strong>Email:</strong> {{ jobOffer.employer.email }}</p>
+        <p><strong>Industry:</strong> {{ jobOffer.employer.industry }}</p>
+        <p><strong>Contact:</strong> {{ jobOffer.employer.contact }}</p>
+      </div>
+    </div>
+
+    <div *ngIf="jobOffer.company" class="company-box">
+      <h3>{{ jobOffer.company.name }}</h3>
+      <p>{{ jobOffer.company.description }}</p>
+      <p><strong>Address:</strong> {{ jobOffer.company.address }}</p>
+      <p><strong>Email:</strong> {{ jobOffer.company.contactEmail }}</p>
+      <p><strong>Phone:</strong> {{ jobOffer.company.contactPhone }}</p>
+
+      <div class="social-links">
+        <a *ngIf="jobOffer.company.linkedInUrl" [href]="jobOffer.company.linkedInUrl" target="_blank" class="linkedin">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a *ngIf="jobOffer.company.twitterUrl" [href]="jobOffer.company.twitterUrl" target="_blank" class="twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a *ngIf="jobOffer.company.facebookUrl" [href]="jobOffer.company.facebookUrl" target="_blank" class="facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <button
+  class="chat-btn"
+  *ngIf="jobOffer?.employer?.userId"
+  (click)="messageEmployer()"
+>
+  <i class="fas fa-comments"></i> Message Employer
+</button>
+
+</div>
+
+
         </div>
       </div>
     </div>

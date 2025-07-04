@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterLinkWithHref, RouterModule } from '@angular/router';
 import { JobOffersService, JobOffer } from '../../../Services/job-offers.service';
+import { ApplicationService } from '../../../Services/application.service';
+import { UserService } from '../../../Services/user.service';
 
 @Component({
   selector: 'app-job-details',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink, RouterLinkWithHref, RouterModule],
   templateUrl: './job-details.component.html',
   styleUrls: ['./job-details.component.css']
 })
@@ -30,7 +32,10 @@ export class JobDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private jobOffersService: JobOffersService
+    private jobOffersService: JobOffersService,
+    private applicationService: ApplicationService,
+    private userService: UserService  
+
   ) {}
 
   ngOnInit(): void {
@@ -84,17 +89,46 @@ export class JobDetailsComponent implements OnInit {
   }
 
   submitApplication(): void {
-    if (this.validateForm()) {
-      // Here you would typically send the application to your backend
-      console.log('Application submitted:', this.applicationForm);
-      
-      // Simulate API call
-      setTimeout(() => {
-        alert('Application submitted successfully!');
-        this.closeApplicationModal();
-      }, 1000);
+    if (!this.validateForm()) return;
+  
+    if (!this.jobOffer) {
+      alert("Job details are missing.");
+      return;
     }
+  
+    // Récupération dynamique du candidat connecté
+    const currentUser = this.userService.getCurrentUser();
+    if (!currentUser || !currentUser.userId) {
+      alert('Vous devez être connecté pour postuler.');
+      return;
+    }
+  
+    const candidateId = currentUser.userId;
+    const jobOfferId = this.jobOffer.jobOfferId;
+    const cvFile = this.applicationForm.cvFile!;
+  
+    const additionalData = {
+      firstName: this.applicationForm.firstName,
+      lastName: this.applicationForm.lastName,
+      email: this.applicationForm.email,
+      phone: this.applicationForm.phone,
+      coverLetter: this.applicationForm.coverLetter,
+    };
+  
+    this.applicationService.applyToJob(candidateId, jobOfferId, cvFile, additionalData)
+      .subscribe({
+        next: () => {
+          alert('Application submitted successfully!');
+          this.closeApplicationModal();
+        },
+        error: (err) => {
+          console.error('Application submission error:', err);
+          alert('Failed to submit application. Please try again later.');
+        }
+      });
   }
+  
+  
 
   private validateForm(): boolean {
     if (!this.applicationForm.firstName.trim()) {
@@ -147,24 +181,33 @@ export class JobDetailsComponent implements OnInit {
 
   getStatusColor(status: JobOffer['status']): string {
     switch (status) {
-      case 'Active': return 'text-green-600 bg-green-100';
-      case 'Inactive': return 'text-red-600 bg-red-100';
-      case 'Draft': return 'text-yellow-600 bg-yellow-100';
+      case 'ACTIVE': return 'text-green-600 bg-green-100';
+      case 'INACTIVE': return 'text-red-600 bg-red-100';
+      case 'DRAFT': return 'text-yellow-600 bg-yellow-100';
       default: return 'text-gray-600 bg-gray-100';
     }
   }
-
-  getTypeColor(type: JobOffer['type']): string {
+  
+  getTypeColor(type: JobOffer['jobType']): string {
     switch (type) {
-      case 'Full-time': return 'text-blue-600 bg-blue-100';
-      case 'Part-time': return 'text-purple-600 bg-purple-100';
-      case 'Contract': return 'text-orange-600 bg-orange-100';
-      case 'Internship': return 'text-green-600 bg-green-100';
+      case 'FULL_TIME': return 'text-blue-600 bg-blue-100';
+      case 'PART_TIME': return 'text-purple-600 bg-purple-100';
+      case 'CONTRACT': return 'text-orange-600 bg-orange-100';
+      case 'INTERNSHIP': return 'text-green-600 bg-green-100';
       default: return 'text-gray-600 bg-gray-100';
     }
   }
+  
 
   goBack(): void {
     this.router.navigate(['/job-offers']);
   }
+
+  messageEmployer(): void {
+    const employerId = this.jobOffer?.employer?.userId;
+    if (employerId) {
+      this.router.navigate(['/chat'], { queryParams: { to: employerId } });
+    }
+  }
+  
 } 

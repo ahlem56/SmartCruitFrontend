@@ -1,3 +1,4 @@
+(window as any).global = window;
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
@@ -8,12 +9,15 @@ import { importProvidersFrom } from '@angular/core';
 import { SocialLoginModule, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
 import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
 import { FacebookLoginProvider } from '@abacritt/angularx-social-login';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideHttpClient(),
     importProvidersFrom(SocialLoginModule),
+    provideAnimations(), // ✅ Required for Angular animations
+
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {
