@@ -106,42 +106,35 @@ export class JobDetailsComponent implements OnInit {
     const candidateId = currentUser.userId;
     const jobOfferId = this.jobOffer.jobOfferId;
     const cvFile = this.applicationForm.cvFile!;
-    const additionalData = {
-      firstName: this.applicationForm.firstName,
-      lastName: this.applicationForm.lastName,
-      email: this.applicationForm.email,
-      phone: this.applicationForm.phone,
-      coverLetter: this.applicationForm.coverLetter,
-    };
+    const additionalData = { ...this.applicationForm };
   
-    this.applicationService
-    .applyToJob(candidateId, jobOfferId, cvFile, additionalData)
-    .subscribe({
+    this.applicationService.applyToJob(candidateId, jobOfferId, cvFile, additionalData).subscribe({
       next: (response) => {
         this.closeApplicationModal();
   
         const score = Math.round((response?.score ?? 0) * 100);
-        const feedback = response?.missingSkills || [];
-        const suggestions = response?.suggestedJobs || [];
+        const missingSkills = response?.missingSkills || [];
+        const suggestedJobs = response?.suggestedJobs || [];
+        const suggestedCourses = response?.suggestedCourses || [];
   
-        const feedbackList = feedback.length
-          ? `<ul>${feedback.map((s: string) => `<li> ${s}</li>`).join("")}</ul>`
-          : `<p style="color: green"> You meet all the job requirements!</p>`;
+        const feedbackList = missingSkills.length
+          ? `<ul>${missingSkills.map((s: string) => `<li>${s}</li>`).join("")}</ul>`
+          : `<p style="color: green;">You meet all the job requirements!</p>`;
   
-          const suggestionsList = suggestions.length
+        const suggestionsList = suggestedJobs.length
           ? `
             <div style="display: flex; flex-direction: column; gap: 12px;">
-              ${suggestions.slice(0, 3).map((job: any) => `
+              ${suggestedJobs.slice(0, 3).map((job: any) => `
                 <a 
                   href="/job-details/${job.jobId}" 
-                  target="_blank" 
-                  style="display: flex; align-items: center; text-decoration: none; border: 1px solid #e0e0e0; border-radius: 10px; padding: 12px; transition: background 0.3s ease; background: #fafafa;"
+                  target="_blank"
+                  style="display: flex; align-items: center; text-decoration: none; border: 1px solid #e0e0e0; border-radius: 10px; padding: 12px; background: #fafafa; transition: background 0.3s ease;"
                   onmouseover="this.style.background='#f0f8ff'" 
                   onmouseout="this.style.background='#fafafa'"
                 >
                   <img 
                     src="${job.logoUrl || 'assets/FrontOffice/images/default-company.png'}" 
-                    alt="Logo" 
+                    alt="Logo"
                     style="width: 48px; height: 48px; object-fit: contain; border-radius: 6px; margin-right: 16px;"
                   />
                   <div style="flex: 1;">
@@ -153,37 +146,58 @@ export class JobDetailsComponent implements OnInit {
               `).join("")}
             </div>
           `
-          : `<p style="color: #777; font-style: italic;">No other matching jobs found.</p>`;
-        
-        
+          : `<p style="color: #777; font-style: italic;">No matching jobs found.</p>`;
   
-          Swal.fire({
-            icon: 'success',
-            title: 'Application Submitted!',
-            html: `
-              <div style="text-align: left; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem;">
-                <p><strong>Matching Score:</strong> <span style="color:#007bff;">${score}%</span></p>
-                <p><strong>Missing Skills:</strong></p>
-                ${feedbackList}
-                <p style="margin-top: 1rem;"><strong>Top 3 Job Suggestions:</strong></p>
-                ${suggestionsList}
+          const coursesList = suggestedCourses.length
+          ? `
+            <div style="margin-top: 1rem;">
+              <p><strong>📚 Free YouTube Courses:</strong></p>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                ${suggestedCourses.map((course: any) => `
+                  <a href="${course.url}" target="_blank" 
+                     style="display: flex; align-items: center; text-decoration: none; border: 1px solid #ddd; border-radius: 10px; padding: 10px;">
+                    <img 
+                      src="https://img.youtube.com/vi/${course.videoId}/hqdefault.jpg" 
+                      alt="YouTube Thumbnail"
+                      style="width: 120px; height: auto; border-radius: 6px; margin-right: 12px;"
+                    />
+                    <div style="flex: 1;">
+                      <div style="font-size: 0.95rem; font-weight: 600; color: #007bff;">${course.title}</div>
+                      <div style="font-size: 0.8rem; color: #555;">Skill: ${course.skill}</div>
+                    </div>
+                    <i class="fab fa-youtube" style="font-size: 1.5rem; color: red;"></i>
+                  </a>
+                `).join("")}
               </div>
-            `,
-            confirmButtonText: 'Close',
-            customClass: {
-              popup: 'swal2-rounded swal2-shadow',
-              confirmButton: 'btn btn-primary'
-            }
-          });
-          
+            </div>
+          `
+          : "";
+        
+        Swal.fire({
+          icon: 'success',
+          title: 'Application Submitted!',
+          html: `
+            <div style="text-align: left; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem;">
+              <p><strong>Matching Score:</strong> <span style="color:#007bff;">${score}%</span></p>
+              <p><strong>Missing Skills:</strong></p>
+              ${feedbackList}
+              <p style="margin-top: 1rem;"><strong>Top 3 Job Suggestions:</strong></p>
+              ${suggestionsList}
+              ${coursesList}
+            </div>
+          `,
+          confirmButtonText: 'Close',
+          customClass: {
+            popup: 'swal2-rounded swal2-shadow',
+            confirmButton: 'btn btn-primary'
+          }
+        });
       },
       error: (err) => {
-        console.error('Application submission error:', err);
-        alert('❌ Failed to submit application. Please try again later.');
+        console.error('❌ Application submission error:', err);
+        alert('Failed to submit application. Please try again later.');
       }
     });
-  
-      
   }
   
   
