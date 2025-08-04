@@ -1273,3 +1273,19 @@ body {
   display: flex !important;
   justify-content: center;
 }
+.server-error-message {
+  background-color: rgba(255, 0, 0, 0.1);
+  border: 1px solid crimson;
+  color: crimson;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.error-text {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}

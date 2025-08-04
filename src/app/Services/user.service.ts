@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class UserService {
   private apiUrl = 'http://localhost:8089/SmartCruit/user'; // adapte si nécessaire
-  private currentUserSubject = new BehaviorSubject<{ fullName: string, email: string, role: 'candidate' | 'employer' | 'admin'  } | null>(null);
+  private currentUserSubject = new BehaviorSubject<{ fullName: string, email: string, role: 'candidate' | 'employer' | 'admin'  , userId: number, profilePictureUrl?: string } | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {
@@ -102,9 +102,10 @@ export class UserService {
       next: (profile) => {
         const updatedUser = {
           ...current,
+          fullName: profile.fullName,
           profilePictureUrl: profile.profilePictureUrl
         };
-        this.saveUser(updatedUser);
+        this.saveUser(updatedUser); // <-- This triggers the BehaviorSubject & saves to localStorage
       },
       error: (err) => {
         console.error('❌ Failed to refresh current user profile', err);
@@ -113,4 +114,20 @@ export class UserService {
   }
   
   
+  updateCredentials(currentEmail: string, updates: { email?: string; password?: string }): Observable<any> {
+    const token = this.getToken();
+    return this.http.put(`${this.apiUrl}/update-credentials/${currentEmail}`, updates, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+  }
+
+  getUserById(userId: string): Observable<any> {
+  return this.http.get(`${this.apiUrl}/user/${userId}`); // Adjust URL to your backend
+}
+
+  // user.service.ts
+getConversationContacts(userId: number): Observable<any[]> {
+  return this.http.get<any[]>(`http://localhost:8089/SmartCruit/conversations/${userId}`);
+}
+
 }

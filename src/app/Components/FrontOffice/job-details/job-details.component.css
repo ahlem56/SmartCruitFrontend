@@ -804,3 +804,66 @@
   background: linear-gradient(135deg, #0056cc 0%, #00aaff 100%);
   box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
 }
+
+.view-profile-btn {
+  margin-top: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.view-profile-btn i {
+  margin-right: 5px;
+}
+
+.employer-avatar-lg,
+.company-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.employer-box, .company-box {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+.employer-details {
+  margin-left: 0;
+}
+
+.company-logo {
+  border-radius: 8px;
+  width: 100px;
+  height: 100px;
+}
+
+.swal2-popup.swal2-rounded {
+  border-radius: 14px !important;
+  padding: 2rem !important;
+}
+
+.swal2-shadow {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.swal2-popup .swal2-title {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+}
+
+.swal2-popup .swal2-confirm.btn-primary {
+  background-color: #007bff !important;
+  color: #fff !important;
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+}

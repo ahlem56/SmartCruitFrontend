@@ -29,27 +29,17 @@ export class OnboardingComponent {
   onboardingData: any = {
     currentPosition: '',
     preferredJobTitle: '',
-    experienceYears: '',
-    desiredSalaryRange: '',
-    primarySkills: '',
-    secondarySkills: '',
-    toolsOrTechnologies: '',
     educationLevel: '',
-    degreeField: '',
-    certifications: '',
-    preferredWorkType: '',
-    availability: '',
-    relocationWillingness: '',
-    workLocation: '',
-    linkedInUrl: '',
+    bio: '',
+    linkedinUrl: '',
     githubUrl: '',
     portfolioUrl: ''
   };
-
+  
   constructor(private userService: UserService, private router: Router) {}
 
   next(): void {
-    if (this.step < 5) this.step++;
+    if (this.step < 3) this.step++;
   }
 
   prev(): void {

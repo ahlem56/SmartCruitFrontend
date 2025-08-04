@@ -1,16 +1,18 @@
-// src/app/components/signup/signup.component.ts
 import { Component } from '@angular/core';
 import { UserService } from '../../Services/user.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { SocialAuthService, GoogleLoginProvider, FacebookLoginProvider, SocialUser } from '@abacritt/angularx-social-login';
-
+import { FormsModule, NgForm } from '@angular/forms';
+import {
+  SocialAuthService,
+  GoogleLoginProvider,
+  FacebookLoginProvider,
+  SocialUser
+} from '@abacritt/angularx-social-login';
 
 @Component({
   selector: 'app-signup',
-  standalone: true, // ✅ CORRECTION
-
+  standalone: true,
   templateUrl: './signup.component.html',
   imports: [CommonModule, FormsModule],
   styleUrls: ['./signup.component.css']
@@ -24,16 +26,71 @@ export class SignupComponent {
     phone: '',
     address: '',
     birthDate: '',
-    termsAccepted: false,
+    termsAccepted: false
   };
 
   isLoading = false;
+  showPassword = false;
+  showConfirmPassword = false;
+  serverErrors: string[] = [];
+  maxDate = new Date().toISOString().split('T')[0]; // Today's date in yyyy-mm-dd
 
-  constructor(private userService: UserService, private router: Router,private authService: SocialAuthService) {}
+  constructor(
+    private userService: UserService,
+    private router: Router,
+    private authService: SocialAuthService
+  ) {}
 
-  onSubmit() {
+  onSubmit(form: NgForm) {
+    this.serverErrors = [];
+
+    if (form.invalid) {
+      Object.keys(form.controls).forEach((fieldName) => {
+        const control = form.controls[fieldName];
+        if (control?.errors) {
+          Object.keys(control.errors).forEach((errorKey) => {
+            switch (errorKey) {
+              case 'required':
+                this.serverErrors.push(`${this.getFieldLabel(fieldName)} is required.`);
+                break;
+              case 'minlength':
+                this.serverErrors.push(`${this.getFieldLabel(fieldName)} is too short.`);
+                break;
+              case 'maxlength':
+                this.serverErrors.push(`${this.getFieldLabel(fieldName)} is too long.`);
+                break;
+              case 'email':
+                this.serverErrors.push(`Invalid email format.`);
+                break;
+              case 'pattern':
+                this.serverErrors.push(`${this.getFieldLabel(fieldName)} has an invalid format.`);
+                break;
+            }
+          });
+        }
+      });
+      return;
+    }
+
+    // Custom birthdate check
+    const birth = new Date(this.signupForm.birthDate);
+    const today = new Date();
+    const minAge = 13;
+    const age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+
+    const isTooYoung = age < minAge || (age === minAge && monthDiff < 0);
+    if (birth > today) {
+      this.serverErrors.push('Birthdate cannot be in the future.');
+      return;
+    }
+    if (isTooYoung) {
+      this.serverErrors.push(`You must be at least ${minAge} years old to sign up.`);
+      return;
+    }
+
     if (this.signupForm.password !== this.signupForm.confirmPassword) {
-      alert('Passwords do not match.');
+      this.serverErrors.push('Passwords do not match.');
       return;
     }
 
@@ -43,36 +100,38 @@ export class SignupComponent {
       password: this.signupForm.password,
       phoneNumber: this.signupForm.phone,
       address: this.signupForm.address,
-      createdAt: new Date(), // optionnel, peut être ignoré côté frontend
-      currentPosition: '',           // 👈 default
-      preferredJobTitle: '',        // 👈 default
-      educationLevel: '',           // 👈 default
-      profilePictureUrl: ''         // 👈 optional
+      birthDate: this.signupForm.birthDate,
+      createdAt: new Date(),
+      currentPosition: '',
+      preferredJobTitle: '',
+      educationLevel: '',
+      profilePictureUrl: ''
     };
 
     this.isLoading = true;
 
     this.userService.signup(candidatePayload).subscribe({
-      next: () => {
-        
-        this.userService.saveUser({  // ✅ Store current user for onboarding
-          
-          fullName: this.signupForm.fullName,
-          email: this.signupForm.email,
-          role: 'candidate',
-          userId: this.signupForm.userId
-        });
-        
+      next: (res) => {
         this.isLoading = false;
-        alert('Account created successfully!');
+        this.userService.saveUser({
+          fullName: res.fullName,
+          email: res.email,
+          role: 'candidate',
+          userId: res.userId
+        });
         this.router.navigate(['/onboarding']);
       },
       error: (err) => {
         this.isLoading = false;
-        console.error('Signup error:', err);
-alert('Signup failed: ' + (err.error?.message || err.message || 'Unknown error'));
-
-      },
+        const errorData = err.error;
+        if (Array.isArray(errorData)) {
+          this.serverErrors = errorData;
+        } else if (typeof errorData === 'string') {
+          this.serverErrors = [errorData];
+        } else {
+          this.serverErrors = ['An unexpected error occurred.'];
+        }
+      }
     });
   }
 
@@ -84,20 +143,8 @@ alert('Signup failed: ' + (err.error?.message || err.message || 'Unknown error')
     this.showConfirmPassword = !this.showConfirmPassword;
   }
 
-  showPassword = false;
-  showConfirmPassword = false;
-
-  hasError(field: string): boolean {
-    // implement real validation if needed
-    return false;
-  }
-
-  getErrorMessage(field: string): string {
-    return 'Field is required';
-  }
-
   goToLogin() {
-    this.router.navigate(['/onboarding']);
+    this.router.navigate(['/login']);
   }
 
   signupWithGoogle() {
@@ -105,7 +152,7 @@ alert('Signup failed: ' + (err.error?.message || err.message || 'Unknown error')
       this.userService.googleLogin(user.idToken).subscribe({
         next: (res: any) => {
           this.userService.saveToken(res.token);
-          this.userService.saveUser({  // ✅ This line was missing
+          this.userService.saveUser({
             fullName: res.fullName,
             email: res.email,
             role: 'candidate',
@@ -120,14 +167,13 @@ alert('Signup failed: ' + (err.error?.message || err.message || 'Unknown error')
       });
     });
   }
-  
 
   signupWithFacebook() {
     this.authService.signIn(FacebookLoginProvider.PROVIDER_ID).then((user: SocialUser) => {
       this.userService.facebookLogin(user.authToken).subscribe({
         next: (res: any) => {
           this.userService.saveToken(res.token);
-          this.userService.saveUser({  // ✅ This line was missing
+          this.userService.saveUser({
             fullName: res.fullName,
             email: res.email,
             role: 'candidate',
@@ -142,7 +188,6 @@ alert('Signup failed: ' + (err.error?.message || err.message || 'Unknown error')
       });
     });
   }
-  
 
   signupWithLinkedIn() {
     alert('LinkedIn OAuth to be implemented');
@@ -150,5 +195,19 @@ alert('Signup failed: ' + (err.error?.message || err.message || 'Unknown error')
 
   goToHome() {
     this.router.navigate(['/onboarding']);
+  }
+
+  getFieldLabel(fieldName: string): string {
+    switch (fieldName) {
+      case 'fullName': return 'Full Name';
+      case 'email': return 'Email';
+      case 'password': return 'Password';
+      case 'confirmPassword': return 'Confirm Password';
+      case 'address': return 'Address';
+      case 'birthDate': return 'Birth Date';
+      case 'phone': return 'Phone Number';
+      case 'termsAccepted': return 'Terms and Conditions';
+      default: return fieldName;
+    }
   }
 }

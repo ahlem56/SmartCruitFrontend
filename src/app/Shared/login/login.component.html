@@ -39,7 +39,7 @@
       
       <div class="artistic-content">
         <div class="logo-container">
-          <a href="/home">
+          <a href="/">
             <img src="/assets/FrontOffice/images/smartcruit.png" alt="SmartCruit" class="artistic-logo" />
           </a>
         </div>
@@ -108,7 +108,13 @@
             </label>
             <a href="/forgot-password" class="forgot-link">Forgot password?</a>
           </div>
-          
+          <!-- Server-side error message -->
+<div class="server-error-message" *ngIf="serverError">
+  <div class="error-text">
+    <i class="fas fa-exclamation-circle"></i> {{ serverError }}
+  </div>
+</div>
+
           <button type="submit" class="submit-btn">
             <span>Sign In</span>
             <div class="btn-glow"></div>
@@ -124,9 +130,7 @@
               <i class="fab fa-facebook-f"></i>
             </button>
             
-            <button class="social-btn linkedin">
-              <i class="fab fa-linkedin-in"></i>
-            </button>
+          
           </div>
         </div>
         

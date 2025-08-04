@@ -1,0 +1,140 @@
+.favorites-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 16px 32px 16px;
+  background: #f6f8fa;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.favorites-title {
+  font-size: 2.1rem;
+  font-weight: 700;
+  margin-bottom: 2.2rem;
+  color: #1a2236;
+  text-align: left;
+  letter-spacing: 0.2px;
+}
+
+.loading-message,
+.empty-state {
+  text-align: center;
+  margin-top: 4rem;
+  font-size: 1.15rem;
+  color: #6c7a89;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 2.2rem 1.2rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 2px 8px rgba(30,40,90,0.04);
+}
+
+.job-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 800px) {
+  .job-cards {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+}
+
+.job-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(30,40,90,0.07);
+  border: 1px solid #e5e7eb;
+  padding: 1.7rem 1.3rem 1.2rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: box-shadow 0.18s, border 0.18s, transform 0.18s;
+}
+.job-card:hover {
+  box-shadow: 0 6px 24px rgba(30,40,90,0.13);
+  border: 1.5px solid #3a7afe;
+  transform: translateY(-2px) scale(1.012);
+}
+
+.card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-bottom: 0.7rem;
+}
+.card-header .job-title {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.card-header h3 {
+  font-size: 1.18rem;
+  font-weight: 600;
+  color: #1a2236;
+  margin: 0;
+  letter-spacing: 0.1px;
+}
+.company-name {
+  font-size: 1.01rem;
+  color: #3a7afe;
+  font-weight: 500;
+  margin-top: 0.1rem;
+  letter-spacing: 0.05px;
+}
+
+.badge {
+  background: #eaf1fe;
+  color: #2563eb;
+  font-size: 0.78rem;
+  padding: 0.22rem 0.8rem;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1px;
+  border: 1px solid #dbeafe;
+}
+
+.card-body {
+  margin-top: 0.7rem;
+  font-size: 1.01rem;
+  color: #222b45;
+  display: grid;
+  gap: 0.3rem;
+}
+.card-body p {
+  margin: 0;
+  padding: 0.12rem 0.2rem 0.12rem 0;
+  font-weight: 500;
+  color: #374151;
+}
+
+.card-actions {
+  margin-top: 1.3rem;
+  text-align: right;
+}
+
+.details-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 7px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(58,122,254,0.07);
+  transition: background 0.16s, box-shadow 0.16s, transform 0.16s;
+  letter-spacing: 0.2px;
+}
+.details-btn:hover, .details-btn:focus {
+  background: #1741a6;
+  box-shadow: 0 2px 8px rgba(58,122,254,0.13);
+  transform: scale(1.03);
+}

@@ -5,10 +5,11 @@ import { ActivatedRoute, Router, RouterLink, RouterLinkWithHref, RouterModule } 
 import { JobOffersService, JobOffer } from '../../../Services/job-offers.service';
 import { ApplicationService } from '../../../Services/application.service';
 import { UserService } from '../../../Services/user.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-job-details',
-  imports: [CommonModule, FormsModule, RouterLink, RouterLinkWithHref, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './job-details.component.html',
   styleUrls: ['./job-details.component.css']
 })
@@ -96,17 +97,15 @@ export class JobDetailsComponent implements OnInit {
       return;
     }
   
-    // Récupération dynamique du candidat connecté
     const currentUser = this.userService.getCurrentUser();
-    if (!currentUser || !currentUser.userId) {
-      alert('Vous devez être connecté pour postuler.');
+    if (!currentUser?.userId) {
+      alert('You must be logged in to apply.');
       return;
     }
   
     const candidateId = currentUser.userId;
     const jobOfferId = this.jobOffer.jobOfferId;
     const cvFile = this.applicationForm.cvFile!;
-  
     const additionalData = {
       firstName: this.applicationForm.firstName,
       lastName: this.applicationForm.lastName,
@@ -115,18 +114,78 @@ export class JobDetailsComponent implements OnInit {
       coverLetter: this.applicationForm.coverLetter,
     };
   
-    this.applicationService.applyToJob(candidateId, jobOfferId, cvFile, additionalData)
-      .subscribe({
-        next: () => {
-          alert('Application submitted successfully!');
-          this.closeApplicationModal();
-        },
-        error: (err) => {
-          console.error('Application submission error:', err);
-          alert('Failed to submit application. Please try again later.');
-        }
-      });
+    this.applicationService
+    .applyToJob(candidateId, jobOfferId, cvFile, additionalData)
+    .subscribe({
+      next: (response) => {
+        this.closeApplicationModal();
+  
+        const score = Math.round((response?.score ?? 0) * 100);
+        const feedback = response?.missingSkills || [];
+        const suggestions = response?.suggestedJobs || [];
+  
+        const feedbackList = feedback.length
+          ? `<ul>${feedback.map((s: string) => `<li> ${s}</li>`).join("")}</ul>`
+          : `<p style="color: green"> You meet all the job requirements!</p>`;
+  
+          const suggestionsList = suggestions.length
+          ? `
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              ${suggestions.slice(0, 3).map((job: any) => `
+                <a 
+                  href="/job-details/${job.jobId}" 
+                  target="_blank" 
+                  style="display: flex; align-items: center; text-decoration: none; border: 1px solid #e0e0e0; border-radius: 10px; padding: 12px; transition: background 0.3s ease; background: #fafafa;"
+                  onmouseover="this.style.background='#f0f8ff'" 
+                  onmouseout="this.style.background='#fafafa'"
+                >
+                  <img 
+                    src="${job.logoUrl || 'assets/FrontOffice/images/default-company.png'}" 
+                    alt="Logo" 
+                    style="width: 48px; height: 48px; object-fit: contain; border-radius: 6px; margin-right: 16px;"
+                  />
+                  <div style="flex: 1;">
+                    <div style="font-size: 1rem; font-weight: 600; color: #007bff;">${job.title}</div>
+                    <div style="font-size: 0.875rem; color: #555;">${job.company} • ${job.location}</div>
+                  </div>
+                  <i class="fas fa-arrow-right" style="color: #007bff;"></i>
+                </a>
+              `).join("")}
+            </div>
+          `
+          : `<p style="color: #777; font-style: italic;">No other matching jobs found.</p>`;
+        
+        
+  
+          Swal.fire({
+            icon: 'success',
+            title: 'Application Submitted!',
+            html: `
+              <div style="text-align: left; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem;">
+                <p><strong>Matching Score:</strong> <span style="color:#007bff;">${score}%</span></p>
+                <p><strong>Missing Skills:</strong></p>
+                ${feedbackList}
+                <p style="margin-top: 1rem;"><strong>Top 3 Job Suggestions:</strong></p>
+                ${suggestionsList}
+              </div>
+            `,
+            confirmButtonText: 'Close',
+            customClass: {
+              popup: 'swal2-rounded swal2-shadow',
+              confirmButton: 'btn btn-primary'
+            }
+          });
+          
+      },
+      error: (err) => {
+        console.error('Application submission error:', err);
+        alert('❌ Failed to submit application. Please try again later.');
+      }
+    });
+  
+      
   }
+  
   
   
 
@@ -209,5 +268,10 @@ export class JobDetailsComponent implements OnInit {
       this.router.navigate(['/chat'], { queryParams: { to: employerId } });
     }
   }
+
+  viewEmployerProfile(employerId: number): void {
+  this.router.navigate(['/backoffice/employer-profile', employerId]);
+}
+
   
 } 

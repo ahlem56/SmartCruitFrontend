@@ -5,14 +5,13 @@ import { LoginComponent } from './Shared/login/login.component';
 import { Sign } from 'crypto';
 import { SignupComponent } from './Shared/signup/signup.component';
 import { AboutUsComponent } from './Shared/about-us/about-us.component';
-import { JobOffersBackofficeComponent } from './Components/EmployerInterface/job-offers/job-offers.component';
+import { JobOffersEmployerInterfaceComponent } from './Components/EmployerInterface/job-offers/job-offers.component';
 import { JobDetailsComponent } from './Components/FrontOffice/job-details/job-details.component';
 import { ForgotPasswordComponent } from './Shared/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './Shared/reset-password/reset-password.component';
 import { ProfileComponent } from './Shared/profile/profile.component';
 import { OnboardingComponent } from './Shared/onboarding/onboarding.component';
-import { PostJobOffersComponent } from './Components/EmployerInterface/post-job-offers/post-job-offers.component';
-import { DashboardComponent } from './Components/BackOffice/dashboard/dashboard.component';
+import { DashboardComponent } from './Components/EmployerInterface/dashboard/dashboard.component';
 import { EmployerGuard } from './employer.guard';
 import { CandidateGuard } from './candidate.guard';
 import { AdminGuard } from './admin.guard';
@@ -21,6 +20,14 @@ import { CompanyComponent } from './Components/BackOffice/company/company.compon
 import { SupportComponent } from './Shared/support/support.component';
 import { EmployersComponent } from './Components/BackOffice/employers/employers.component';
 import { AuthGuard } from './auth.guard';
+import { SettingsComponent } from './Shared/settings/settings.component';
+import { NotificationComponent } from './Shared/notification/notification.component';
+import { FavoriteComponent } from './Shared/favorite/favorite.component';
+import { DashboardAdminComponent } from './Components/BackOffice/dashboard-admin/dashboard-admin.component';
+import { CandidatesBackofficeComponent } from './Components/BackOffice/candidates/candidates.component';
+import { InterviewComponent } from './Shared/interview/interview.component';
+import { NotFoundComponent } from './Shared/not-found/not-found.component';
+import { JobOffersBackofficeComponent } from './Components/BackOffice/job-offers-backoffice/job-offers-backoffice.component';
 
 export const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -35,13 +42,15 @@ export const routes: Routes = [
   
   { path: 'backoffice/company', component: CompanyComponent, canActivate: [AdminGuard] },
   { path: 'backoffice/employers', component: EmployersComponent, canActivate: [AdminGuard] },
-  { path: 'backoffice/dashboard', component: DashboardComponent, canActivate: [AdminGuard] },
-
+  { path: 'backoffice/dashboard', component: DashboardAdminComponent, canActivate: [AdminGuard] },
+  { path: 'backoffice/employer-profile/:userId', component: ProfileComponent },
+  { path: 'backoffice/candidates', component: CandidatesBackofficeComponent, canActivate: [AdminGuard] },
+  { path: 'backoffice/candidate-profile/:userId', component: ProfileComponent, canActivate: [AdminGuard] },
+  { path: 'backoffice/job-offers', component: JobOffersBackofficeComponent, canActivate: [AdminGuard] },
 
 
   { path: 'employer/dashboard', component: DashboardComponent, canActivate: [EmployerGuard] },
-  { path: 'employer/job-offers', component: JobOffersBackofficeComponent, canActivate: [EmployerGuard] },
-  { path: 'employer/post-job-offers', component: PostJobOffersComponent, canActivate: [EmployerGuard] },
+  { path: 'employer/job-offers', component: JobOffersEmployerInterfaceComponent, canActivate: [EmployerGuard] },
   { path: 'employer/job-offers/:id/candidates',loadComponent: () => import('./Components/EmployerInterface/candidates/candidates.component').then(m => m.CandidatesComponent),canActivate: [EmployerGuard]},  
 
 
@@ -54,5 +63,10 @@ export const routes: Routes = [
   { path: 'onboarding', component: OnboardingComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'support', component: SupportComponent },
+  { path: 'settings', component : SettingsComponent },
+  { path: 'notifications', component: NotificationComponent },
+  { path: 'favorites', component: FavoriteComponent },
+  { path: 'interviews', component: InterviewComponent },
+  { path: '**', component: NotFoundComponent },
 
 ]

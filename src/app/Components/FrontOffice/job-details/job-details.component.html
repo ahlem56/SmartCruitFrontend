@@ -29,7 +29,7 @@
       <div class="job-header">
         <div class="job-title-section">
           <h1>{{ jobOffer.title }}</h1>
-          <p class="company-name">{{ jobOffer.company }}</p>
+          <p class="company-name">{{ jobOffer.company?.name }}</p>
         </div>
         <div class="job-badges">
           <span class="status-badge" [class]="getStatusColor(jobOffer.status)">
@@ -166,27 +166,42 @@
   <h2>Posted By</h2>
 
   <div class="employer-company-wrapper">
+
+    <!-- Employer Info -->
     <div *ngIf="jobOffer.employer" class="employer-box">
+      <!-- ✅ Employer Avatar -->
       <img
-        *ngIf="jobOffer.employer.profilePictureUrl"
-        [src]="jobOffer.employer.profilePictureUrl"
+        [src]="jobOffer.employer.profilePictureUrl || 'assets/FrontOffice/images/default.avif'"
         alt="Employer Avatar"
         class="employer-avatar-lg"
       />
+
       <div class="employer-details">
         <h3>{{ jobOffer.employer.fullName || 'Employer #' + jobOffer.employer.userId }}</h3>
         <p><strong>Email:</strong> {{ jobOffer.employer.email }}</p>
-        <p><strong>Industry:</strong> {{ jobOffer.employer.industry }}</p>
-        <p><strong>Contact:</strong> {{ jobOffer.employer.contact }}</p>
+        <p><strong>Industry:</strong> {{ jobOffer.employer.industry || 'N/A' }}</p>
+        <p><strong>Contact:</strong> {{ jobOffer.employer.contact || 'N/A' }}</p>
+
+        <button class="view-profile-btn" (click)="viewEmployerProfile(jobOffer.employer.userId)">
+          <i class="fas fa-user"></i> View Employer Profile
+        </button>
       </div>
     </div>
 
+    <!-- Company Info -->
     <div *ngIf="jobOffer.company" class="company-box">
+      <!-- ✅ Company Logo -->
+      <img
+        *ngIf="jobOffer.company.logoUrl"
+        [src]="jobOffer.company.logoUrl"
+        alt="Company Logo"
+        class="company-logo"
+      />
       <h3>{{ jobOffer.company.name }}</h3>
       <p>{{ jobOffer.company.description }}</p>
-      <p><strong>Address:</strong> {{ jobOffer.company.address }}</p>
-      <p><strong>Email:</strong> {{ jobOffer.company.contactEmail }}</p>
-      <p><strong>Phone:</strong> {{ jobOffer.company.contactPhone }}</p>
+      <p><strong>Address:</strong> {{ jobOffer.company.address || 'N/A' }}</p>
+      <p><strong>Email:</strong> {{ jobOffer.company.contactEmail || 'N/A' }}</p>
+      <p><strong>Phone:</strong> {{ jobOffer.company.contactPhone || 'N/A' }}</p>
 
       <div class="social-links">
         <a *ngIf="jobOffer.company.linkedInUrl" [href]="jobOffer.company.linkedInUrl" target="_blank" class="linkedin">
@@ -202,15 +217,12 @@
     </div>
   </div>
 
-  <button
-  class="chat-btn"
-  *ngIf="jobOffer?.employer?.userId"
-  (click)="messageEmployer()"
->
-  <i class="fas fa-comments"></i> Message Employer
-</button>
-
+  <!-- Chat button -->
+  <button class="chat-btn" *ngIf="jobOffer?.employer?.userId" (click)="messageEmployer()">
+    <i class="fas fa-comments"></i> Message Employer
+  </button>
 </div>
+
 
 
         </div>

@@ -78,7 +78,7 @@
               <i class="fas fa-building"></i>
             </div>
             <div class="stat-content">
-              <span class="stat-number">500+</span>
+              <span class="stat-number">{{ totalCompanies }}</span>
               <span class="stat-label">Top Companies</span>
             </div>
           </div>
@@ -87,7 +87,7 @@
               <i class="fas fa-users"></i>
             </div>
             <div class="stat-content">
-              <span class="stat-number">10K+</span>
+              <span class="stat-number">{{ totalCandidates }}</span>
               <span class="stat-label">Job Seekers</span>
             </div>
           </div>
@@ -103,9 +103,8 @@
         <!-- Enhanced Filters Sidebar -->
         <aside class="filters-sidebar">
           <div class="filter-header">
-            <h3><i class="fas fa-filter"></i> Smart Filters</h3>
-            <button class="clear-filters-btn" (click)="clearAllFilters()">
-              <i class="fas fa-times"></i>
+            <h3> Smart Filters</h3>
+            <button class="clear-filters-btn" (click)="clearAllFilters()">  
               Clear All
             </button>
           </div>
@@ -113,7 +112,7 @@
           <div class="filter-section">
             <!-- Job Type Filter -->
             <div class="filter-group">
-              <h4><i class="fas fa-briefcase"></i> Job Type</h4>
+              <h4> Job Type</h4>
               <div class="filter-options">
                 <label *ngFor="let type of jobTypes" class="checkbox-item">
                   <input type="checkbox" [value]="type" (change)="toggleTypeFilter(type)" [checked]="typeFilters.includes(type)" />
@@ -125,22 +124,22 @@
             
             <!-- Salary Range Filter -->
             <div class="filter-group">
-              <h4><i class="fas fa-dollar-sign"></i> Salary Range</h4>
+              <h4>Salary Range</h4>
               <div class="salary-inputs">
                 <div class="salary-input">
                   <label>Min</label>
-                  <input type="number" placeholder="$0" [(ngModel)]="salaryMin" (input)="onSearch()" />
+                  <input type="number" placeholder="TND 0" [(ngModel)]="salaryMin" (input)="onSearch()" />
                 </div>
                 <div class="salary-input">
                   <label>Max</label>
-                  <input type="number" placeholder="$200K+" [(ngModel)]="salaryMax" (input)="onSearch()" />
+                  <input type="number" placeholder="TND 200K+" [(ngModel)]="salaryMax" (input)="onSearch()" />
                 </div>
               </div>
             </div>
             
             <!-- Experience Level Filter -->
             <div class="filter-group">
-              <h4><i class="fas fa-chart-line"></i> Experience</h4>
+              <h4> Experience</h4>
               <div class="filter-options">
                 <label *ngFor="let exp of experienceLevels" class="checkbox-item">
                   <input type="checkbox" [value]="exp" (change)="toggleExperienceFilter(exp)" [checked]="experienceFilters.includes(exp)" />
@@ -152,7 +151,7 @@
             
             <!-- Education Level Filter -->
             <div class="filter-group">
-              <h4><i class="fas fa-graduation-cap"></i> Education</h4>
+              <h4> Education</h4>
               <div class="filter-options">
                 <label *ngFor="let edu of educationLevels" class="checkbox-item">
                   <input type="checkbox" [value]="edu" (change)="toggleEducationFilter(edu)" [checked]="educationFilters.includes(edu)" />
@@ -177,12 +176,13 @@
             
             <div class="listings-controls">
               <div class="sort-controls">
-                <select class="sort-select">
-                  <option>Most Recent</option>
-                  <option>Salary: High to Low</option>
-                  <option>Salary: Low to High</option>
-                  <option>Experience Level</option>
+                <select class="sort-select" [(ngModel)]="selectedSortOption" (ngModelChange)="onSortChange()">
+                  <option value="Most Recent">Most Recent</option>
+                  <option value="Salary: High to Low">Salary: High to Low</option>
+                  <option value="Salary: Low to High">Salary: Low to High</option>
+                  <option value="Experience Level">Experience Level</option>
                 </select>
+                
               </div>
               
               <div class="view-toggle">
@@ -229,17 +229,9 @@
                   <div class="company-details">
                     <h3 class="job-title">{{ job.title }}</h3>
                     <p class="company-name">
-                      <i class="fas fa-building"></i>
                       {{ job.company?.name || 'Unknown Company' }}
                     </p>
-                    <div class="company-rating">
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="far fa-star"></i>
-                      <span>(4.2)</span>
-                    </div>
+                  
                   </div>
                 </div>
                 
@@ -258,7 +250,7 @@
                   </div>
                   <div class="meta-item">
                     <i class="fas fa-dollar-sign"></i>
-                    <span>${{ job.salary | number:'1.0-0' }}</span>
+                    <span>TND {{ job.salary | number:'1.0-0' }}</span>
                   </div>
                   <div class="meta-item">
                     <i class="fas fa-calendar-alt"></i>
@@ -284,20 +276,13 @@
                   {{ job.description | slice:0:120 }}...
                 </p>
                 
-                <div class="job-benefits">
-                  <span class="benefit-tag">
-                    <i class="fas fa-medal"></i>
-                    Competitive Salary
-                  </span>
-                  <span class="benefit-tag">
-                    <i class="fas fa-heartbeat"></i>
-                    Health Insurance
-                  </span>
-                  <span class="benefit-tag">
-                    <i class="fas fa-home"></i>
-                    Remote Work
+                <div class="job-benefits" *ngIf="job.benefits && job.benefits.length > 0">
+                  <span class="benefit-tag" *ngFor="let benefit of job.benefits">
+                    <i class="fas fa-gift"></i>
+                    {{ benefit }}
                   </span>
                 </div>
+                
               </div>
 
               <!-- Card Footer -->
@@ -307,9 +292,10 @@
                   <span>Apply Now</span>
                 </button>
                 <button class="save-btn" [class.saved]="isJobSaved(job.jobOfferId)" (click)="toggleJobSaved(job.jobOfferId)">
-                  <i class="far fa-heart" *ngIf="!isJobSaved(job.jobOfferId)"></i>
-                  <i class="fas fa-heart" *ngIf="isJobSaved(job.jobOfferId)"></i>
-                </button>
+  <i class="far fa-heart" *ngIf="!isJobSaved(job.jobOfferId)"></i>
+  <i class="fas fa-heart" *ngIf="isJobSaved(job.jobOfferId)"></i>
+</button>
+
                 <button class="share-btn">
                   <i class="fas fa-share-alt"></i>
                 </button>

@@ -4,7 +4,6 @@
     <div class="header-content">
       <div class="header-left">
         <h1 class="page-title">
-          <i class="fas fa-building"></i>
           Company Management
         </h1>
         <p class="page-subtitle">Manage and organize your company profiles with ease</p>
@@ -22,20 +21,19 @@
   <div class="content-section">
     <div class="section-header">
       <h2 class="section-title">
-        <i class="fas fa-list-ul"></i>
         Companies Directory
       </h2>
       <div class="section-controls">
-        <div class="search-container">
-          <i class="fas fa-search search-icon"></i>
-          <input 
-            type="text" 
-            class="search-input" 
-            placeholder="Search companies by name, industry, or description..." 
-            [(ngModel)]="searchTerm"
-          >
-        </div>
-        <div class="filter-controls">
+        <div class="search-filter-group">
+          <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input 
+              type="text" 
+              class="search-input" 
+              placeholder="Search companies by name, industry, or description..." 
+              [(ngModel)]="searchTerm"
+            >
+          </div>
           <select class="filter-select">
             <option value="">All Industries</option>
             <option value="technology">Technology</option>
@@ -446,7 +444,6 @@
   <!-- Company Details Modal -->
   <div class="modal-overlay" *ngIf="showCompanyDetails" (click)="closeDetailsModal()">
     <div class="details-modal-container" (click)="$event.stopPropagation()">
-      <!-- Modal Header -->
       <div class="details-modal-header">
         <div class="company-header-info">
           <div class="company-logo-large">
@@ -467,242 +464,133 @@
           <i class="fas fa-times"></i>
         </button>
       </div>
-
-      <!-- Modal Content -->
       <div class="details-modal-content">
         <div class="details-layout">
-          <!-- Left Column - Main Information -->
           <div class="details-main">
-            <!-- Company Overview -->
-            <div class="details-section">
-              <div class="section-header">
-                <i class="fas fa-info-circle"></i>
-                <h3>Company Overview</h3>
-              </div>
-              <div class="overview-content">
-                <p class="company-description-full" *ngIf="selectedCompany.description">
-                  {{ selectedCompany.description }}
-                </p>
-                <p class="no-description" *ngIf="!selectedCompany.description">
-                  No description available for this company.
-                </p>
-              </div>
-            </div>
-
-            <!-- Contact Information -->
-            <div class="details-section">
-              <div class="section-header">
-                <i class="fas fa-address-book"></i>
-                <h3>Contact Information</h3>
-              </div>
-              <div class="contact-grid">
-                <div class="contact-item" *ngIf="selectedCompany.contactEmail">
-                  <div class="contact-icon">
-                    <i class="fas fa-envelope"></i>
+            <div class="details-row">
+              <div class="details-col details-col-main">
+                <div class="details-section">
+                  <div class="section-header">Company Overview</div>
+                  <div class="overview-content">
+                    <p class="company-description-full" *ngIf="selectedCompany.description">
+                      {{ selectedCompany.description }}
+                    </p>
+                    <p class="no-description" *ngIf="!selectedCompany.description">
+                      No description available for this company.
+                    </p>
                   </div>
-                  <div class="contact-details">
-                    <label>Email Address</label>
-                    <a [href]="'mailto:' + selectedCompany.contactEmail" class="contact-link">
-                      {{ selectedCompany.contactEmail }}
+                </div>
+                <div class="details-section">
+                  <div class="section-header">Contact Information</div>
+                  <div class="contact-grid">
+                    <div class="contact-item" *ngIf="selectedCompany.contactEmail">
+                      <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                      <div class="contact-details">
+                        <label>Email Address</label>
+                        <a [href]="'mailto:' + selectedCompany.contactEmail" class="contact-link">
+                          {{ selectedCompany.contactEmail }}
+                        </a>
+                      </div>
+                    </div>
+                    <div class="contact-item" *ngIf="selectedCompany.contactPhone">
+                      <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                      <div class="contact-details">
+                        <label>Phone Number</label>
+                        <a [href]="'tel:' + selectedCompany.contactPhone" class="contact-link">
+                          {{ selectedCompany.contactPhone }}
+                        </a>
+                      </div>
+                    </div>
+                    <div class="contact-item" *ngIf="selectedCompany.address">
+                      <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                      <div class="contact-details">
+                        <label>Address</label>
+                        <span class="contact-text">{{ selectedCompany.address }}</span>
+                      </div>
+                    </div>
+                    <div class="contact-item" *ngIf="selectedCompany.website">
+                      <div class="contact-icon"><i class="fas fa-globe"></i></div>
+                      <div class="contact-details">
+                        <label>Website</label>
+                        <a [href]="selectedCompany.website" target="_blank" class="contact-link">
+                          {{ selectedCompany.website }}
+                          <i class="fas fa-external-link-alt"></i>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="details-section" *ngIf="selectedCompany.linkedInUrl || selectedCompany.twitterUrl || selectedCompany.facebookUrl">
+                  <div class="section-header">Social Media</div>
+                  <div class="social-grid">
+                    <a *ngIf="selectedCompany.linkedInUrl" [href]="selectedCompany.linkedInUrl" target="_blank" class="social-card linkedin">
+                      <div class="social-icon"><i class="fab fa-linkedin"></i></div>
+                      <div class="social-info">
+                        <span class="social-platform">LinkedIn</span>
+                        <span class="social-url">{{ selectedCompany.linkedInUrl }}</span>
+                      </div>
+                      <i class="fas fa-external-link-alt social-external"></i>
+                    </a>
+                    <a *ngIf="selectedCompany.twitterUrl" [href]="selectedCompany.twitterUrl" target="_blank" class="social-card twitter">
+                      <div class="social-icon"><i class="fab fa-twitter"></i></div>
+                      <div class="social-info">
+                        <span class="social-platform">Twitter</span>
+                        <span class="social-url">{{ selectedCompany.twitterUrl }}</span>
+                      </div>
+                      <i class="fas fa-external-link-alt social-external"></i>
+                    </a>
+                    <a *ngIf="selectedCompany.facebookUrl" [href]="selectedCompany.facebookUrl" target="_blank" class="social-card facebook">
+                      <div class="social-icon"><i class="fab fa-facebook"></i></div>
+                      <div class="social-info">
+                        <span class="social-platform">Facebook</span>
+                        <span class="social-url">{{ selectedCompany.facebookUrl }}</span>
+                      </div>
+                      <i class="fas fa-external-link-alt social-external"></i>
                     </a>
                   </div>
                 </div>
-                
-                <div class="contact-item" *ngIf="selectedCompany.contactPhone">
-                  <div class="contact-icon">
-                    <i class="fas fa-phone"></i>
-                  </div>
-                  <div class="contact-details">
-                    <label>Phone Number</label>
-                    <a [href]="'tel:' + selectedCompany.contactPhone" class="contact-link">
-                      {{ selectedCompany.contactPhone }}
-                    </a>
+              </div>
+              <div class="details-col details-col-side">
+                <div class="details-section">
+                  <div class="section-header">Quick Stats</div>
+                  <div class="stats-grid professional">
+                    <div class="stat-item">
+                      <div class="stat-label">Status</div>
+                      <div class="stat-value">Active</div>
+                    </div>
+                    <div class="stat-item">
+                      <div class="stat-label">Created</div>
+                      <div class="stat-value">{{ selectedCompany.createdAt ? (selectedCompany.createdAt | date:'short') : 'N/A' }}</div>
+                    </div>
+                    <div class="stat-item">
+                      <div class="stat-label">Last Updated</div>
+                      <div class="stat-value">{{ selectedCompany.updatedAt ? (selectedCompany.updatedAt | date:'short') : 'N/A' }}</div>
+                    </div>
                   </div>
                 </div>
-                
-                <div class="contact-item" *ngIf="selectedCompany.address">
-                  <div class="contact-icon">
-                    <i class="fas fa-map-marker-alt"></i>
-                  </div>
-                  <div class="contact-details">
-                    <label>Address</label>
-                    <span class="contact-text">{{ selectedCompany.address }}</span>
-                  </div>
-                </div>
-                
-                <div class="contact-item" *ngIf="selectedCompany.website">
-                  <div class="contact-icon">
-                    <i class="fas fa-globe"></i>
-                  </div>
-                  <div class="contact-details">
-                    <label>Website</label>
-                    <a [href]="selectedCompany.website" target="_blank" class="contact-link">
-                      {{ selectedCompany.website }}
-                      <i class="fas fa-external-link-alt"></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Social Media -->
-            <div class="details-section" *ngIf="selectedCompany.linkedInUrl || selectedCompany.twitterUrl || selectedCompany.facebookUrl">
-              <div class="section-header">
-                <i class="fas fa-share-alt"></i>
-                <h3>Social Media</h3>
-              </div>
-              <div class="social-grid">
-                <a *ngIf="selectedCompany.linkedInUrl" [href]="selectedCompany.linkedInUrl" target="_blank" class="social-card linkedin">
-                  <div class="social-icon">
-                    <i class="fab fa-linkedin"></i>
-                  </div>
-                  <div class="social-info">
-                    <span class="social-platform">LinkedIn</span>
-                    <span class="social-url">{{ selectedCompany.linkedInUrl }}</span>
-                  </div>
-                  <i class="fas fa-external-link-alt social-external"></i>
-                </a>
-                
-                <a *ngIf="selectedCompany.twitterUrl" [href]="selectedCompany.twitterUrl" target="_blank" class="social-card twitter">
-                  <div class="social-icon">
-                    <i class="fab fa-twitter"></i>
-                  </div>
-                  <div class="social-info">
-                    <span class="social-platform">Twitter</span>
-                    <span class="social-url">{{ selectedCompany.twitterUrl }}</span>
-                  </div>
-                  <i class="fas fa-external-link-alt social-external"></i>
-                </a>
-                
-                <a *ngIf="selectedCompany.facebookUrl" [href]="selectedCompany.facebookUrl" target="_blank" class="social-card facebook">
-                  <div class="social-icon">
-                    <i class="fab fa-facebook"></i>
-                  </div>
-                  <div class="social-info">
-                    <span class="social-platform">Facebook</span>
-                    <span class="social-url">{{ selectedCompany.facebookUrl }}</span>
-                  </div>
-                  <i class="fas fa-external-link-alt social-external"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Column - Statistics & Actions -->
-          <div class="details-sidebar">
-            <!-- Quick Stats -->
-            <div class="details-section">
-              <div class="section-header">
-                <i class="fas fa-chart-bar"></i>
-                <h3>Quick Stats</h3>
-              </div>
-              <div class="stats-grid">
-                <div class="stat-item">
-                  <div class="stat-icon">
-                    <i class="fas fa-calendar-alt"></i>
-                  </div>
-                  <div class="stat-content">
-                    <span class="stat-value">Active</span>
-                    <span class="stat-label">Status</span>
-                  </div>
-                </div>
-                
-                <div class="stat-item">
-                  <div class="stat-icon">
-                    <i class="fas fa-clock"></i>
-                  </div>
-                  <div class="stat-content">
-                    <span class="stat-value">{{ selectedCompany.createdAt ? (selectedCompany.createdAt | date:'short') : 'N/A' }}</span>
-                    <span class="stat-label">Created</span>
-                  </div>
-                </div>
-                
-                <div class="stat-item">
-                  <div class="stat-icon">
-                    <i class="fas fa-edit"></i>
-                  </div>
-                  <div class="stat-content">
-                    <span class="stat-value">{{ selectedCompany.updatedAt ? (selectedCompany.updatedAt | date:'short') : 'N/A' }}</span>
-                    <span class="stat-label">Last Updated</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="details-section">
-              <div class="section-header">
-                <i class="fas fa-tools"></i>
-                <h3>Quick Actions</h3>
-              </div>
-              <div class="actions-grid">
-                <button class="action-card edit-action" (click)="openCompanyModal(true, selectedCompany)">
-                  <div class="action-icon">
-                    <i class="fas fa-edit"></i>
-                  </div>
-                  <span class="action-text">Edit Company</span>
-                </button>
-                
-                <button class="action-card view-jobs" (click)="viewCompanyJobs(selectedCompany)">
-                  <div class="action-icon">
-                    <i class="fas fa-briefcase"></i>
-                  </div>
-                  <span class="action-text">View Jobs</span>
-                </button>
-                
-                <button class="action-card export-data" (click)="exportCompanyData(selectedCompany)">
-                  <div class="action-icon">
-                    <i class="fas fa-download"></i>
-                  </div>
-                  <span class="action-text">Export Data</span>
-                </button>
-                
-                <button class="action-card delete-action" (click)="deleteCompany(selectedCompany.companyId)">
-                  <div class="action-icon">
-                    <i class="fas fa-trash"></i>
-                  </div>
-                  <span class="action-text">Delete Company</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Company Insights -->
-            <div class="details-section">
-              <div class="section-header">
-                <i class="fas fa-lightbulb"></i>
-                <h3>Company Insights</h3>
-              </div>
-              <div class="insights-content">
-                <div class="insight-item">
-                  <div class="insight-icon">
-                    <i class="fas fa-industry"></i>
-                  </div>
-                  <div class="insight-text">
-                    <strong>Industry:</strong> {{ selectedCompany.industry || 'Not specified' }}
-                  </div>
-                </div>
-                
-                <div class="insight-item">
-                  <div class="insight-icon">
-                    <i class="fas fa-globe"></i>
-                  </div>
-                  <div class="insight-text">
-                    <strong>Online Presence:</strong> 
-                    <span class="presence-status" [class.active]="selectedCompany.website || selectedCompany.linkedInUrl || selectedCompany.twitterUrl || selectedCompany.facebookUrl">
-                      {{ (selectedCompany.website || selectedCompany.linkedInUrl || selectedCompany.twitterUrl || selectedCompany.facebookUrl) ? 'Active' : 'Limited' }}
-                    </span>
-                  </div>
-                </div>
-                
-                <div class="insight-item">
-                  <div class="insight-icon">
-                    <i class="fas fa-address-card"></i>
-                  </div>
-                  <div class="insight-text">
-                    <strong>Contact Info:</strong> 
-                    <span class="contact-status" [class.complete]="selectedCompany.contactEmail && selectedCompany.contactPhone">
-                      {{ (selectedCompany.contactEmail && selectedCompany.contactPhone) ? 'Complete' : 'Partial' }}
-                    </span>
+                <div class="details-section">
+                  <div class="section-header">Company Insights</div>
+                  <div class="insights-content">
+                    <div class="insight-item">
+                      <div class="insight-icon"><i class="fas fa-industry"></i></div>
+                      <div class="insight-text">Industry: {{ selectedCompany.industry || 'Not specified' }}</div>
+                    </div>
+                    <div class="insight-item">
+                      <div class="insight-icon"><i class="fas fa-globe"></i></div>
+                      <div class="insight-text">Online Presence:
+                        <span class="presence-status" [class.active]="selectedCompany.website || selectedCompany.linkedInUrl || selectedCompany.twitterUrl || selectedCompany.facebookUrl">
+                          {{ (selectedCompany.website || selectedCompany.linkedInUrl || selectedCompany.twitterUrl || selectedCompany.facebookUrl) ? 'Active' : 'Limited' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="insight-item">
+                      <div class="insight-icon"><i class="fas fa-address-card"></i></div>
+                      <div class="insight-text">Contact Info:
+                        <span class="contact-status" [class.complete]="selectedCompany.contactEmail && selectedCompany.contactPhone">
+                          {{ (selectedCompany.contactEmail && selectedCompany.contactPhone) ? 'Complete' : 'Partial' }}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

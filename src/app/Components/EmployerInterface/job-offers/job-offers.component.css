@@ -15,7 +15,7 @@
   align-items: center;
   margin-bottom: 2rem;
   padding: 1.5rem;
-  background: linear-gradient(135deg, #007bff 0%, #00c6ff 100%);
+  background: linear-gradient(135deg, #aed6ff 0%, #aed6ff 100%);
   border-radius: 12px;
   color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -37,7 +37,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #007bff;
+  background-color: #559fee;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -747,3 +747,68 @@
   color: #0056cc;
   text-decoration: underline;
 }
+
+.company-logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  margin-right: 12px;
+  border-radius: 8px;
+  background-color: #f0f4f8;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.company-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.modal-header.with-logo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.logo-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.modal-company-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  background-color: #f3f4f6;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.category-badge {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+.category-technology { background-color: #c3eafd; color: #055160; }
+.category-design { background-color: #ffe4e6; color: #9f1239; }
+.category-marketing { background-color: #fef3c7; color: #92400e; }
+.category-sales { background-color: #ede9fe; color: #5b21b6; }
+.category-education { background-color: #dcfce7; color: #065f46; }
+.category-healthcare { background-color: #fae8ff; color: #701a75; }

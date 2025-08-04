@@ -10,7 +10,7 @@ export class EmployerGuard implements CanActivate {
     const role = this.userService.getUserRole();
     if (role === 'employer') return true;
 
-    this.router.navigate(['/home']);
+    this.router.navigate(['/**']);
     return false;
   }
 }

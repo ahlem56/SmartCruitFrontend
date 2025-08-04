@@ -1,8 +1,9 @@
 <header class="main-header">
   <div class="container">
-    <div class="logo">
-      <img src="assets/FrontOffice/images/smartcruit.png" alt="SmartCruit Logo" />
-    </div>
+    <a class="logo" routerLink="/">
+  <img src="assets/FrontOffice/images/smartcruit.png" alt="SmartCruit Logo" />
+</a>
+
 
     <!-- Authenticated Navigation -->
     <ng-container *ngIf="(currentUser$ | async) as user; else publicHeader">
@@ -15,9 +16,17 @@
           <a routerLink="/backoffice/employers" routerLinkActive="active">
             Employers
           </a>
+          <a routerLink="/backoffice/candidates" routerLinkActive="active">
+            Candidates
+          </a>
           <a routerLink="/backoffice/company" routerLinkActive="active">
             Companies
           </a>
+
+          <a routerLink="/backoffice/job-offers" routerLinkActive="active">
+            Job Offers
+          </a>
+        
         </ng-container>
 
         <!-- EMPLOYER / CANDIDATE -->
@@ -30,14 +39,12 @@
             <a routerLink="/employer/job-offers" routerLinkActive="active">
               Job Offers
             </a>
-            <a href="#" routerLinkActive="active">
-              Reports
-            </a>
+           
           </ng-container>
 
           <!-- Candidate -->
           <ng-template #candidateNav>
-            <a routerLink="/home" routerLinkActive="active">
+            <a routerLink="/" routerLinkActive="active">
               Home
             </a>
             <a routerLink="/job-offers" routerLinkActive="active">
@@ -49,18 +56,21 @@
             <a routerLink="/aboutUs" routerLinkActive="active">
               About Us
             </a>
-            <a href="#" routerLinkActive="active">
-              Testimonials
-            </a>
+           
           </ng-template>
         </ng-template>
       </nav>
 
       <!-- Logged-In Dropdown -->
       <div class="user-bar">
-        <div class="notification-icon">
-          <i class="fas fa-bell"></i>
-        </div>
+       <div class="notification-icon">
+  <a routerLink="/notifications" routerLinkActive="active">
+    <i class="fas fa-bell"></i>
+    <span *ngIf="unreadCount > 0" class="notification-badge">{{ unreadCount }}</span>
+  </a>
+</div>
+
+
         <div class="user-dropdown">
           <div class="user-trigger">
             <img
@@ -73,31 +83,38 @@
           </div>
           <div class="dropdown-menu">
             <a routerLink="/profile">
-              <i class="fas fa-user"></i> 
               Profile
             </a>
             <a *ngIf="recipientId" [routerLink]="['/chat']" [queryParams]="{ to: recipientId }">
-              <i class="fas fa-comments"></i> 
               Messages
             </a>
-            
-            <a href="#">
-              <i class="fas fa-cog"></i> 
+             <!-- Favorites: show only if role is 'candidate' -->
+           <a *ngIf="user.role === 'candidate'" routerLink="/favorites">
+              Favorites
+           </a>
+           <a *ngIf="user.role === 'candidate' || user.role === 'employer'" routerLink="/interviews">
+  My Interviews
+  <span *ngIf="pendingInterviewCount > 0" class="badge">{{ pendingInterviewCount }}</span>
+</a>
+
+            <a href="/settings">
               Settings
             </a>
-            <a routerLink="/login" (click)="logout()">
-              <i class="fas fa-sign-out-alt"></i> 
-              Logout
-            </a>
+           
           </div>
+          
         </div>
+        <div class="logout-text" (click)="logout()" title="Logout">
+          Logout
+        </div>
+        
       </div>
     </ng-container>
 
     <!-- Public Header (Unauthenticated) -->
     <ng-template #publicHeader>
       <nav class="nav-links">
-        <a routerLink="/home" routerLinkActive="active">
+        <a routerLink="/" routerLinkActive="active">
           Home
         </a>
         <a routerLink="/job-offers" routerLinkActive="active">

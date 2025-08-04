@@ -68,163 +68,179 @@
           <p>Start your career journey today</p>
         </div>
         
-        <form class="artistic-form" (ngSubmit)="onSubmit()">
+        <form class="artistic-form" #form="ngForm" (ngSubmit)="onSubmit(form)">
           <!-- Full Name -->
           <div class="input-wrapper">
-            <div class="input-container" [class.error]="hasError('fullName')">
+            <div class="input-container" [class.error]="fullName.invalid && (fullName.touched || form.submitted)">
               <i class="fas fa-user input-icon"></i>
-              <input 
-                type="text" 
-                placeholder="Full Name" 
+              <input
+                type="text"
+                placeholder="Full Name"
                 [(ngModel)]="signupForm.fullName"
                 name="fullName"
-                required 
+                #fullName="ngModel"
+                required
+                minlength="2"
               />
               <div class="input-line"></div>
             </div>
-            <div class="error-message" *ngIf="hasError('fullName')">
-              {{ getErrorMessage('fullName') }}
+            <div class="error-message" *ngIf="fullName.invalid && (fullName.touched || form.submitted)">
+              <span *ngIf="fullName.errors?.['required']">Full name is required</span>
+              <span *ngIf="fullName.errors?.['minlength']">Must be at least 2 characters</span>
             </div>
           </div>
-          
+        
           <!-- Email -->
           <div class="input-wrapper">
-            <div class="input-container" [class.error]="hasError('email')">
+            <div class="input-container" [class.error]="email.invalid && (email.touched || form.submitted)">
               <i class="fas fa-envelope input-icon"></i>
-              <input 
-                type="email" 
-                placeholder="Email address" 
+              <input
+                type="email"
+                placeholder="Email address"
                 [(ngModel)]="signupForm.email"
                 name="email"
-                required 
+                #email="ngModel"
+                required
+                email
               />
               <div class="input-line"></div>
             </div>
-            <div class="error-message" *ngIf="hasError('email')">
-              {{ getErrorMessage('email') }}
+            <div class="error-message" *ngIf="email.invalid && (email.touched || form.submitted)">
+              <span *ngIf="email.errors?.['required']">Email is required</span>
+              <span *ngIf="email.errors?.['email']">Invalid email format</span>
             </div>
           </div>
-          
+        
           <!-- Password -->
           <div class="input-wrapper">
-            <div class="input-container" [class.error]="hasError('password')">
+            <div class="input-container" [class.error]="password.invalid && (password.touched || form.submitted)">
               <i class="fas fa-lock input-icon"></i>
-              <input 
+              <input
                 [type]="showPassword ? 'text' : 'password'"
-                placeholder="Password" 
+                placeholder="Password"
                 [(ngModel)]="signupForm.password"
                 name="password"
-                required 
+                #password="ngModel"
+                required
+                minlength="6"
               />
               <div class="input-line"></div>
-              <button 
-                type="button" 
-                class="toggle-password" 
-                (click)="togglePasswordVisibility()"
-              >
+              <button type="button" class="toggle-password" (click)="togglePasswordVisibility()">
                 <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
               </button>
             </div>
-            <div class="error-message" *ngIf="hasError('password')">
-              {{ getErrorMessage('password') }}
+            <div class="error-message" *ngIf="password.invalid && (password.touched || form.submitted)">
+              <span *ngIf="password.errors?.['required']">Password is required</span>
+              <span *ngIf="password.errors?.['minlength']">At least 6 characters</span>
             </div>
           </div>
-
+        
           <!-- Confirm Password -->
           <div class="input-wrapper">
-            <div class="input-container" [class.error]="hasError('confirmPassword')">
+            <div class="input-container">
               <i class="fas fa-lock input-icon"></i>
-              <input 
+              <input
                 [type]="showConfirmPassword ? 'text' : 'password'"
-                placeholder="Confirm Password" 
+                placeholder="Confirm Password"
                 [(ngModel)]="signupForm.confirmPassword"
                 name="confirmPassword"
-                required 
+                required
               />
               <div class="input-line"></div>
-              <button 
-                type="button" 
-                class="toggle-password" 
-                (click)="toggleConfirmPasswordVisibility()"
-              >
+              <button type="button" class="toggle-password" (click)="toggleConfirmPasswordVisibility()">
                 <i [class]="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
               </button>
             </div>
-            <div class="error-message" *ngIf="hasError('confirmPassword')">
-              {{ getErrorMessage('confirmPassword') }}
+            <div class="error-message" *ngIf="signupForm.password !== signupForm.confirmPassword && form.submitted">
+              Passwords do not match
             </div>
           </div>
-          
+        
           <!-- Address -->
           <div class="input-wrapper">
-            <div class="input-container" [class.error]="hasError('address')">
+            <div class="input-container" [class.error]="address.invalid && (address.touched || form.submitted)">
               <i class="fas fa-map-marker-alt input-icon"></i>
-              <input 
-                type="text" 
-                placeholder="Address" 
+              <input
+                type="text"
+                placeholder="Address"
                 [(ngModel)]="signupForm.address"
                 name="address"
-                required 
+                #address="ngModel"
+                required
               />
               <div class="input-line"></div>
             </div>
-            <div class="error-message" *ngIf="hasError('address')">
-              {{ getErrorMessage('address') }}
+            <div class="error-message" *ngIf="address.invalid && (address.touched || form.submitted)">
+              <span *ngIf="address.errors?.['required']">Address is required</span>
             </div>
           </div>
-          
+        
           <!-- Birth Date -->
           <div class="input-wrapper">
-            <div class="input-container" [class.error]="hasError('birthDate')">
+            <div class="input-container" [class.error]="birthDate.invalid && (birthDate.touched || form.submitted)">
               <i class="fas fa-calendar-alt input-icon"></i>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 [(ngModel)]="signupForm.birthDate"
                 name="birthDate"
-                required 
+                #birthDate="ngModel"
+                required
+                [max]="maxDate"
+
               />
               <div class="input-line"></div>
             </div>
-            <div class="error-message" *ngIf="hasError('birthDate')">
-              {{ getErrorMessage('birthDate') }}
+            <div class="error-message" *ngIf="birthDate.invalid && (birthDate.touched || form.submitted)">
+              <span *ngIf="birthDate.errors?.['required']">Birthdate is required</span>
             </div>
           </div>
-          
-          <!-- Phone Number -->
+        
+          <!-- Phone -->
           <div class="input-wrapper">
-            <div class="input-container" [class.error]="hasError('phone')">
+            <div class="input-container" [class.error]="phone.invalid && (phone.touched || form.submitted)">
               <i class="fas fa-phone input-icon"></i>
-              <input 
-                type="tel" 
-                placeholder="Phone Number" 
+              <input
+                type="tel"
+                placeholder="Phone Number"
                 [(ngModel)]="signupForm.phone"
                 name="phone"
-                required 
+                #phone="ngModel"
+                required
+                pattern="^[0-9]{8,20}$"
               />
               <div class="input-line"></div>
             </div>
-            <div class="error-message" *ngIf="hasError('phone')">
-              {{ getErrorMessage('phone') }}
+            <div class="error-message" *ngIf="phone.invalid && (phone.touched || form.submitted)">
+              <span *ngIf="phone.errors?.['required']">Phone number is required</span>
+              <span *ngIf="phone.errors?.['pattern']">Phone must be 8 to 20 digits</span>
             </div>
           </div>
-          
-          <!-- Terms and Conditions -->
+        
+          <!-- Terms -->
           <div class="form-options">
-            <label class="checkbox-wrapper" [class.error]="hasError('termsAccepted')">
-              <input 
-                type="checkbox" 
+            <label class="checkbox-wrapper">
+              <input
+                type="checkbox"
                 [(ngModel)]="signupForm.termsAccepted"
                 name="termsAccepted"
-                required 
+                #termsAccepted="ngModel"
+                required
               />
               <span class="checkmark"></span>
-              I agree to the  <a href="#" class="terms-link"> Terms & Conditions</a>
+              I agree to the <a href="#" class="terms-link"> Terms & Conditions</a>
             </label>
-            <div class="error-message" *ngIf="hasError('termsAccepted')">
-              {{ getErrorMessage('termsAccepted') }}
+            <div class="error-message" *ngIf="termsAccepted.invalid && (termsAccepted.touched || form.submitted)">
+              You must accept the terms
             </div>
           </div>
-          
+        <!-- Server-side error messages -->
+<div class="server-error-message" *ngIf="serverErrors.length > 0">
+  <div *ngFor="let error of serverErrors" class="error-text">
+    <i class="fas fa-exclamation-circle"></i> {{ error }}
+  </div>
+</div>
+
+          <!-- Submit Button -->
           <button type="submit" class="submit-btn" [disabled]="isLoading">
             <span *ngIf="!isLoading">Create Account</span>
             <span *ngIf="isLoading" class="loading-text">
@@ -234,6 +250,7 @@
             <div class="btn-glow"></div>
           </button>
         </form>
+        
         <div class="signup-prompt">
           <p>Already have an account? <a (click)="goToLogin()" class="signup-link">Sign in</a></p>
         </div>

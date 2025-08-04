@@ -1,1 +1,36 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #222222;
+  --card-bg: #f9fbff;
+  --accent-color: #007bff;
+  --border-color: #e0e0e0;
+}
+
+.dark-mode {
+  --bg-color: #121212;
+  --text-color: #f1f1f1;
+  --card-bg: #1e1e1e;
+  --accent-color: #59a3f3;
+  --border-color: #333;
+}
+
+/* Apply variables */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.profile-card,
+.profile-page-container,
+.modal-body,
+input,
+textarea,
+button {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+a {
+  color: var(--accent-color);
+}

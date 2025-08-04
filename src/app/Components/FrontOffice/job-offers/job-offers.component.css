@@ -425,10 +425,9 @@ body {
 
 /* ========== Enhanced Filters Sidebar ========== */
 .filters-sidebar {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  background: linear-gradient(135deg, #f5f8fc 0%, #f8fafc 100%);
   border-radius: 20px;
   padding: 32px;
-  box-shadow: 0 10px 30px rgba(0, 123, 255, 0.1);
   position: sticky;
   top: 24px;
   height: fit-content;
@@ -583,13 +582,15 @@ body {
 }
 
 .salary-input input {
-  padding: 12px 16px;
+  padding: 12px 1px;
   border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 14px;
   transition: all 0.3s ease;
   background: white;
+  width: 100%; /* ✅ ensures input stays within its grid column */
 }
+
 
 .salary-input input:focus {
   outline: none;
@@ -754,7 +755,7 @@ body {
   border-radius: 20px;
   padding: 32px;
   box-shadow: 0 8px 25px rgba(0, 123, 255, 0.1);
-  border: 1px solid rgba(0, 123, 255, 0.1);
+  border: 1px solid rgba(3, 117, 238, 0.1);
   transition: all 0.4s ease;
   position: relative;
   overflow: hidden;
@@ -783,9 +784,8 @@ body {
 }
 
 .job-card.featured {
-  border: 2px solid #007bff;
-  background: linear-gradient(135deg, #ffffff 0%, #e3f0ff 100%);
-  box-shadow: 0 15px 35px rgba(0, 123, 255, 0.2);
+  border: 2px solid #c5cbda;
+  background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
 }
 
 .job-card.featured::before {
@@ -855,35 +855,25 @@ body {
 }
 
 .job-title {
-  font-size: 1.25rem;
-  margin-bottom: 8px;
-  color: var(--text-primary);
+  font-size: 1.5rem;
   font-weight: 700;
+  color: var(--primary-dark);
+  margin-bottom: 6px;
   line-height: 1.3;
+  font-family: 'Inter', sans-serif;
 }
 
 .company-name {
+  font-size: 0.95rem;
   color: var(--text-secondary);
-  font-size: 14px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   display: flex;
   align-items: center;
   gap: 6px;
   font-weight: 500;
 }
 
-.company-rating {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: var(--text-muted);
-}
 
-.company-rating i {
-  color: var(--accent-color);
-  font-size: 10px;
-}
 
 .job-badge {
   padding: 8px 16px;
@@ -960,10 +950,12 @@ body {
 }
 
 .job-description {
-  color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 0.95rem;
   line-height: 1.6;
-  margin-bottom: 20px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  font-style: italic;
+  font-weight: 400;
 }
 
 .job-benefits {

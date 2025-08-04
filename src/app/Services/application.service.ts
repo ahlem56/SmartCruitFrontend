@@ -34,5 +34,17 @@ export class ApplicationService {
     return this.http.get<any[]>(`http://localhost:8089/SmartCruit/application/byJobOffer/${jobOfferId}`);
   }
   
+  acceptApplication(applicationId: number): Observable<any> {
+  return this.http.put(`${this.apiUrl}/accept/${applicationId}`, {});
+}
+
+rejectApplication(applicationId: number): Observable<any> {
+  return this.http.put(`${this.apiUrl}/reject/${applicationId}`, {});
+}
+
+getApplicationsByCandidate(candidateId: number): Observable<any[]> {
+  return this.http.get<any[]>(`http://localhost:8089/SmartCruit/application/byCandidate/${candidateId}`);
+}
+
   
 }

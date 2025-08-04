@@ -1,0 +1,38 @@
+<div class="notification-wrapper">
+  <h2 class="page-title">Notifications</h2>
+  <div class="tabs">
+    <button 
+      [class.active]="activeTab === 'unread'" 
+      (click)="setTab('unread')">
+      Unread <span *ngIf="unreadCount > 0" class="badge">{{ unreadCount }}</span>
+    </button>
+    <button 
+      [class.active]="activeTab === 'read'" 
+      (click)="setTab('read')">
+      Read
+    </button>
+    <button 
+      [class.active]="activeTab === 'all'" 
+      (click)="setTab('all')">
+      All
+    </button>
+  </div>
+
+  
+  <div *ngIf="notifications.length === 0" class="no-notifications">
+    <p>No notifications at the moment.</p>
+  </div>
+
+  <div *ngFor="let n of filteredNotifications()" 
+  class="notification-card"
+  [class.unread]="!n.read"
+  (click)="markAsRead(n.id)">
+<img [src]="n.avatarUrl" class="avatar" (error)="n.avatarUrl='https://via.placeholder.com/40x40'" />
+<div class="notification-content">
+ <p class="message" [innerHTML]="highlightLatest(n.message)"></p>
+ <span class="timestamp">{{ n.timestamp | date:'short' }}</span>
+</div>
+<button class="dismiss-btn" (click)="dismissNotification(n.id, $event)">×</button>
+</div>
+
+</div>

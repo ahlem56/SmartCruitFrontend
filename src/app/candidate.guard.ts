@@ -18,7 +18,7 @@ export class CandidateGuard implements CanActivate {
     }
 
     // 🚫 Not authorized → redirect to home or login
-    this.router.navigate(['/home']);
+    this.router.navigate(['/**']);
     return false;
   }
 }

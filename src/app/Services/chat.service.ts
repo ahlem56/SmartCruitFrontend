@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Client, IMessage, Stomp } from '@stomp/stompjs';
+import { Client, IMessage } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 
 interface Message {
   senderId: string;
   senderName: string;
   recipientId: string;
   content: string;
-  timestamp: string; // <- changed from Date to string
+  timestamp: string;
   type: 'text' | 'image' | 'file';
 }
 
@@ -17,64 +17,69 @@ export class ChatService {
   private stompClient: Client;
   private messageSubject = new Subject<Message>();
   private isConnected = false;
-  private pendingMessages: Message[] = [];
-  private pendingSubscriptions: string[] = [];
+  private messageBuffer: Message[] = [];
+  private subscriptionBuffer: string[] = [];
 
   constructor() {
     this.stompClient = new Client({
       webSocketFactory: () => new SockJS('http://localhost:8089/SmartCruit/ws-chat'),
-      reconnectDelay: 5000,
-      onConnect: () => {
-        console.log('✅ Connected to WebSocket');
-        this.isConnected = true;
-
-        // Subscribe to all queued subscriptions
-        this.pendingSubscriptions.forEach(userId => this._subscribe(userId));
-        this.pendingSubscriptions = [];
-
-        // Flush buffered messages
-        this.pendingMessages.forEach(msg => this._send(msg));
-        this.pendingMessages = [];
+      connectHeaders: {
+        Authorization: `Bearer ${localStorage.getItem('token') || ''}`
       },
-      debug: (str) => console.log(str),
+      reconnectDelay: 5000,
+      debug: (msg: string) => console.log(`[STOMP] ${msg}`),
+      onConnect: () => this.handleConnectionEstablished()
     });
-
+    
     this.stompClient.activate();
   }
 
-  subscribeToMessages(userId: string) {
+  private handleConnectionEstablished(): void {
+    console.log('✅ WebSocket connected');
+    this.isConnected = true;
+
+    // Restore pending subscriptions
+    this.subscriptionBuffer.forEach(userId => this.subscribeToUser(userId));
+    this.subscriptionBuffer = [];
+
+    // Send queued messages
+    this.messageBuffer.forEach(message => this.publishMessage(message));
+    this.messageBuffer = [];
+  }
+
+  subscribeToMessages(userId: string): void {
     if (this.isConnected) {
-      this._subscribe(userId);
+      this.subscribeToUser(userId);
     } else {
-      console.warn('🕐 WebSocket not connected yet, queuing subscription...');
-      this.pendingSubscriptions.push(userId);
+      console.warn('⏳ WebSocket not connected. Subscription queued.');
+      this.subscriptionBuffer.push(userId);
     }
   }
 
-  private _subscribe(userId: string) {
+  private subscribeToUser(userId: string): void {
     this.stompClient.subscribe(`/topic/messages/${userId}`, (msg: IMessage) => {
-      const parsed: Message = JSON.parse(msg.body);
-      this.messageSubject.next(parsed);
+      const parsedMessage: Message = JSON.parse(msg.body);
+      this.messageSubject.next(parsedMessage);
     });
   }
 
-  sendMessage(message: Message) {
+  sendMessage(message: Message): void {
     if (this.isConnected) {
-      this._send(message);
+      this.publishMessage(message);
     } else {
-      console.warn('🕐 WebSocket not connected yet, queuing message...');
-      this.pendingMessages.push(message);
+      console.warn('⏳ WebSocket not connected. Message queued.');
+      this.messageBuffer.push(message);
     }
   }
 
-  private _send(message: Message) {
+  private publishMessage(message: Message): void {
     this.stompClient.publish({
       destination: '/app/chat.send',
-      body: JSON.stringify(message),
+      body: JSON.stringify(message)
     });
   }
 
-  getMessages() {
+  getMessages(): Observable<Message> {
     return this.messageSubject.asObservable();
   }
 }

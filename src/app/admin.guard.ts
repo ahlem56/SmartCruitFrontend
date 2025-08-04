@@ -13,7 +13,7 @@ export class AdminGuard implements CanActivate {
       return true;
     }
 
-    this.router.navigate(['/backoffice/dashboard']);
+    this.router.navigate(['/**']);
     return false;
   }
 }

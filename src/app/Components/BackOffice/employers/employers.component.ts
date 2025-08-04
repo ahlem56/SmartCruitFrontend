@@ -1,58 +1,70 @@
 import { Component, OnInit } from '@angular/core';
 import { EmployerService } from '../../../Services/employer.service';
+import { CompanyService } from '../../../Services/company.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Router, RouterLinkWithHref } from '@angular/router';
+
 
 @Component({
   selector: 'app-employers',
   templateUrl: './employers.component.html',
   styleUrls: ['./employers.component.css'],
-  imports: [CommonModule, FormsModule]
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterLinkWithHref]
 })
 export class EmployersComponent implements OnInit {
   employers: any[] = [];
   filteredEmployers: any[] = [];
   selectedEmployer: any = null;
   showCreateForm = false;
-  
-  // Loading states
+
+  // Loading and control states
   isLoading = false;
   isCreating = false;
   isUpdating = false;
   isDeleting = false;
-  
-  // Search and filter properties
+
+  // Filters and search
   searchTerm = '';
   industryFilter = '';
   statusFilter = '';
-  
-  // Pagination properties
+
+  // Pagination
   currentPage = 1;
   itemsPerPage = 12;
   totalPages = 1;
-  
-  // Statistics
+
+  // Stats
   activeEmployersCount = 0;
   newEmployersThisMonth = 0;
   industries: string[] = [];
-  
-  // Math object for template
-  Math = Math;
-  
+  companies: { companyId: number; name: string }[] = [];
+
+  Math = Math; // for template math
+
   newEmployer: any = {
     fullName: '',
     email: '',
     password: '',
-    contact: '',
+    phoneNumber: '',
+    birthDate: '',
+    linkedInUrl: '',
+    githubUrl: '',
     industry: '',
-    companyName: '',
-    companyWebsite: ''
+    companyId: null,
   };
 
-  constructor(private employerService: EmployerService) {}
+  constructor(
+    private employerService: EmployerService,
+    private companyService: CompanyService,
+      private router: Router // ✅ Inject Router
+
+  ) {}
 
   ngOnInit(): void {
     this.loadEmployers();
+    this.loadCompanies();
   }
 
   loadEmployers() {
@@ -74,46 +86,44 @@ export class EmployersComponent implements OnInit {
     });
   }
 
+  loadCompanies() {
+    this.companyService.getAllCompanies().subscribe({
+      next: (companies) => (this.companies = companies),
+      error: (err) => console.error('Failed to load companies:', err),
+    });
+  }
+
   calculateStatistics() {
     this.activeEmployersCount = this.employers.filter(emp => !emp.status || emp.status === 'active').length;
-    
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth();
-    const currentYear = currentDate.getFullYear();
-    
+
+    const now = new Date();
     this.newEmployersThisMonth = this.employers.filter(emp => {
-      if (emp.createdAt) {
-        const createdDate = new Date(emp.createdAt);
-        return createdDate.getMonth() === currentMonth && createdDate.getFullYear() === currentYear;
-      }
-      return false;
+      if (!emp.createdAt) return false;
+      const date = new Date(emp.createdAt);
+      return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
     }).length;
   }
 
   extractIndustries() {
-    const industrySet = new Set<string>();
-    this.employers.forEach(emp => {
-      if (emp.industry) {
-        industrySet.add(emp.industry);
-      }
-    });
-    this.industries = Array.from(industrySet).sort();
+    const unique = new Set<string>();
+    this.employers.forEach(emp => emp.industry && unique.add(emp.industry));
+    this.industries = Array.from(unique).sort();
   }
 
   filterEmployers() {
     this.filteredEmployers = this.employers.filter(emp => {
-      const matchesSearch = !this.searchTerm || 
+      const matchesSearch = !this.searchTerm ||
         emp.fullName?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         emp.email?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         emp.companyName?.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         emp.company?.name?.toLowerCase().includes(this.searchTerm.toLowerCase());
-      
+
       const matchesIndustry = !this.industryFilter || emp.industry === this.industryFilter;
       const matchesStatus = !this.statusFilter || emp.status === this.statusFilter;
-      
+
       return matchesSearch && matchesIndustry && matchesStatus;
     });
-    
+
     this.currentPage = 1;
     this.updatePagination();
   }
@@ -126,9 +136,8 @@ export class EmployersComponent implements OnInit {
   }
 
   get paginatedEmployers() {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.filteredEmployers.slice(startIndex, endIndex);
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredEmployers.slice(start, start + this.itemsPerPage);
   }
 
   changePage(page: number) {
@@ -138,28 +147,23 @@ export class EmployersComponent implements OnInit {
   }
 
   selectEmployer(employer: any) {
-    this.selectedEmployer = { ...employer }; // clone for editing
+    this.selectedEmployer = { ...employer };
+  }
+
+  cancelEdit() {
+    this.selectedEmployer = null;
   }
 
   createEmployer() {
-    if (!this.validateEmployerForm(this.newEmployer)) {
-      return;
-    }
+    if (!this.validateEmployerForm(this.newEmployer)) return;
 
     this.isCreating = true;
+
     this.employerService.createEmployer(this.newEmployer).subscribe({
       next: () => {
         this.loadEmployers();
         this.showCreateForm = false;
-        this.newEmployer = {
-          fullName: '',
-          email: '',
-          password: '',
-          contact: '',
-          industry: '',
-          companyName: '',
-          companyWebsite: ''
-        };
+        this.resetNewEmployer();
         this.isCreating = false;
         this.showSuccess('Employer created successfully!');
       },
@@ -173,10 +177,7 @@ export class EmployersComponent implements OnInit {
 
   updateEmployer() {
     if (!this.selectedEmployer?.userId) return;
-
-    if (!this.validateEmployerForm(this.selectedEmployer, false)) {
-      return;
-    }
+    if (!this.validateEmployerForm(this.selectedEmployer, false)) return;
 
     this.isUpdating = true;
     this.employerService.updateEmployer(this.selectedEmployer.userId, this.selectedEmployer).subscribe({
@@ -195,69 +196,48 @@ export class EmployersComponent implements OnInit {
   }
 
   deleteEmployer(id: number) {
-    if (confirm('Are you sure you want to delete this employer? This action cannot be undone.')) {
-      this.isDeleting = true;
-      this.employerService.deleteEmployer(id).subscribe({
-        next: () => {
-          this.loadEmployers();
-          this.isDeleting = false;
-          this.showSuccess('Employer deleted successfully!');
-        },
-        error: (err) => {
-          console.error('Delete failed:', err);
-          this.isDeleting = false;
-          this.showError('Failed to delete employer. Please try again.');
-        }
-      });
-    }
-  }
+    if (!confirm('Are you sure you want to delete this employer?')) return;
 
-  cancelEdit() {
-    this.selectedEmployer = null;
+    this.isDeleting = true;
+    this.employerService.deleteEmployer(id).subscribe({
+      next: () => {
+        this.loadEmployers();
+        this.isDeleting = false;
+        this.showSuccess('Employer deleted successfully!');
+      },
+      error: (err) => {
+        console.error('Delete failed:', err);
+        this.isDeleting = false;
+        this.showError('Failed to delete employer. Please try again.');
+      }
+    });
   }
 
   validateEmployerForm(employer: any, isCreate: boolean = true): boolean {
-    if (!employer.fullName?.trim()) {
-      this.showError('Full name is required.');
-      return false;
-    }
-    
-    if (!employer.email?.trim()) {
-      this.showError('Email is required.');
-      return false;
-    }
-    
-    if (!this.isValidEmail(employer.email)) {
-      this.showError('Please enter a valid email address.');
-      return false;
-    }
-    
-    if (isCreate && !employer.password?.trim()) {
-      this.showError('Password is required.');
-      return false;
-    }
-    
-    if (employer.password && employer.password.length < 6) {
-      this.showError('Password must be at least 6 characters long.');
-      return false;
-    }
-    
+    if (!employer.fullName?.trim()) return this.error('Full name is required.');
+    if (!employer.email?.trim()) return this.error('Email is required.');
+    if (!this.isValidEmail(employer.email)) return this.error('Please enter a valid email address.');
+    if (isCreate && !employer.password?.trim()) return this.error('Password is required.');
+    if (employer.password && employer.password.length < 6) return this.error('Password must be at least 6 characters long.');
     return true;
   }
 
   isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
-  showSuccess(message: string) {
-    // You can implement a toast notification system here
-    alert(message);
-  }
-
-  showError(message: string) {
-    // You can implement a toast notification system here
-    alert(message);
+  resetNewEmployer() {
+    this.newEmployer = {
+      fullName: '',
+      email: '',
+      password: '',
+      phoneNumber: '',
+      birthDate: '',
+      linkedInUrl: '',
+      githubUrl: '',
+      industry: '',
+      companyId: null,
+    };
   }
 
   clearFilters() {
@@ -265,5 +245,18 @@ export class EmployersComponent implements OnInit {
     this.industryFilter = '';
     this.statusFilter = '';
     this.filterEmployers();
+  }
+
+  showSuccess(message: string) {
+    alert(message); // You may replace with toast
+  }
+
+  showError(message: string) {
+    alert(message); // You may replace with toast
+  }
+
+  private error(msg: string): false {
+    this.showError(msg);
+    return false;
   }
 }

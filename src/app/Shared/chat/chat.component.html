@@ -1,51 +1,120 @@
-<!-- src/app/chat/chat.component.html -->
 <div class="messenger-wrapper">
-  <!-- Left Sidebar: Contacts -->
+  <!-- Sidebar -->
   <div class="sidebar">
-    <h3>Chats</h3>
+    <div class="sidebar-header">
+      <h3>Chats</h3>
+      <input type="text" class="contact-search" placeholder="Search contacts..." />
+    </div>
     <ul class="contact-list">
       <li
         *ngFor="let contact of contacts"
         [class.active]="contact.userId === recipientId"
         (click)="selectConversation(contact)"
       >
-      <img [src]="contact.profilePictureUrl || getUserAvatarFallback(contact.userId)" alt="avatar" class="avatar" />
-      <span>{{ contact.name || 'Employer #' + contact.userId }}</span>
+        <img [src]="contact.profilePictureUrl || getUserAvatarFallback(contact.userId)" class="avatar" />
+        <div class="contact-info">
+          <span class="name">{{ contact.name || 'User #' + contact.userId }}</span>
+          <span class="last-message">{{ contact.lastMessage || 'No messages yet' }}</span>
+        </div>
       </li>
     </ul>
   </div>
 
-  <!-- Right Chat Area -->
+  <!-- Chat area -->
   <div class="chat-container">
     <div class="chat-header" *ngIf="selectedContact">
-      <h3>Chat with {{ selectedContact.name || ('Employer #' + selectedContact.userId) }}</h3>
+      <div class="avatar-wrapper">
+        <img
+          [src]="selectedContact.profilePictureUrl || getUserAvatarFallback(selectedContact.userId)"
+          class="avatar header-avatar"
+        />
+        <span class="online-status online"></span>
+      </div>
+            <div class="header-info">
+        <h3>{{ selectedContact.name }}</h3>
+      
+      </div>
+      <div class="header-options">
+        <button class="options-btn" title="Options">
+          <i class="fas fa-ellipsis-v"></i>
+        </button>
+        <div class="options-dropdown">
+          <ul>
+            <li>View Profile</li>
+            <li>Mute Conversation</li>
+            <li>Archive Chat</li>
+            <li>Delete Chat</li>
+          </ul>
+        </div>
+      </div>
     </div>
 
+    <!-- Messages -->
     <div class="messages" *ngIf="selectedContact">
       <div
         *ngFor="let msg of messages"
         [class.own]="msg.senderId === currentUserId"
         class="message"
       >
-        <img class="avatar" [src]="getUserAvatar(msg.senderId)" alt="avatar" />
+        <img class="avatar" [src]="getUserAvatar(msg.senderId)" />
         <div class="bubble">
           <div class="meta">
-            <span class="sender">{{ msg.senderId === currentUserId ? 'You' : msg.senderName }}</span>
-            <span class="timestamp">{{ msg.timestamp | date: 'shortTime' }}</span>
+            <span>{{ msg.senderId === currentUserId ? 'You' : msg.senderName }}</span>
+            <span class="timestamp">{{ msg.timestamp | date:'shortTime' }}</span>
           </div>
-          <p class="content">{{ msg.content }}</p>
+          <ng-container [ngSwitch]="msg.type">
+            <p *ngSwitchCase="'text'" class="content">{{ msg.content }}</p>
+            <img *ngSwitchCase="'image'" [src]="msg.content" class="image-msg" />
+            <a *ngSwitchCase="'file'" [href]="msg.content" target="_blank" class="file-msg">📎 Download file</a>
+          </ng-container>
         </div>
+      </div>
+      <!-- Typing indicator (UI only) -->
+      <div class="typing-indicator" *ngIf="isTyping">
+        <span></span><span></span><span></span>
+        <span class="typing-text">{{ selectedContact.name }} is typing...</span>
       </div>
     </div>
 
     <!-- Input area -->
-    <div class="input-area" *ngIf="selectedContact">
-      <input
-        [(ngModel)]="newMessage"
-        (keydown.enter)="sendMessage()"
-        placeholder="Type your message..."
-      />
-      <button (click)="sendMessage()">Send</button>
+    <div class="input-wrapper" *ngIf="selectedContact">
+      <div class="input-area">
+        <button class="icon-btn" (click)="fileInput.click()">
+          <i class="fas fa-paperclip"></i>
+        </button>
+        <input type="file" hidden #fileInput (change)="onFileSelected($event)" />
+
+        <input
+          type="text"
+          [(ngModel)]="newMessage"
+          (keydown.enter)="sendMessage()"
+          placeholder="Type your message..."
+        />
+
+        <!-- Emoji picker (UI only) -->
+        <div class="emoji-picker-container">
+          <button class="icon-btn emoji-btn" title="Add emoji">
+            <i class="far fa-smile"></i>
+          </button>
+          <div class="emoji-picker-dropdown">
+            <span class="emoji">😀</span>
+            <span class="emoji">😂</span>
+            <span class="emoji">😍</span>
+            <span class="emoji">😎</span>
+            <span class="emoji">👍</span>
+            <span class="emoji">🙏</span>
+            <span class="emoji">🎉</span>
+            <span class="emoji">🔥</span>
+            <span class="emoji">❤️</span>
+            <span class="emoji">😢</span>
+            <!-- Add more emojis as needed -->
+          </div>
+        </div>
+
+        <button class="icon-btn send-btn" (click)="sendMessage()">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
     </div>
   </div>
 </div>

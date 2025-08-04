@@ -1,0 +1,100 @@
+<div class="dashboard-pro">
+  <!-- Top Stats Cards -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-header">
+        <span>Total Job Offers</span>
+        <span class="stat-context">This Month</span>
+      </div>
+      <div class="stat-value">{{ totalOffers }}</div>
+      <div class="stat-change positive">+8% from last month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-header">
+        <span>Active Job Offers</span>
+        <span class="stat-context">Now</span>
+      </div>
+      <div class="stat-value">{{ activeOffers }}</div>
+      <div class="stat-change neutral">0% change</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-header">
+        <span>Total Applications</span>
+        <span class="stat-context">This Month</span>
+      </div>
+      <div class="stat-value">{{ totalApplications }}</div>
+      <div class="stat-change negative">-2% from last month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-header">
+        <span>Profile Completion</span>
+        <span class="stat-context">Your Profile</span>
+      </div>
+      <div class="progress-ring-pro">
+        <span class="progress-value">{{ profileCompletion }}%</span>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" [style.width]="profileCompletion + '%'"></div>
+        </div>
+      </div>
+      <div class="stat-change positive">+5% this week</div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-header">Applications Over Time <span class="chart-context">(Last 12 months)</span></div>
+      <canvas baseChart [data]="applicationsLineChartData" [options]="applicationsLineChartOptions" [type]="'line'"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">Job Offer Status <span class="chart-context">(Current)</span></div>
+      <canvas baseChart [data]="statusDoughnutChartData" [options]="statusDoughnutChartOptions" [type]="'doughnut'"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">Top Job Offers <span class="chart-context">(This Month)</span></div>
+      <canvas baseChart [data]="topOffersBarChartData" [options]="topOffersBarChartOptions" [type]="'bar'"></canvas>
+    </div>
+  </div>
+
+  <!-- Engagement Section -->
+  <div class="engagement-row">
+    <!-- Top Candidates -->
+    <div class="engagement-card">
+      <div class="engagement-header">Top Candidates <span class="engagement-context">(This Month)</span></div>
+      <ul class="engagement-list">
+        <li *ngFor="let c of topCandidates; let i = index">
+          <span class="pill">#{{ i + 1 }}</span>
+          <img [src]="c.avatarUrl || 'assets/images/default-avatar.png'" alt="Candidate Avatar" class="avatar-img" />
+          <span class="engagement-name">{{ c.name }}</span>
+          <span class="engagement-count">({{ c.count }} apps)</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Top Employers -->
+    <div class="engagement-card">
+      <div class="engagement-header">Top Employers <span class="engagement-context">(This Month)</span></div>
+      <ul class="engagement-list">
+        <li *ngFor="let e of topEmployers; let i = index">
+          <span class="pill">#{{ i + 1 }}</span>
+          <img [src]="e.avatarUrl || 'assets/images/default-avatar.png'" alt="Employer Avatar" class="avatar-img" />
+          <span class="engagement-name">{{ e.name }}</span>
+          <span class="engagement-count">({{ e.count }} jobs)</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Top Companies -->
+    <div class="engagement-card">
+      <div class="engagement-header">Top Companies <span class="engagement-context">(This Month)</span></div>
+      <ul class="engagement-list">
+        <li *ngFor="let co of topCompanies; let i = index">
+          <span class="pill">#{{ i + 1 }}</span>
+          <img [src]="co.logoUrl || 'assets/images/default-company.png'" alt="Company Logo" class="company-logo" />
+          <span class="engagement-name">{{ co.name }}</span>
+          <span class="engagement-count">({{ co.count }} jobs)</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

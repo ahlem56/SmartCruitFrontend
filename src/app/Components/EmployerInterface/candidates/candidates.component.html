@@ -1,63 +1,97 @@
 <div class="candidates-main-container">
-  <div class="candidates-header artistic-header">
+
+  <!-- Header -->
+  <div class="candidates-header minimal-header">
     <div class="header-content">
-      <h2><i class="fas fa-users"></i> Applicants for "{{ jobTitle }}"</h2>
-      <p class="total-candidates"><i class="fas fa-user-friends"></i> Total Candidates: {{ candidates.length }}</p>
+      <h2>Applicants for "{{ jobTitle }}"</h2>
+      <p class="total-candidates">Total Candidates: {{ candidates.length }}</p>
     </div>
-    <svg class="header-art" viewBox="0 0 400 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="200" cy="40" rx="180" ry="30" fill="#e3f0ff"/>
-      <ellipse cx="320" cy="60" rx="60" ry="12" fill="#007bff22"/>
-      <ellipse cx="80" cy="60" rx="40" ry="10" fill="#00c6ff22"/>
-    </svg>
   </div>
 
-  <div class="candidates-controls">
-    <input type="text" class="search-input" placeholder="Search by name or email..." [(ngModel)]="searchTerm">
-    <select class="skill-filter" [(ngModel)]="selectedSkill">
-      <option value="">All Skills</option>
-      <option *ngFor="let skill of allSkills" [value]="skill">{{ skill }}</option>
+  <!-- Filters -->
+<!-- Filters Section -->
+<!-- Filters -->
+<div class="filter-bar">
+  <div class="filter-group">
+    <label class="filter-label">Search</label>
+    <input type="text" class="search-input" placeholder="Search by name or email..." [(ngModel)]="searchTerm" />
+  </div>
+
+
+
+  <div class="filter-group">
+    <label class="filter-label">Status</label>
+    <select class="filter-select" [(ngModel)]="selectedStatus">
+      <option value="">All Statuses</option>
+      <option value="PENDING">Pending</option>
+      <option value="ACCEPTED">Accepted</option>
+      <option value="REJECTED">Rejected</option>
     </select>
   </div>
 
+  <div class="filter-group">
+    <label class="filter-label">Sort</label>
+    <select class="filter-select" [(ngModel)]="selectedSort">
+      <option value="score-desc">Highest Match</option>
+      <option value="score-asc">Lowest Match</option>
+    </select>
+  </div>
+</div>
+
+  <!-- Table -->
   <div *ngIf="filteredCandidates.length > 0; else noCandidates" class="candidates-table-wrapper">
-    <table class="candidates-table advanced-table">
+    <table class="candidates-table">
       <thead>
         <tr>
           <th>Profile</th>
           <th>Full Name</th>
           <th>Email</th>
           <th>Phone</th>
-          <th>Experience</th>
-          <th>Skills</th>
+        
           <th>Match %</th>
           <th>CV</th>
           <th>Contact</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let candidate of filteredCandidates; let i = index">
-          <td><img [src]="candidate.profilePicture || 'assets/FrontOffice/images/default.avif'" class="avatar" alt="Profile" /></td>
-          <td class="candidate-name">{{ candidate.fullName }}</td>
-          <td><span class="candidate-email"><i class="fas fa-envelope"></i> {{ candidate.email }}</span></td>
-          <td><span class="candidate-phone"><i class="fas fa-phone"></i> {{ candidate.phone }}</span></td>
-          <td><span class="candidate-experience"><i class="fas fa-briefcase"></i> {{ candidate.experience }}</span></td>
+        <tr *ngFor="let candidate of paginatedCandidates">
           <td>
-            <span *ngFor="let skill of candidate.skills" class="skill-badge">{{ skill }}</span>
+            <img [src]="candidate.profilePictureUrl || 'assets/FrontOffice/images/default.avif'" class="avatar" alt="Profile" />
           </td>
+          <td>{{ candidate.fullName }}</td>
+          <td>{{ candidate.email }}</td>
+          <td>{{ candidate.phone }}</td>
+          
           <td>
-            <div class="match-circle-table">
-              <svg class="match-svg-table" viewBox="0 0 44 44">
-                <circle class="match-bg" cx="22" cy="22" r="20" />
-                <circle class="match-bar" cx="22" cy="22" r="20" [attr.stroke-dasharray]="125.6" [attr.stroke-dashoffset]="125.6 - (candidate.matchingPercentage/100)*125.6" />
+            <div class="match-circle-wrapper">
+              <svg class="match-progress" viewBox="0 0 36 36">
+                <path class="circle-bg" d="M18 2a16 16 0 1 1 0 32 16 16 0 1 1 0-32" />
+                <path class="circle-bar"
+                      [attr.stroke-dasharray]="'100, 100'"
+                      [attr.stroke-dashoffset]="100 - candidate.matchingPercentage"
+                      [ngClass]="getMatchClass(candidate.matchingPercentage)"
+                      d="M18 2a16 16 0 1 1 0 32 16 16 0 1 1 0-32" />
+                <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" class="circle-text">
+                  {{ candidate.matchingPercentage }}%
+                </text>
               </svg>
-              <div class="match-label-table">{{ candidate.matchingPercentage }}%</div>
+              <div class="match-description" [ngClass]="getMatchClass(candidate.matchingPercentage)">
+                {{ getMatchLabel(candidate.matchingPercentage) }}
+              </div>
+
+              <button class="score-info-btn" (click)="showScoreDetails(candidate)">
+                <i class="fas fa-info-circle"></i>
+              </button>
             </div>
           </td>
+          
           <td class="cv-actions">
             <ng-container *ngIf="candidate.cvUrl; else noCv">
-              <a [href]="candidate.cvUrl" target="_blank" class="cv-btn-table" title="View CV">
+              <button class="cv-btn-table" title="View CV" (click)="previewCv(candidate.cvUrl)">
                 <i class="fas fa-eye"></i>
-              </a>
+              </button>
+              
               <a [href]="candidate.cvUrl" download class="cv-btn-table" title="Download CV">
                 <i class="fas fa-download"></i>
               </a>
@@ -66,19 +100,115 @@
               <span class="no-cv-text">N/A</span>
             </ng-template>
           </td>
+          <!-- Inside the table row <tr> for each candidate -->
+<td>
+  <a
+    *ngIf="candidate.userId"
+    [routerLink]="['/chat']"
+    [queryParams]="{ to: candidate.userId }"
+    class="message-btn-table"
+    title="Message Candidate"
+  >
+    <i class="fas fa-comments"></i> Message
+  </a>
+</td>
+
           
           <td>
-            <a *ngIf="candidate.email" [href]="'mailto:' + candidate.email" class="contact-btn-table"><i class="fas fa-paper-plane"></i> Contact</a>
+            <div *ngIf="candidate.status === 'ACCEPTED'">
+              <div class="status-label accepted">Accepted</div>
+              <button class="interview-btn" (click)="openInterviewModal(candidate)">Schedule Interview</button>
+            </div>
+
+            <div *ngIf="candidate.status === 'REJECTED'" class="status-label rejected">Rejected</div>
+
+            <div *ngIf="candidate.status !== 'ACCEPTED' && candidate.status !== 'REJECTED'">
+              <button class="accept-btn" (click)="acceptApplication(candidate.applicationId)">
+                <i class="fas fa-check"></i> Accept
+              </button>
+              <button class="reject-btn" (click)="rejectApplication(candidate.applicationId)">
+                <i class="fas fa-times"></i> Reject
+              </button>
+            </div>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <!-- Interview Modal -->
+    <!-- Interview Modal -->
+<div class="modal-backdrop" *ngIf="showInterviewModal">
+  <div class="modal">
+    <h3>Schedule Interview</h3>
+
+    <div class="modal-field">
+      <label for="interview-date">Date & Time</label>
+      <input id="interview-date" type="datetime-local" [(ngModel)]="interviewForm.proposedDate" />
+    </div>
+
+    <div class="modal-field">
+      <label for="interview-location">Location</label>
+      <input id="interview-location" type="text" [(ngModel)]="interviewForm.location" placeholder="e.g., Zoom, Office, etc." />
+    </div>
+
+    <div class="modal-field">
+      <label for="interview-notes">Notes</label>
+      <textarea id="interview-notes" rows="4" [(ngModel)]="interviewForm.notes" placeholder="Add any special instructions or context..."></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="primary-btn" (click)="submitInterview()">Schedule</button>
+      <button class="cancel-btn" (click)="closeInterviewModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
   </div>
 
+  <!-- No Candidates Template -->
   <ng-template #noCandidates>
     <div class="no-results-artistic">
-      <svg width="120" height="80" viewBox="0 0 120 80" fill="none"><ellipse cx="60" cy="70" rx="50" ry="10" fill="#e3f0ff"/><ellipse cx="90" cy="75" rx="20" ry="4" fill="#007bff22"/><ellipse cx="30" cy="75" rx="12" ry="3" fill="#00c6ff22"/></svg>
       <p>No candidates have applied yet for this offer.<br>Share your job offer to attract more talent!</p>
     </div>
   </ng-template>
+
+
+  <!-- Score Details Modal -->
+<!-- Score Details Modal -->
+<div class="modal-backdrop" *ngIf="showScorePopup">
+  <div class="modal score-modal-clean">
+    <h2 class="score-title">Match Overview</h2>
+
+    <div class="score-block">
+      <span class="score-label">Overall Score</span>
+      <div class="score-value">{{ selectedScore?.matchingPercentage }}%</div>
+    </div>
+
+    <div *ngIf="selectedScore?.missingSkills?.length" class="missing-skills-section">
+      <span class="score-label">Missing Skills</span>
+      <ul class="missing-skill-tags">
+        <li *ngFor="let skill of selectedScore.missingSkills" class="tag-chip">
+          {{ skill }}
+        </li>
+      </ul>
+    </div>
+
+    <div *ngIf="!selectedScore?.missingSkills?.length" class="no-missing">
+      This candidate meets all key requirements.
+    </div>
+
+    <div class="modal-actions">
+      <button class="close-btn" (click)="closeScorePopup()">Close</button>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" *ngIf="cvPreviewUrl">
+  <div class="modal pdf-preview-modal">
+    <iframe [src]="cvPreviewUrl | safeUrl" width="100%" height="600px"></iframe>
+    <button class="close-btn" (click)="closeCvPreview()">Close</button>
+  </div>
+</div>
+
+
+
 </div>

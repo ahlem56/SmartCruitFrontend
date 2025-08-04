@@ -1,0 +1,39 @@
+<div class="favorites-container">
+  <h2 class="favorites-title">
+    Your Favorite Job Offers
+  </h2>
+
+  <div *ngIf="loading" class="loading-message">
+    Loading your favorites...
+  </div>
+
+  <div *ngIf="!loading && favorites.length === 0" class="empty-state">
+    <p>No favorites yet — go explore and save jobs you love!</p>
+  </div>
+
+  <div class="job-cards" *ngIf="favorites.length > 0">
+    <div *ngFor="let job of favorites" class="job-card">
+      <div class="card-header">
+        <div class="job-title">
+          <h3>{{ job.title }}</h3>
+          <span class="badge">{{ job.jobType }}</span>
+        </div>
+        <p class="company-name">
+          {{ job.company?.name || 'N/A' }}
+        </p>
+      </div>
+
+      <div class="card-body">
+        <p>{{ job.jobLocation }}</p>
+        <p>${{ job.salary }}</p>
+        <p>Posted: {{ job.postedDate | date:'mediumDate' }}</p>
+      </div>
+
+      <div class="card-actions">
+        <button class="details-btn" (click)="goToJobDetails(job.jobOfferId)">
+          View Details
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,108 @@
+<div class="dashboard-pro">
+  <!-- Top Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card-pro" *ngFor="let card of statCards">
+      <div class="stat-pro-header">
+        <div class="stat-pro-title">{{ card.label }}</div>
+        <div class="stat-pro-context">{{ card.context }}</div>
+      </div>
+
+      <!-- Single or Grouped Stats -->
+      <ng-container *ngIf="card.groupedStats?.length; else singleStat">
+        <div class="grouped-stats">
+          <div class="group" *ngFor="let stat of card.groupedStats">
+            <div class="group-label">{{ stat.label }}</div>
+            <div class="group-value">{{ stat.value }}</div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-template #singleStat>
+        <div class="stat-pro-value">{{ card.value }}</div>
+        <div class="stat-pro-trend" [ngClass]="card.trendClass">{{ card.trendText }}</div>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-header">Application Funnel <span class="chart-context">(Current)</span></div>
+      <canvas baseChart [data]="funnelChartData" [options]="funnelChartOptions" [type]="'bar'"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">Application Trends <span class="chart-context">(Last 30d)</span></div>
+      <canvas baseChart [data]="trendsChartData" [options]="trendsChartOptions" [type]="'line'"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">Offer Status <span class="chart-context">(Current)</span></div>
+      <canvas baseChart [data]="statusChartData" [options]="statusChartOptions" [type]="'doughnut'"></canvas>
+    </div>
+  </div>
+
+  <!-- Engagement Section -->
+  <div class="engagement-row">
+    <div class="engagement-card">
+      <div class="engagement-header">Top Active Candidates <span class="engagement-context">(This Month)</span></div>
+      <ul class="engagement-list">
+        <li *ngFor="let c of topCandidates; let i = index">
+          <span class="pill">#{{ i + 1 }}</span>
+          <img [src]="c.avatarUrl || 'assets/images/default-avatar.png'" alt="Candidate Avatar" class="avatar-img" />
+          <span class="engagement-name">{{ c.name }}</span>
+          <span class="engagement-count">({{ c.count }} apps)</span>
+        </li>
+      </ul>
+    </div>
+    <div class="engagement-card">
+      <div class="engagement-header">Top Job Offers <span class="engagement-context">(This Month)</span></div>
+      <ul class="engagement-list">
+        <li *ngFor="let o of topJobOffers; let i = index">
+          <span class="pill">#{{ i + 1 }}</span>
+          <span class="engagement-name">{{ o.title }}</span>
+          <span class="engagement-count">({{ o.applicationsCount }} apps)</span>
+        </li>
+      </ul>
+    </div>
+    <div class="engagement-card">
+      <div class="engagement-header">Upcoming Interviews <span class="engagement-context">(Next 7 days)</span></div>
+      <ul class="engagement-list">
+        <li *ngFor="let i of upcomingInterviewList; let idx = index">
+          <span class="pill">#{{ idx + 1 }}</span>
+          <span class="engagement-name">{{ i.candidateName }}</span>
+          <span class="engagement-count">{{ i.date | date:'shortDate' }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="engagement-card leaderboard">
+    <div class="engagement-header">Top Matches Leaderboard</div>
+  
+    <div class="leaderboard-entry" *ngFor="let match of topMatches; let i = index">
+      <div class="rank-icon">
+        <ng-container [ngSwitch]="i">
+          <span *ngSwitchCase="0" class="trophy gold">🥇</span>
+          <span *ngSwitchCase="1" class="trophy silver">🥈</span>
+          <span *ngSwitchCase="2" class="trophy bronze">🥉</span>
+          <span *ngSwitchDefault>#{{ i + 1 }}</span>
+        </ng-container>
+      </div>
+  
+      <div class="match-info">
+        <div class="candidate-name">{{ match.candidateName }}</div>
+        <div class="job-title">{{ match.jobTitle }}</div>
+        <div class="progress-container">
+          <div class="progress-bar" [style.width.%]="match.score * 100"></div>
+        </div>
+        <div class="score-label">{{ (match.score * 100) | number: '1.0-0' }}%</div>
+      </div>
+  
+      <!-- Example badges -->
+      <div class="badges">
+        <span class="badge" *ngIf="match.score > 0.9">🔥 Top Fit</span>
+        <span class="badge" *ngIf="i === 0">⭐ Quick Responder</span>
+      </div>
+    </div>
+  </div>
+  
+  
+</div>

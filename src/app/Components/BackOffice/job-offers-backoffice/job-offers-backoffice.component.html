@@ -1,0 +1,308 @@
+<div class="job-offers-container">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <h1 class="page-title">Job Offers Management</h1>
+        <p class="page-subtitle">Browse and manage all job offers in the system</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content-section">
+    <div class="section-header">
+      <h2 class="section-title">Job Offers Directory</h2>
+      <div class="section-controls">
+        <div class="search-filter-group">
+          <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input 
+              type="text" 
+              class="search-input" 
+              placeholder="Search job offers by title, company, or description..." 
+              [(ngModel)]="searchTerm"
+            >
+          </div>
+          <select class="filter-select" [(ngModel)]="statusFilter">
+            <option value="">All Statuses</option>
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
+            <option value="DRAFT">Draft</option>
+          </select>
+          <select class="filter-select" [(ngModel)]="categoryFilter">
+            <option value="">All Categories</option>
+            <option value="TECHNOLOGY">Technology</option>
+            <option value="DESIGN">Design</option>
+            <option value="MARKETING">Marketing</option>
+            <option value="SALES">Sales</option>
+            <option value="EDUCATION">Education</option>
+            <option value="HEALTHCARE">Healthcare</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Job Offers Grid -->
+    <div class="job-offers-grid" *ngIf="filteredJobOffers.length > 0">
+      <div class="job-offer-card" *ngFor="let offer of filteredJobOffers">
+        <div class="card-header">
+          <div class="company-logo-container">
+            <img *ngIf="offer.company?.logoUrl" [src]="offer.company?.logoUrl" alt="Company Logo" class="company-logo">
+            <div *ngIf="!offer.company?.logoUrl" class="logo-placeholder">
+              <i class="fas fa-building"></i>
+            </div>
+          </div>
+          <div class="job-badge">
+            <span class="badge status-badge" [ngClass]="offer.status.toLowerCase()">{{ offer.status }}</span>
+            <span class="badge category-badge">{{ offer.category }}</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <h3 class="job-title">{{ offer.title }}</h3>
+          <p class="job-description">
+            {{ offer.description | slice:0:100 }}<span *ngIf="offer.description && offer.description.length > 100">...</span>
+          </p>
+          <div class="job-details">
+            <div class="detail-item"><i class="fas fa-building"></i> {{ offer.company?.name || 'N/A' }}</div>
+            <div class="detail-item"><i class="fas fa-map-marker-alt"></i> {{ offer.jobLocation }}</div>
+            <div class="detail-item"><i class="fas fa-calendar-alt"></i> Posted: {{ offer.postedDate | date:'mediumDate' }}</div>
+            <div class="detail-item"><i class="fas fa-hourglass-end"></i> Deadline: {{ offer.deadline | date:'mediumDate' }}</div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="card-actions">
+            <button class="btn-icon btn-view" (click)="viewJobOfferDetails(offer)" title="View Details">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="btn-icon btn-delete" (click)="deleteJobOffer(offer.jobOfferId)" title="Delete Job Offer">
+              <i class="fas fa-trash"></i>
+            </button>
+            <button class="btn-icon btn-view" (click)="viewApplicationsForJob(offer)" title="View Applicants">
+                <i class="fas fa-users"></i>
+              </button>
+              
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredJobOffers.length === 0 && !isLoading && !errorMessage">
+      <div class="empty-icon">
+        <i class="fas fa-briefcase"></i>
+      </div>
+      <h3>No Job Offers Found</h3>
+      <p>There are currently no job offers in the system.</p>
+    </div>
+    <div *ngIf="isLoading">Loading job offers...</div>
+    <div *ngIf="errorMessage">{{ errorMessage }}</div>
+  </div>
+
+  <!-- Job Offer Details Modal -->
+  <div class="modal-overlay" *ngIf="showJobOfferDetails" (click)="closeJobOfferDetails()">
+    <div class="details-modal-container" (click)="$event.stopPropagation()">
+      <div class="details-modal-header">
+        <div class="job-header-info">
+          <div class="company-logo-large">
+            <img *ngIf="selectedJobOffer?.company?.logoUrl" [src]="selectedJobOffer?.company?.logoUrl" alt="Company Logo" class="company-logo-img">
+            <div *ngIf="!selectedJobOffer?.company?.logoUrl" class="company-logo-placeholder-large">
+              <i class="fas fa-building"></i>
+            </div>
+          </div>
+          <div class="job-header-text">
+            <h2 class="job-title">{{ selectedJobOffer?.title }}</h2>
+            <div class="job-meta">
+              <span class="badge status-badge" [ngClass]="selectedJobOffer?.status?.toLowerCase()">{{ selectedJobOffer?.status }}</span>
+              <span class="badge category-badge">{{ selectedJobOffer?.category }}</span>
+              <span class="job-id">ID: {{ selectedJobOffer?.jobOfferId }}</span>
+            </div>
+          </div>
+        </div>
+        <button class="modal-close" (click)="closeJobOfferDetails()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="details-modal-content">
+        <div class="details-layout">
+          <div class="details-row">
+            <!-- Main Column -->
+            <div class="details-col details-col-main">
+              <div class="details-section">
+                <div class="section-header">Job Overview</div>
+                <div class="overview-content">
+                  <p class="job-description-full" *ngIf="selectedJobOffer?.description">
+                    {{ selectedJobOffer?.description }}
+                  </p>
+                  <p class="no-description" *ngIf="!selectedJobOffer?.description">
+                    No description available for this job offer.
+                  </p>
+                </div>
+              </div>
+              <div class="details-section">
+                <div class="section-header">Requirements</div>
+                <div class="details-grid">
+                  <div class="detail-item"> <strong>Education Level:</strong> {{ selectedJobOffer?.educationLevel }}</div>
+                  <div class="detail-item"> <strong>Experience Level:</strong> {{ selectedJobOffer?.experienceLevel }}</div>
+                  <div class="detail-item"><strong>Required Skills:</strong> {{ selectedJobOffer?.requiredSkills?.join(', ') || 'N/A' }}</div>
+                  <div class="detail-item"><strong>Languages:</strong> {{ selectedJobOffer?.requiredLanguages?.join(', ') || 'N/A' }}</div>
+                  <div class="detail-item"><strong>Benefits:</strong> {{ selectedJobOffer?.benefits?.join(', ') || 'N/A' }}</div>
+                </div>
+              </div>
+              <div class="details-section">
+                <div class="section-header">Company Information</div>
+                <div class="details-grid">
+                  <div class="detail-item"><strong>Company:</strong> {{ selectedJobOffer?.company?.name || 'N/A' }}</div>
+                  <div class="detail-item" *ngIf="selectedJobOffer?.company?.address"><strong>Address:</strong> {{ selectedJobOffer?.company?.address }}</div>
+                  <div class="detail-item" *ngIf="selectedJobOffer?.company?.contactEmail"><strong>Email:</strong> <a [href]="'mailto:' + selectedJobOffer?.company?.contactEmail" class="contact-link">{{ selectedJobOffer?.company?.contactEmail }}</a></div>
+                  <div class="detail-item" *ngIf="selectedJobOffer?.company?.contactPhone"><strong>Phone:</strong> <a [href]="'tel:' + selectedJobOffer?.company?.contactPhone" class="contact-link">{{ selectedJobOffer?.company?.contactPhone }}</a></div>
+                </div>
+                <div class="social-grid" *ngIf="selectedJobOffer?.company?.linkedInUrl || selectedJobOffer?.company?.twitterUrl || selectedJobOffer?.company?.facebookUrl">
+                  <a *ngIf="selectedJobOffer?.company?.linkedInUrl" [href]="selectedJobOffer?.company?.linkedInUrl" target="_blank" class="social-card linkedin">
+                    <div class="social-icon"><i class="fab fa-linkedin"></i></div>
+                    <div class="social-info">
+                      <span class="social-platform">LinkedIn</span>
+                      <span class="social-url">{{ selectedJobOffer?.company?.linkedInUrl }}</span>
+                    </div>
+                    <i class="fas fa-external-link-alt social-external"></i>
+                  </a>
+                  <a *ngIf="selectedJobOffer?.company?.twitterUrl" [href]="selectedJobOffer?.company?.twitterUrl" target="_blank" class="social-card twitter">
+                    <div class="social-icon"><i class="fab fa-twitter"></i></div>
+                    <div class="social-info">
+                      <span class="social-platform">Twitter</span>
+                      <span class="social-url">{{ selectedJobOffer?.company?.twitterUrl }}</span>
+                    </div>
+                    <i class="fas fa-external-link-alt social-external"></i>
+                  </a>
+                  <a *ngIf="selectedJobOffer?.company?.facebookUrl" [href]="selectedJobOffer?.company?.facebookUrl" target="_blank" class="social-card facebook">
+                    <div class="social-icon"><i class="fab fa-facebook"></i></div>
+                    <div class="social-info">
+                      <span class="social-platform">Facebook</span>
+                      <span class="social-url">{{ selectedJobOffer?.company?.facebookUrl }}</span>
+                    </div>
+                    <i class="fas fa-external-link-alt social-external"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <!-- Side Column -->
+            <div class="details-col details-col-side">
+              <div class="details-section">
+                <div class="section-header">Quick Stats</div>
+                <div class="stats-grid professional">
+                  <div class="stat-item">
+                    <div class="stat-label">Status</div>
+                    <div class="stat-value">{{ selectedJobOffer?.status }}</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-label">Posted</div>
+                    <div class="stat-value">{{ selectedJobOffer?.postedDate | date:'short' }}</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-label">Deadline</div>
+                    <div class="stat-value">{{ selectedJobOffer?.deadline | date:'short' }}</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-label">Job Type</div>
+                    <div class="stat-value">{{ selectedJobOffer?.jobType }}</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-label">Openings</div>
+                    <div class="stat-value">{{ selectedJobOffer?.numberOfOpenPositions }}</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-label">Applications</div>
+                    <div class="stat-value">{{ selectedJobOffer?.applicationsCount || 0 }}</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-label">Salary</div>
+                    <div class="stat-value">{{ selectedJobOffer?.salary | currency:'USD':'symbol':'1.0-0' }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="details-section">
+                <div class="section-header">Job Insights</div>
+                <div class="insights-content">
+                  <div class="insight-item">
+                    <div class="insight-icon"><i class="fas fa-industry"></i></div>
+                    <div class="insight-text">Category: {{ selectedJobOffer?.category }}</div>
+                  </div>
+                  <div class="insight-item">
+                    <div class="insight-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="insight-text">Location: {{ selectedJobOffer?.jobLocation }}</div>
+                  </div>
+                  <div class="insight-item">
+                    <div class="insight-icon"><i class="fas fa-clipboard-list"></i></div>
+                    <div class="insight-text">Status: {{ selectedJobOffer?.status }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Applications Modal -->
+<div class="modal-overlay" *ngIf="showApplicationsModal" (click)="closeApplicationsModal()">
+    <div class="details-modal-container" (click)="$event.stopPropagation()">
+      <div class="details-modal-header">
+        <div class="applications-header">
+          <div class="applications-title">
+            <i class="fas fa-users"></i>
+            <h2>Applicants for <span class="job-title-highlight">"{{ selectedJobOffer?.title }}"</span></h2>
+          </div>
+          <div class="applications-meta">
+            <span class="badge status-badge" [ngClass]="selectedJobOffer?.status?.toLowerCase()">{{ selectedJobOffer?.status }}</span>
+            <span class="badge category-badge">{{ selectedJobOffer?.category }}</span>
+            <span class="job-id">ID: {{ selectedJobOffer?.jobOfferId }}</span>
+          </div>
+        </div>
+        <button class="modal-close" (click)="closeApplicationsModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="details-modal-content">
+        <div *ngIf="applicationsForSelectedJob.length === 0" class="empty-state applicants-empty">
+          <div class="empty-icon">
+            <i class="fas fa-user-slash"></i>
+          </div>
+          <h3>No Candidates Yet</h3>
+          <p>No candidates have applied for this job offer.</p>
+        </div>
+        <div class="applicants-grid" *ngIf="applicationsForSelectedJob.length > 0">
+          <div *ngFor="let app of applicationsForSelectedJob" class="applicant-card">
+            <div class="applicant-header">
+              <div class="profile-pic-container">
+                <img *ngIf="app.profilePicture" [src]="app.profilePicture" alt="Profile" class="profile-pic">
+                <div *ngIf="!app.profilePicture" class="profile-pic-placeholder">
+                  <i class="fas fa-user"></i>
+                </div>
+              </div>
+              <div class="applicant-info">
+                <h4 class="applicant-name">{{ app.firstName }} {{ app.lastName }}</h4>
+                <span class="app-status badge" [ngClass]="app.applicationStatus?.toLowerCase()">{{ app.applicationStatus }}</span>
+              </div>
+            </div>
+            <div class="applicant-details">
+              <div class="detail-row"><i class="fas fa-envelope"></i> <strong>Email:</strong> <a [href]="'mailto:' + app.email" class="contact-link">{{ app.email }}</a></div>
+              <div class="detail-row"><i class="fas fa-phone"></i> <strong>Phone:</strong> <a [href]="'tel:' + app.phone" class="contact-link">{{ app.phone }}</a></div>
+              <div class="detail-row"><i class="fas fa-file-alt"></i> <strong>Cover Letter:</strong> <span class="cover-letter-text">{{ app.coverLetter }}</span></div>
+              <div class="detail-row" *ngIf="app.experience"><i class="fas fa-briefcase"></i> <strong>Experience:</strong> {{ app.experience }}</div>
+              <div class="detail-row" *ngIf="app.extractedSkills"><i class="fas fa-lightbulb"></i> <strong>Skills:</strong> {{ app.extractedSkills.join(', ') }}</div>
+              <div class="detail-row" *ngIf="app.cvUrl">
+                <i class="fas fa-download"></i>
+                <a [href]="app.cvUrl" target="_blank" class="btn btn-primary btn-download-cv">
+                  <i class="fas fa-file-pdf"></i> Download CV
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+  

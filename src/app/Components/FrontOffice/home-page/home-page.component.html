@@ -1,380 +1,445 @@
-<div class="homepage">
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-background-shape"></div>
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-background">
+    <div class="animated-particles">
+      <div class="particle" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]"></div>
+    </div>
+    <div class="geometric-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+      <div class="shape shape-4"></div>
+      <div class="shape shape-5"></div>
+    </div>
+  </div>
+  
+  <div class="hero-container">
     <div class="hero-content">
-      <div class="hero-text">
-        <h1>Find Your Dream Job Today</h1>
-        <p>Connect with top companies and discover opportunities that match your skills and aspirations.</p>
-        <div class="search-container">
-          <div class="input-group">
-            <span class="icon"><i class="fas fa-search"></i></span>
-            <input type="text" placeholder="Job title, keywords, or company..." />
-          </div>
-          <div class="input-group">
-            <span class="icon"><i class="fas fa-map-marker-alt"></i></span>
-            <input type="text" placeholder="Location" />
-          </div>
-          <button class="find-job-btn">
-            <i class="fas fa-search"></i>
-            Search Jobs
-          </button>
+      <div class="hero-text-content">
+        <div class="hero-badge">
+         
         </div>
+        
+        <h1 class="hero-title">
+          <span class="title-line">Find Your Dream</span>
+          <span class="title-line highlight">Job Today</span>
+          <span class="title-line">With SmartCruit</span>
+        </h1>
+        
+        <p class="hero-description">
+          Connect with top companies, discover amazing opportunities, and build your career with our intelligent job matching platform. Join thousands of professionals who found their perfect match.
+        </p>
+        
+        <div class="hero-search">
+          <div class="search-box">
+            <div class="search-input-group">
+              <div class="input-wrapper">
+                <i class="fas fa-search input-icon"></i>
+                <input type="text" class="search-input" placeholder="Job title, keywords, or company">
+              </div>
+              <div class="input-wrapper">
+                <i class="fas fa-map-marker-alt input-icon"></i>
+                <input type="text" class="search-input" placeholder="Location">
+              </div>
+              <button class="search-button">
+                <i class="fas fa-search"></i>
+                <span>Find Jobs</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
         <div class="hero-stats">
           <div class="stat-item">
-            <span class="stat-number">50K+</span>
+            <span class="stat-number">{{ stats.jobs }}</span>
             <span class="stat-label">Active Jobs</span>
           </div>
           <div class="stat-item">
-            <span class="stat-number">10K+</span>
+            <span class="stat-number">{{ stats.companies }}</span>
             <span class="stat-label">Companies</span>
           </div>
           <div class="stat-item">
-            <span class="stat-number">1M+</span>
+            <span class="stat-number">{{ stats.candidates }}</span>
             <span class="stat-label">Job Seekers</span>
           </div>
         </div>
       </div>
-      <div class="hero-image">
-        <img src="assets/FrontOffice/images/image.png" alt="Hero Image" />
-      </div>
-    </div>
-  </section>
-
-  <!-- Featured Companies Section -->
-  <section class="featured-companies">
-    <div class="container">
-      <h2 class="animate-on-scroll fade-in-up">Trusted by Leading Companies</h2>
-      <p class="animate-on-scroll fade-in-up">Join thousands of professionals working at top-tier organizations</p>
-      <div class="companies-grid">
-        <div class="company-card stagger-item">
-          <div class="company-logo">
-            <i class="fab fa-google"></i>
+      
+      <div class="hero-visual">
+        <div class="image-container">
+          <img src="assets/FrontOffice/images/image.png" alt="Job Search" class="hero-image">
+          <div class="image-glow"></div>
+          <div class="floating-cards">
+            <div class="floating-card card-1">
+              <span>Remote Work</span>
+            </div>
+            <div class="floating-card card-2">
+              <span>Career Growth</span>
+            </div>
+            <div class="floating-card card-3">
+              <span>Team Culture</span>
+            </div>
           </div>
-          <h3>Google</h3>
-          <p>150+ open positions</p>
-        </div>
-        <div class="company-card stagger-item">
-          <div class="company-logo">
-            <i class="fab fa-microsoft"></i>
-          </div>
-          <h3>Microsoft</h3>
-          <p>120+ open positions</p>
-        </div>
-        <div class="company-card stagger-item">
-          <div class="company-logo">
-            <i class="fab fa-apple"></i>
-          </div>
-          <h3>Apple</h3>
-          <p>95+ open positions</p>
-        </div>
-        <div class="company-card stagger-item">
-          <div class="company-logo">
-            <i class="fab fa-amazon"></i>
-          </div>
-          <h3>Amazon</h3>
-          <p>200+ open positions</p>
-        </div>
-        <div class="company-card stagger-item">
-          <div class="company-logo">
-            <i class="fab fa-facebook"></i>
-          </div>
-          <h3>Meta</h3>
-          <p>85+ open positions</p>
-        </div>
-        <div class="company-card stagger-item">
-          <div class="company-logo">
-            <i class="fab fa-netflix"></i>
-          </div>
-          <h3>Netflix</h3>
-          <p>75+ open positions</p>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Job Categories Section -->
-  <section class="job-categories">
-    <div class="container">
-      <h2 class="animate-on-scroll fade-in-up">Explore Job Categories</h2>
-      <p class="animate-on-scroll fade-in-up">Find opportunities in your field of expertise</p>
-      <div class="categories-grid">
-        <div class="category-card stagger-item">
+<!-- Features Section -->
+<section class="features-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="header-badge">
+        <span>Why Choose Us</span>
+      </div>
+      <h2 class="section-title1">Powerful Features for Your Success</h2>
+      <p class="section-subtitle">Discover what makes SmartCruit the ultimate platform for job seekers and employers alike</p>
+    </div>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-brain"></i>
+        </div>
+        <h3 class="feature-title">AI-Powered Matching</h3>
+        <p class="feature-description">Our advanced AI algorithm matches you with the perfect job opportunities based on your skills and preferences.</p>
+        <div class="feature-stats">
+          <div class="stat">
+            <span class="stat-value">95%</span>
+            <span class="stat-label">Match Rate</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3 class="feature-title">Secure & Private</h3>
+        <p class="feature-description">Your data is protected with enterprise-grade security. Your privacy is our top priority.</p>
+        <div class="feature-stats">
+          <div class="stat">
+            <span class="stat-value">100%</span>
+            <span class="stat-label">Secure</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-bolt"></i>
+        </div>
+        <h3 class="feature-title">Lightning Fast</h3>
+        <p class="feature-description">Get instant job recommendations and apply with one click. No more waiting around.</p>
+        <div class="feature-stats">
+          <div class="stat">
+            <span class="stat-value">3s</span>
+            <span class="stat-label">Average</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Companies Section -->
+<section class="companies-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="header-badge">
+        <span>Top Companies</span>
+      </div>
+      <h2 class="section-title">Work with Industry Leaders</h2>
+      <p class="section-subtitle">Join thousands of professionals at the world's most innovative companies</p>
+    </div>
+    
+    <div class="companies-grid">
+      <div class="company-card" *ngFor="let company of topCompanies">
+        <div class="card-content fancy-company-card">
+          
+          <!-- Logo -->
+          <div class="company-logo-container">
+            <div class="company-avatar">
+              <img *ngIf="company.logoUrl; else defaultIcon"
+                   [src]="company.logoUrl"
+                   alt="{{ company.name }} logo"
+                   class="company-logo-img1" />
+              <ng-template #defaultIcon>
+                <i class="fas fa-building fa-2x default-logo-icon"></i>
+              </ng-template>
+            </div>
+          </div>
+    
+          <!-- Info -->
+          <div class="company-content">
+            <div class="company-header">
+              <h3 class="company-name">{{ company.name }}</h3>
+              <span class="badge-pill">{{ company.jobCount }}+ jobs</span>
+            </div>
+    
+            <div class="info-grid">
+              <div *ngIf="company.industry" class="info-box">
+                <i class="fas fa-industry"></i>
+                <span><strong>Industry:</strong> {{ company.industry }}</span>
+              </div>
+              <div *ngIf="company.contactEmail" class="info-box">
+                <i class="fas fa-envelope"></i>
+                <span><strong>Email:</strong> 
+                  <a href="mailto:{{ company.contactEmail }}">{{ company.contactEmail }}</a>
+                </span>
+              </div>
+              <div *ngIf="company.website" class="info-box">
+                <i class="fas fa-globe"></i>
+                <span><strong>Website:</strong> 
+                  <a href="{{ company.website }}" target="_blank">{{ company.website }}</a>
+                </span>
+              </div>
+             
+            </div>
+            
+          </div>
+    
+        </div>
+        <div class="card-hover-effect"></div>
+      </div>
+    </div>
+    
+    
+    
+  </div>
+</section>
+
+<!-- Categories Section -->
+<section class="categories-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="header-badge">
+        <span>Job Categories</span>
+      </div>
+      <h2 class="section-title1">Explore by Category</h2>
+      <p class="section-subtitle">Find opportunities in your field of expertise</p>
+    </div>
+    
+    <div class="categories-grid">
+      <div class="category-card" *ngFor="let category of jobCategories">
+        <div class="category-content">
           <div class="category-icon">
             <i class="fas fa-code"></i>
           </div>
-          <h3>Technology</h3>
-          <p>2,500+ jobs</p>
-          <span class="category-tag">Hot</span>
-        </div>
-        <div class="category-card stagger-item">
-          <div class="category-icon">
-            <i class="fas fa-palette"></i>
+          <h3 class="category-name">{{category.name}}</h3>
+          <p class="category-jobs">{{category.jobCount}}+ jobs available</p>
+          <div class="category-badge">
+            <i class="fas fa-fire badge-fire"></i>
+            <span>Trending</span>
           </div>
-          <h3>Design</h3>
-          <p>1,200+ jobs</p>
         </div>
-        <div class="category-card stagger-item">
-          <div class="category-icon">
-            <i class="fas fa-chart-line"></i>
-          </div>
-          <h3>Marketing</h3>
-          <p>1,800+ jobs</p>
-        </div>
-        <div class="category-card stagger-item">
-          <div class="category-icon">
-            <i class="fas fa-handshake"></i>
-          </div>
-          <h3>Sales</h3>
-          <p>1,500+ jobs</p>
-        </div>
-        <div class="category-card stagger-item">
-          <div class="category-icon">
-            <i class="fas fa-graduation-cap"></i>
-          </div>
-          <h3>Education</h3>
-          <p>800+ jobs</p>
-        </div>
-        <div class="category-card stagger-item">
-          <div class="category-icon">
-            <i class="fas fa-heartbeat"></i>
-          </div>
-          <h3>Healthcare</h3>
-          <p>1,300+ jobs</p>
-        </div>
+        <div class="card-hover-effect"></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Featured Jobs Section -->
-  <section class="featured-jobs">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="animate-on-scroll fade-in-left">Featured Jobs</h2>
-        <a href="#" class="view-all-btn animate-on-scroll fade-in-right">View All Jobs</a>
+<!-- Featured Jobs Section -->
+<section class="jobs-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="header-badge">
+        <span>Featured Jobs</span>
       </div>
-      <div class="jobs-grid">
-        <div class="job-card stagger-item">
+      <h2 class="section-title">Handpicked Opportunities</h2>
+      <p class="section-subtitle">Curated job listings from top companies just for you</p>
+    </div>
+    
+    <div class="jobs-grid">
+      <div class="job-card" *ngFor="let job of featuredJobs">
+        <div class="job-content">
           <div class="job-header">
             <div class="company-info">
               <div class="company-avatar">
-                <i class="fab fa-google"></i>
+                <img
+                  *ngIf="job.company?.logoUrl; else defaultCompanyIcon"
+                  [src]="job.company.logoUrl"
+                  alt="{{ job.company?.name }} logo"
+                  class="company-logo-img1"
+                />
+                <ng-template #defaultCompanyIcon>
+                  <i class="fas fa-building"></i>
+                </ng-template>
               </div>
               <div>
-                <h3>Senior Frontend Developer</h3>
-                <p class="company-name">Google</p>
+                <h3 class="job-title">{{ job.title }}</h3>
+                <p class="company-name">{{ job.company?.name || 'Unknown Company' }}</p>
               </div>
             </div>
-            <div class="job-badge">Full-time</div>
+            <div class="job-type-badge">{{ job.jobType }}</div>
           </div>
-          <div class="job-details">
-            <div class="detail-item">
+      
+          <div class="job-meta">
+            <div class="meta-item">
               <i class="fas fa-map-marker-alt"></i>
-              <span>Mountain View, CA</span>
+              <span>{{ job.jobLocation }}</span>
             </div>
-            <div class="detail-item">
-              <i class="fas fa-dollar-sign"></i>
-              <span>$120k - $180k</span>
+            <div class="meta-item">
+              <i class="fas fa-money-bill-wave"></i>
+              <span>${{ job.salary | number:'1.0-0' }}</span>
             </div>
-            <div class="detail-item">
-              <i class="fas fa-clock"></i>
-              <span>Posted 2 days ago</span>
-            </div>
-          </div>
-          <div class="job-tags">
-            <span class="tag">React</span>
-            <span class="tag">TypeScript</span>
-            <span class="tag">Node.js</span>
-          </div>
-          <button class="apply-btn">Apply Now</button>
-        </div>
-
-        <div class="job-card stagger-item">
-          <div class="job-header">
-            <div class="company-info">
-              <div class="company-avatar">
-                <i class="fab fa-microsoft"></i>
-              </div>
-              <div>
-                <h3>UX/UI Designer</h3>
-                <p class="company-name">Microsoft</p>
-              </div>
-            </div>
-            <div class="job-badge">Full-time</div>
-          </div>
-          <div class="job-details">
-            <div class="detail-item">
-              <i class="fas fa-map-marker-alt"></i>
-              <span>Seattle, WA</span>
-            </div>
-            <div class="detail-item">
-              <i class="fas fa-dollar-sign"></i>
-              <span>$90k - $140k</span>
-            </div>
-            <div class="detail-item">
-              <i class="fas fa-clock"></i>
-              <span>Posted 1 day ago</span>
+            <div class="meta-item">
+              <i class="fas fa-layer-group"></i>
+              <span>{{ job.category }}</span>
             </div>
           </div>
-          <div class="job-tags">
-            <span class="tag">Figma</span>
-            <span class="tag">Sketch</span>
-            <span class="tag">Prototyping</span>
+      
+          <div class="job-skills" *ngIf="job.requiredSkills?.length">
+            <span class="skill-tag" *ngFor="let skill of job.requiredSkills">{{ skill }}</span>
           </div>
-          <button class="apply-btn">Apply Now</button>
-        </div>
-
-        <div class="job-card stagger-item">
-          <div class="job-header">
-            <div class="company-info">
-              <div class="company-avatar">
-                <i class="fab fa-apple"></i>
-              </div>
-              <div>
-                <h3>iOS Developer</h3>
-                <p class="company-name">Apple</p>
-              </div>
-            </div>
-            <div class="job-badge">Full-time</div>
-          </div>
-          <div class="job-details">
-            <div class="detail-item">
-              <i class="fas fa-map-marker-alt"></i>
-              <span>Cupertino, CA</span>
-            </div>
-            <div class="detail-item">
-              <i class="fas fa-dollar-sign"></i>
-              <span>$130k - $200k</span>
-            </div>
-            <div class="detail-item">
-              <i class="fas fa-clock"></i>
-              <span>Posted 3 days ago</span>
-            </div>
-          </div>
-          <div class="job-tags">
-            <span class="tag">Swift</span>
-            <span class="tag">iOS</span>
-            <span class="tag">Xcode</span>
-          </div>
-          <button class="apply-btn">Apply Now</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Testimonials Section -->
-  <section class="testimonials">
-    <div class="container">
-      <h2 class="animate-on-scroll fade-in-up">What Our Users Say</h2>
-      <p class="animate-on-scroll fade-in-up">Success stories from job seekers who found their dream careers</p>
-      <div class="testimonials-grid">
-        <div class="testimonial-card stagger-item">
-          <div class="testimonial-content">
-            <p>"SmartCruit helped me find my dream job at Google. The platform is intuitive and the job matching is spot-on!"</p>
-          </div>
-          <div class="testimonial-author">
-            <div class="author-avatar">
-              <i class="fas fa-user"></i>
-            </div>
-            <div class="author-info">
-              <h4>Sarah Johnson</h4>
-              <p>Senior Developer at Google</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card stagger-item">
-          <div class="testimonial-content">
-            <p>"Within 2 weeks of using SmartCruit, I received 5 interview invitations. The process was seamless!"</p>
-          </div>
-          <div class="testimonial-author">
-            <div class="author-avatar">
-              <i class="fas fa-user"></i>
-            </div>
-            <div class="author-info">
-              <h4>Michael Chen</h4>
-              <p>Product Manager at Microsoft</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="testimonial-card stagger-item">
-          <div class="testimonial-content">
-            <p>"The best job platform I've ever used. Professional, efficient, and results-driven!"</p>
-          </div>
-          <div class="testimonial-author">
-            <div class="author-avatar">
-              <i class="fas fa-user"></i>
-            </div>
-            <div class="author-info">
-              <h4>Emily Rodriguez</h4>
-              <p>UX Designer at Apple</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- How It Works Section -->
-  <section class="how-it-works">
-    <div class="container">
-      <h2 class="animate-on-scroll fade-in-up">How SmartCruit Works</h2>
-      <p class="animate-on-scroll fade-in-up">Get started in just a few simple steps</p>
-      <div class="steps-grid">
-        <div class="step-card stagger-item">
-          <div class="step-number">1</div>
-          <div class="step-icon">
-            <i class="fas fa-user-plus"></i>
-          </div>
-          <h3>Create Profile</h3>
-          <p>Sign up and build your professional profile with skills, experience, and preferences</p>
-        </div>
-        <div class="step-card stagger-item">
-          <div class="step-number">2</div>
-          <div class="step-icon">
-            <i class="fas fa-search"></i>
-          </div>
-          <h3>Find Jobs</h3>
-          <p>Browse thousands of job opportunities or let our AI match you with perfect positions</p>
-        </div>
-        <div class="step-card stagger-item">
-          <div class="step-number">3</div>
-          <div class="step-icon">
+      
+          <a [routerLink]="['/job-details', job.jobOfferId]" class="apply-button">
             <i class="fas fa-paper-plane"></i>
-          </div>
-          <h3>Apply & Connect</h3>
-          <p>Apply with one click and connect directly with hiring managers</p>
+            <span>Apply Now</span>
+          </a>
+          
         </div>
-        <div class="step-card stagger-item">
-          <div class="step-number">4</div>
-          <div class="step-icon">
-            <i class="fas fa-trophy"></i>
-          </div>
-          <h3>Land Your Dream Job</h3>
-          <p>Get hired and start your new career journey with confidence</p>
-        </div>
+        <div class="card-hover-effect"></div>
       </div>
+      
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Call to Action Section -->
-  <section class="cta">
-    <div class="container">
-      <div class="cta-content">
-        <h2 class="animate-on-scroll scale-in">Ready to Transform Your Career?</h2>
-        <p class="animate-on-scroll slide-in-up">Join millions of professionals who have found their dream jobs through SmartCruit</p>
-        <div class="cta-buttons">
-          <button class="cta-btn primary animate-on-scroll fade-in-left">
-            <i class="fas fa-rocket"></i>
-            Get Started Now
-          </button>
-          <button class="cta-btn secondary animate-on-scroll fade-in-right">
-            <i class="fas fa-play"></i>
-            Watch Demo
-          </button>
+<!-- How It Works Section -->
+<section class="process-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="header-badge">
+        <span>How It Works</span>
+      </div>
+      <h2 class="section-title1">Get Started in 3 Simple Steps</h2>
+      <p class="section-subtitle">Your journey to the perfect job starts here</p>
+    </div>
+    
+    <div class="process-grid">
+      <div class="process-step" *ngFor="let step of [1,2,3]">
+        <div class="step-number">{{step}}</div>
+        <div class="step-icon">
+          <i [class]="getStepIcon(step)"></i>
+        </div>
+        <h3 class="step-title">{{getStepTitle(step)}}</h3>
+        <p class="step-description">{{getStepDescription(step)}}</p>
+        <div class="step-connector" *ngIf="step < 3"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="header-badge">
+        <i class="fas fa-quote-left"></i>
+        <span>Success Stories</span>
+      </div>
+      <h2 class="section-title">What Our Users Say</h2>
+      <p class="section-subtitle">Real stories from real people who found their dream jobs</p>
+    </div>
+    
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-content">
+          <div class="quote-icon">
+            <i class="fas fa-quote-left"></i>
+          </div>
+          <p class="testimonial-text">"SmartCruit helped me find my dream job in just 2 weeks! The AI matching is incredible and the application process was seamless."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="author-info">
+              <h4 class="author-name">Sarah Johnson</h4>
+              <p class="author-title">Senior Developer at Google</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="testimonial-card">
+        <div class="testimonial-content">
+          <div class="quote-icon">
+            <i class="fas fa-quote-left"></i>
+          </div>
+          <p class="testimonial-text">"The platform is incredibly user-friendly and the job recommendations are spot-on. I highly recommend SmartCruit to anyone looking for a career change."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="author-info">
+              <h4 class="author-name">Michael Chen</h4>
+              <p class="author-title">Product Manager at Microsoft</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="testimonial-card">
+        <div class="testimonial-content">
+          <div class="quote-icon">
+            <i class="fas fa-quote-left"></i>
+          </div>
+          <p class="testimonial-text">"As an employer, SmartCruit has helped us find exceptional talent quickly and efficiently. The quality of candidates is outstanding."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="author-info">
+              <h4 class="author-name">Emily Rodriguez</h4>
+              <p class="author-title">HR Director at Apple</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </section>
-</div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="cta-background">
+    <div class="cta-particles">
+      <div class="particle" *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]"></div>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="cta-content">
+      <h2 class="cta-title">Ready to Transform Your Career?</h2>
+      <p class="cta-description">Join thousands of professionals who have already found their dream jobs with SmartCruit. Start your journey today and unlock endless possibilities.</p>
+      
+      <div class="cta-buttons">
+        <button class="cta-button primary">
+          <i class="fas fa-rocket"></i>
+          <span>Get Started Now</span>
+        </button>
+        <button class="cta-button secondary">
+          <i class="fas fa-play"></i>
+          <span>Watch Demo</span>
+        </button>
+      </div>
+      
+      <div class="cta-stats">
+        <div class="cta-stat">
+          <span class="stat-value">50K+</span>
+          <span class="stat-label">Jobs Posted</span>
+        </div>
+        <div class="cta-stat">
+          <span class="stat-value">10K+</span>
+          <span class="stat-label">Companies</span>
+        </div>
+        <div class="cta-stat">
+          <span class="stat-value">95%</span>
+          <span class="stat-label">Success Rate</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

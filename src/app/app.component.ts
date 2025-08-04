@@ -22,7 +22,7 @@ export class AppComponent {
     // Subscribe to route changes
     this.router.events.subscribe(() => {
       const currentUrl = this.router.url;
-      this.showHeader = !['/login', '/signup', '/forgot-password', '/reset-password', '/onboarding'].includes(currentUrl);
+      this.showHeader = !['/login', '/signup', '/forgot-password', '/reset-password', '/onboarding', '/**'].includes(currentUrl);
     });
   }
 }

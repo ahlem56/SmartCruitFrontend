@@ -1,8 +1,11 @@
-import { Component } from '@angular/core';
+// header.component.ts
+import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../Services/user.service';
-import { RouterLink, RouterLinkWithHref } from '@angular/router';
+import { NotificationService } from '../../Services/notification.service';
+import { Router, RouterLink, RouterLinkWithHref } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
+import { InterviewService } from '../../Services/interview.service';
 
 @Component({
   selector: 'app-header',
@@ -11,26 +14,57 @@ import { Observable } from 'rxjs';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   currentUser$: Observable<any>;
   recipientId: string = '';
+  unreadCount: number = 0;
+pendingInterviewCount: number = 0;
 
-  constructor(public userService: UserService) {
+  constructor(
+    public userService: UserService,
+    private notificationService: NotificationService,
+      private interviewService: InterviewService ,// ✅ Injected
+      private router: Router // ✅ Inject Router
+
+  ) {
     this.currentUser$ = this.userService.currentUser$;
+  }
 
-    this.currentUser$.subscribe(user => {
-      console.log('👤 Header sees user:', user);
+  ngOnInit(): void {
+  this.currentUser$.subscribe(user => {
+    if (!user) return;
 
-      // Example: if the logged-in user is a candidate, set recipient to a known employer ID
-      if (user?.role === 'candidate') {
-        this.recipientId = '12'; // replace with dynamic value from recent conversations or a chat list
-      } else if (user?.role === 'employer') {
-        this.recipientId = '16'; // e.g., candidate ID
+    // Fetch chat recipient
+    this.userService.getConversationContacts(user.userId).subscribe({
+      next: (contacts) => {
+        if (contacts.length > 0) this.recipientId = contacts[0].userId;
       }
     });
-  }
 
-  logout() {
-    this.userService.logout();
-  }
+    // Load notifications
+    this.notificationService.notifications$.subscribe(notifications => {
+      this.unreadCount = notifications.filter(n => !n.read).length;
+    });
+    this.notificationService.refreshNotifications(user.userId);
+
+    // ✅ Load pending interviews
+    const fetch$ = user.role === 'employer'
+      ? this.interviewService.getInterviewsForEmployer(user.userId)
+      : this.interviewService.getInterviewsForCandidate(user.userId);
+
+    fetch$.subscribe({
+      next: interviews => {
+        this.pendingInterviewCount = interviews.filter(i => i.status === 'PENDING').length;
+      },
+      error: err => console.error('❌ Failed to fetch interviews', err)
+    });
+  });
+}
+
+
+
+logout() {
+  this.userService.logout();
+  this.router.navigate(['/login']); // ✅ Redirect to login route
+}
 }

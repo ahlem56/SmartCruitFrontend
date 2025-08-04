@@ -17,6 +17,7 @@ declare const google: any;
 export class LoginComponent implements AfterViewInit {
   email = '';
   password = '';
+  serverError: string | null = null; // ← NEW
 
   constructor(
     private userService: UserService,
@@ -71,21 +72,21 @@ if (normalizedRole === 'admin') {
   }
 
   // ✅ Add this method
-  onLogin() {
-    console.log('🚀 Form submitted with:', this.email, this.password);
+ onLogin() {
+    this.serverError = null; // Clear previous error
     this.userService.login({ email: this.email, password: this.password }).subscribe({
       next: (res: any) => {
-        console.log('✅ Backend response:', res);
         this.userService.saveToken(res.token);
-  
         const normalizedRole = res.role.toLowerCase();
         this.userService.saveUser({
           fullName: res.fullName,
           email: res.email,
           role: normalizedRole as 'employer' | 'candidate' | 'admin',
-          userId: res.userId  
+          userId: res.userId,
+          profilePictureUrl: res.profilePictureUrl // ✅ make sure this is passed!
+
         });
-  
+
         if (normalizedRole === 'admin') {
           this.router.navigate(['/backoffice/dashboard']);
         } else if (normalizedRole === 'employer') {
@@ -93,14 +94,12 @@ if (normalizedRole === 'admin') {
         } else {
           this.router.navigate(['/home']);
         }
-        
       },
       error: () => {
-        alert('Invalid email or password.');
+        this.serverError = 'Invalid email or password.'; // Show inline error
       }
     });
   }
-  
   onFacebookLogin(): void {
     this.socialAuthService.signIn(FacebookLoginProvider.PROVIDER_ID).then((user: SocialUser) => {
       console.log('✅ Facebook user:', user);

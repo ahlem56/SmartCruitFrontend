@@ -1,22 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SupportService } from '../../Services/support.service';
-import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-support',
   templateUrl: './support.component.html',
   styleUrls: ['./support.component.css'],
-  imports: [FormsModule,CommonModule]
+  standalone: true,
+  imports: [CommonModule,FormsModule,RouterModule,ReactiveFormsModule]
 })
-export class SupportComponent {
-  supportForm = {
-    fullName: '',
-    email: '',
-    subject: '',
-    message: ''
-  };
-
+export class SupportComponent implements OnInit {
+  supportForm!: FormGroup;
   submitted = false;
   attachmentName: string = '';
   attachmentFile: File | null = null;
@@ -29,7 +26,16 @@ export class SupportComponent {
     { question: 'How do I contact support urgently?', answer: 'You can email us at support@smartcruit.com or call +1 234 567 89 for urgent matters.', open: false }
   ];
 
-  constructor(private supportService: SupportService) {}
+  constructor(private fb: FormBuilder, private supportService: SupportService) {}
+
+  ngOnInit() {
+    this.supportForm = this.fb.group({
+      fullName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      subject: ['', Validators.required],
+      message: ['', Validators.required]
+    });
+  }
 
   onFileSelected(event: any): void {
     const file = event.target.files[0];
@@ -50,49 +56,35 @@ export class SupportComponent {
 
   scrollToForm(event: Event): void {
     event.preventDefault();
-    const formSection = document.querySelector('.support-form-section');
-    if (formSection) {
-      formSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    document.querySelector('.support-form-section')?.scrollIntoView({ behavior: 'smooth' });
   }
 
-  submitForm() {
-    if (this.validateForm()) {
-      const formData = new FormData();
-      Object.keys(this.supportForm).forEach(key => {
-        formData.append(key, (this.supportForm as any)[key]);
-      });
-      if (this.attachmentFile) {
-        formData.append('attachment', this.attachmentFile);
-      }
-      this.supportService.submitSupportRequest(formData).subscribe({
-        next: () => {
-          this.submitted = true;
-          this.resetForm();
-          this.removeAttachment();
-        },
-        error: () => {
-          alert('Error submitting support request.');
-        }
-      });
+  submitForm(): void {
+    if (this.supportForm.invalid) {
+      this.supportForm.markAllAsTouched();
+      return;
     }
+
+    const formData = new FormData();
+    Object.entries(this.supportForm.value).forEach(([key, value]) => {
+      formData.append(key, value as string);
+    });
+
+    if (this.attachmentFile) {
+      formData.append('attachment', this.attachmentFile);
+    }
+
+    this.supportService.submitSupportRequest(formData).subscribe({
+      next: () => {
+        this.submitted = true;
+        this.supportForm.reset();
+        this.removeAttachment();
+      },
+      error: () => alert('Error submitting support request.')
+    });
   }
 
-  validateForm(): boolean {
-    const { fullName, email, subject, message } = this.supportForm;
-    if (!fullName || !email || !subject || !message) {
-      alert('All fields are required.');
-      return false;
-    }
-    return true;
-  }
-
-  resetForm(): void {
-    this.supportForm = {
-      fullName: '',
-      email: '',
-      subject: '',
-      message: ''
-    };
+  get f() {
+    return this.supportForm.controls;
   }
 }

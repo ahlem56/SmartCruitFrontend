@@ -4,6 +4,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { JobOffersService, JobOffer } from '../../../Services/job-offers.service';
+import { FavoriteService } from '../../../Services/favorite.service';
+import { UserService } from '../../../Services/user.service';
+import { CandidateService } from '../../../Services/candidate.service';
+import { CompanyService } from '../../../Services/company.service';
 
 @Component({
   selector: 'app-job-offers',
@@ -19,13 +23,18 @@ export class JobOffersComponent implements OnInit {
   error = false;
   searchTitle = '';
   searchLocation = '';
-  jobTypes: JobOffer['jobType'][] = ['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP'];
+  jobTypes: JobOffer['jobType'][] = ['FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERNSHIP', 'REMOTE'];
   typeFilters: JobOffer['jobType'][] = [];
   salaryMin: number | null = null;
   salaryMax: number | null = null;
+  candidateId: number = 0;
+  favoriteJobIds: number[] = [];
+  totalCompanies: number = 0;
+  totalCandidates: number = 0;
+  selectedSortOption: string = 'Most Recent';
 
-  experienceLevels: JobOffer['experienceLevel'][] = ['JUNIOR', 'MID', 'SENIOR'];
-  educationLevels: JobOffer['educationLevel'][] = ['HIGH_SCHOOL', 'BACHELORS', 'MASTERS', 'PHD'];
+  experienceLevels: JobOffer['experienceLevel'][] = ['ENTRY', 'MID', 'SENIOR', 'LEAD'];
+educationLevels: JobOffer['educationLevel'][] = ['HIGH_SCHOOL', 'BACHELOR', 'MASTER', 'DOCTORATE', 'OTHER'];
 
   experienceFilters: JobOffer['experienceLevel'][] = [];
   educationFilters: JobOffer['educationLevel'][] = [];
@@ -33,7 +42,8 @@ export class JobOffersComponent implements OnInit {
   // Track saved jobs
   savedJobs: Set<number> = new Set();
 
-  constructor(private jobOffersService: JobOffersService, private router: Router) {}
+  constructor(private jobOffersService: JobOffersService, private router: Router,  private favoriteService: FavoriteService,  private userService: UserService,private companyService: CompanyService,
+    private candidateService: CandidateService) {}
 
   ngOnInit(): void {
     this.jobOffersService.getJobOffers().subscribe({
@@ -47,7 +57,26 @@ export class JobOffersComponent implements OnInit {
         this.error = true;
       }
     });
+  
+    this.userService.currentUser$.subscribe(user => {
+      if (user) {
+        this.candidateId = user.userId;
+        this.favoriteService.getFavoritesByCandidate(user.userId).subscribe(favorites => {
+          this.favoriteJobIds = favorites.map(f => f.jobOffer.jobOfferId);
+        });
+      }
+    });
+  
+    // 🔥 Fetch company & candidate counts dynamically
+    this.companyService.getAllCompanies().subscribe(companies => {
+      this.totalCompanies = companies.length;
+    });
+    this.candidateService.getCandidateCount().subscribe(count => {
+      this.totalCandidates = count;
+    });
+    
   }
+  
 
   onSearch(): void {
     const title = this.searchTitle.toLowerCase();
@@ -64,6 +93,8 @@ export class JobOffersComponent implements OnInit {
   
       return matchTitle && matchLocation && matchType && matchSalaryMin && matchSalaryMax && matchExperience && matchEducation;
     });
+    this.onSortChange();
+
   }
   
   getTypeColor(type: JobOffer['jobType']): string {
@@ -224,20 +255,61 @@ export class JobOffersComponent implements OnInit {
 
   // Check if job is saved
   isJobSaved(jobId: number): boolean {
-    return this.savedJobs.has(jobId);
-  }
+  return this.favoriteJobIds.includes(jobId);
+}
 
-  // Toggle job saved status
-  toggleJobSaved(jobId: number): void {
-    if (this.savedJobs.has(jobId)) {
-      this.savedJobs.delete(jobId);
-    } else {
-      this.savedJobs.add(jobId);
-    }
+toggleJobSaved(jobId: number): void {
+  if (!this.candidateId) return;
+
+  if (this.isJobSaved(jobId)) {
+    this.favoriteService.removeFavorite(this.candidateId, jobId).subscribe(() => {
+      this.favoriteJobIds = this.favoriteJobIds.filter(id => id !== jobId);
+    });
+  } else {
+    this.favoriteService.addFavorite(this.candidateId, jobId).subscribe(() => {
+      this.favoriteJobIds.push(jobId);
+    });
   }
+}
+
 
   // Track by function for ngFor optimization
   trackByJobId(index: number, job: JobOffer): number {
     return job.jobOfferId;
   }
+
+  onSortChange(): void {
+    console.log('Sort option selected:', this.selectedSortOption);
+
+    switch (this.selectedSortOption) {
+      case 'Salary: High to Low':
+        this.filteredOffers.sort((a, b) => b.salary - a.salary);
+        break;
+  
+      case 'Salary: Low to High':
+        this.filteredOffers.sort((a, b) => a.salary - b.salary);
+        break;
+  
+      case 'Experience Level':
+        const levelPriority: Record<JobOffer['experienceLevel'], number> = {
+          JUNIOR: 1,
+          MID: 2,
+          SENIOR: 3
+        };
+        this.filteredOffers.sort((a, b) =>
+          levelPriority[a.experienceLevel as JobOffer['experienceLevel']] -
+          levelPriority[b.experienceLevel as JobOffer['experienceLevel']]
+        );
+        break;
+  
+      case 'Most Recent':
+      default:
+        this.filteredOffers.sort((a, b) =>
+          new Date(b.postedDate).getTime() - new Date(a.postedDate).getTime()
+        );
+        break;
+    }
+  }
+  
+  
 }

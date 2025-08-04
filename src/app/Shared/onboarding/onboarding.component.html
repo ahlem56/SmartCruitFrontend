@@ -5,14 +5,11 @@
     <div class="onboarding-progress">
       <div class="progress-step" [class.active]="step >= 1"><i class="fas fa-briefcase"></i></div>
       <div class="progress-bar" [class.filled]="step > 1"></div>
-      <div class="progress-step" [class.active]="step >= 2"><i class="fas fa-bullseye"></i></div>
+      <div class="progress-step" [class.active]="step >= 2"><i class="fas fa-lightbulb"></i></div>
       <div class="progress-bar" [class.filled]="step > 2"></div>
-      <div class="progress-step" [class.active]="step >= 3"><i class="fas fa-lightbulb"></i></div>
-      <div class="progress-bar" [class.filled]="step > 3"></div>
-      <div class="progress-step" [class.active]="step >= 4"><i class="fas fa-code"></i></div>
-      <div class="progress-bar" [class.filled]="step > 4"></div>
-      <div class="progress-step" [class.active]="step >= 5"><i class="fas fa-paper-plane"></i></div>
+      <div class="progress-step" [class.active]="step >= 3"><i class="fas fa-paper-plane"></i></div>
     </div>
+    
 
     <!-- Step 1: Career Info -->
     <div class="onboarding-step" *ngIf="step === 1" [@fadeSlide]>
@@ -23,88 +20,35 @@
       </div>
       <div class="input-group">
         <i class="fas fa-bullseye"></i>
-        <input [(ngModel)]="onboardingData.preferredJobTitle" placeholder="Desired job title (e.g. Tech Lead)" />
+        <input [(ngModel)]="onboardingData.preferredJobTitle" placeholder="Desired job title" />
       </div>
       <div class="input-group">
-        <i class="fas fa-calendar-alt"></i>
-        <input [(ngModel)]="onboardingData.experienceYears" placeholder="Years of experience (e.g. 3)" />
+        <i class="fas fa-graduation-cap"></i>
+        <input [(ngModel)]="onboardingData.educationLevel" placeholder="Education level (e.g. Master’s)" />
       </div>
       <button class="onboarding-btn" (click)="next()">Next <i class="fas fa-arrow-right"></i></button>
     </div>
-
-    <!-- Step 2: Skills & Tools -->
+    
+    <!-- Step 2: your bio -->
     <div class="onboarding-step" *ngIf="step === 2" [@fadeSlide]>
-      <h2>Your Skills & Tools</h2>
+      <h2>Tell us about yourself</h2>
       <div class="input-group">
-        <i class="fas fa-tools"></i>
-        <input [(ngModel)]="onboardingData.primarySkills" placeholder="Primary skills (e.g. Angular, Spring)" />
-      </div>
-      <div class="input-group">
-        <i class="fas fa-puzzle-piece"></i>
-        <input [(ngModel)]="onboardingData.secondarySkills" placeholder="Secondary skills (e.g. SQL, Docker)" />
-      </div>
-      <div class="input-group">
-        <i class="fas fa-laptop-code"></i>
-        <input [(ngModel)]="onboardingData.toolsOrTechnologies" placeholder="Tools/tech you use (e.g. Git, VSCode)" />
+        <i class="fas fa-comment"></i>
+        <textarea [(ngModel)]="onboardingData.bio" placeholder="Short bio (max 1000 characters)" maxlength="1000"></textarea>
       </div>
       <div class="navigation">
         <button class="onboarding-btn" (click)="prev()">Back</button>
         <button class="onboarding-btn" (click)="next()">Next</button>
       </div>
     </div>
+    
 
     <!-- Step 3: Education -->
     <div class="onboarding-step" *ngIf="step === 3" [@fadeSlide]>
-      <h2>Education Background</h2>
-      <div class="input-group">
-        <i class="fas fa-graduation-cap"></i>
-        <input [(ngModel)]="onboardingData.educationLevel" placeholder="Highest degree (e.g. Bachelor, Master)" />
-      </div>
-      <div class="input-group">
-        <i class="fas fa-book"></i>
-        <input [(ngModel)]="onboardingData.degreeField" placeholder="Field of study (e.g. Computer Science)" />
-      </div>
-      <div class="input-group">
-        <i class="fas fa-certificate"></i>
-        <input [(ngModel)]="onboardingData.certifications" placeholder="Certifications (e.g. AWS, PMP)" />
-      </div>
-      <div class="navigation">
-        <button class="onboarding-btn" (click)="prev()">Back</button>
-        <button class="onboarding-btn" (click)="next()">Next</button>
-      </div>
-    </div>
-
-    <!-- Step 4: Preferences -->
-    <div class="onboarding-step" *ngIf="step === 4" [@fadeSlide]>
-      <h2>Job Preferences</h2>
-      <div class="input-group">
-        <i class="fas fa-wallet"></i>
-        <input [(ngModel)]="onboardingData.desiredSalaryRange" placeholder="Desired salary (e.g. $40k–$60k)" />
-      </div>
-      <div class="input-group">
-        <i class="fas fa-clock"></i>
-        <input [(ngModel)]="onboardingData.availability" placeholder="Availability (e.g. Immediate, 1 month)" />
-      </div>
-      <div class="input-group">
-        <i class="fas fa-globe"></i>
-        <input [(ngModel)]="onboardingData.workLocation" placeholder="Preferred location (e.g. Paris, Remote)" />
-      </div>
-      <div class="input-group">
-        <i class="fas fa-map-marker-alt"></i>
-        <input [(ngModel)]="onboardingData.relocationWillingness" placeholder="Open to relocation? (Yes/No)" />
-      </div>
-      <div class="navigation">
-        <button class="onboarding-btn" (click)="prev()">Back</button>
-        <button class="onboarding-btn" (click)="next()">Next</button>
-      </div>
-    </div>
-
-    <!-- Step 5: Links -->
-    <div class="onboarding-step" *ngIf="step === 5" [@fadeSlide]>
-      <h2>Links & Portfolio</h2>
+      <h2>Online Profiles</h2>
       <div class="input-group">
         <i class="fab fa-linkedin"></i>
-        <input [(ngModel)]="onboardingData.linkedInUrl" placeholder="LinkedIn profile URL" />
+        <input [(ngModel)]="onboardingData.linkedinUrl" placeholder="LinkedIn profile URL" />
       </div>
       <div class="input-group">
         <i class="fab fa-github"></i>
@@ -119,5 +63,9 @@
         <button class="onboarding-btn finish" (click)="submit()">Finish <i class="fas fa-check"></i></button>
       </div>
     </div>
+    
+
+    
+   
   </div>
 </div>

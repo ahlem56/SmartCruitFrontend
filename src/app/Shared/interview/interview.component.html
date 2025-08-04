@@ -1,0 +1,44 @@
+<div class="interview-container">
+  <h2 class="section-title">
+     <span class="title-text">My Interviews</span>
+  </h2>
+
+  <!-- Calendar Area -->
+  <section class="calendar-wrapper" aria-label="Interview Calendar">
+    <ng-template #calendarHost></ng-template>
+  </section>
+</div>
+
+<!-- Modal for Interview Details -->
+<div
+  *ngIf="selectedInterview"
+  class="modal-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modalTitle"
+  (click)="closeModal()"
+>
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2 id="modalTitle">{{ selectedInterview.status }} Interview</h2>
+
+    <ul class="interview-details-list">
+      <li><strong>Date:</strong> {{ selectedInterview.proposedDate | date: 'fullDate' }}</li>
+      <li><strong>Time:</strong> {{ selectedInterview.proposedDate | date: 'shortTime' }}</li>
+      <li><strong>Location:</strong> {{ selectedInterview.location }}</li>
+      <li><strong>Notes:</strong> {{ selectedInterview.notes }}</li>
+      <li *ngIf="selectedInterview.confirmedDate">
+        <strong>Confirmed:</strong> {{ selectedInterview.confirmedDate | date: 'short' }}
+      </li>
+    </ul>
+
+    <div class="modal-actions">
+      <button class="btn btn-cancel" (click)="closeModal()">Close</button>
+
+      <!-- Show Confirm/Cancel if status is PENDING -->
+      <ng-container *ngIf="selectedInterview.status === 'PENDING'">
+        <button class="btn btn-confirm" (click)="confirm(selectedInterview.interviewId)">Confirm</button>
+        <button class="btn btn-danger" (click)="cancel(selectedInterview.interviewId)">Cancel</button>
+      </ng-container>
+    </div>
+  </div>
+</div>

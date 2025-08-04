@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CompanyService } from './company.service';
 
+export type JobCategory = 'TECHNOLOGY' | 'DESIGN' | 'MARKETING' | 'SALES' | 'EDUCATION' | 'HEALTHCARE';
+
 export interface JobOffer {
   jobOfferId: number;
   title: string;
@@ -14,7 +16,8 @@ export interface JobOffer {
   benefits: string[];
   educationLevel: string;
   experienceLevel: string;
-  jobType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERNSHIP';
+  category: JobCategory;  // ✅ <-- Add this line
+  jobType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERNSHIP' | 'REMOTE';
   numberOfOpenPositions: number;
   postedDate: string;
   deadline: string;
