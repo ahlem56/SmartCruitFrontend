@@ -1,44 +1,144 @@
-<div class="interview-container">
-  <h2 class="section-title">
-     <span class="title-text">My Interviews</span>
-  </h2>
+<div class="interview-page">
+  <!-- Enhanced Background Elements -->
+  <div class="interview-bg-accent"></div>
+  <div class="interview-bg-pattern"></div>
+  
+  <div class="interview-container">
+    <!-- Enhanced Header Section -->
+    <div class="interview-header">
+      <div class="header-content">
+        <div class="title-section">
+          <h1 class="main-title">Interview Schedule</h1>
+          <p class="subtitle">Manage and track your professional interviews</p>
+        </div>
+        <div class="stats-section">
+          <div class="stat-card">
+            <div class="stat-number">{{ interviews.length }}</div>
+            <div class="stat-label">Total Interviews</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">{{ confirmedInterviewsCount }}</div>
+            <div class="stat-label">Confirmed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">{{ pendingInterviewsCount }}</div>
+            <div class="stat-label">Pending</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <!-- Calendar Area -->
-  <section class="calendar-wrapper" aria-label="Interview Calendar">
-    <ng-template #calendarHost></ng-template>
-  </section>
-</div>
+    <!-- Enhanced Calendar Section -->
+    <div class="calendar-section">
+      <div class="calendar-header">
+        <div class="calendar-title">
+          <h2>Interview Calendar</h2>
+          <p>Click on any interview to view details and manage your schedule</p>
+        </div>
+      </div>
+      
+      <div class="calendar-wrapper">
+        <ng-template #calendarHost></ng-template>
+      </div>
+    </div>
+  </div>
 
-<!-- Modal for Interview Details -->
-<div
-  *ngIf="selectedInterview"
-  class="modal-overlay"
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="modalTitle"
-  (click)="closeModal()"
->
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <h2 id="modalTitle">{{ selectedInterview.status }} Interview</h2>
+  <!-- Enhanced Interview Details Modal -->
+  <div
+    *ngIf="selectedInterview"
+    class="modal-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle"
+    (click)="closeModal()"
+  >
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <div class="modal-title-section">
+          <h2 id="modalTitle" class="modal-title">
+            {{ selectedInterview.status }} Interview
+          </h2>
+          <div class="status-badge" [ngClass]="'status-' + selectedInterview.status.toLowerCase()">
+            <div class="status-dot"></div>
+            <span>{{ selectedInterview.status }}</span>
+          </div>
+        </div>
+        <button class="modal-close" (click)="closeModal()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
 
-    <ul class="interview-details-list">
-      <li><strong>Date:</strong> {{ selectedInterview.proposedDate | date: 'fullDate' }}</li>
-      <li><strong>Time:</strong> {{ selectedInterview.proposedDate | date: 'shortTime' }}</li>
-      <li><strong>Location:</strong> {{ selectedInterview.location }}</li>
-      <li><strong>Notes:</strong> {{ selectedInterview.notes }}</li>
-      <li *ngIf="selectedInterview.confirmedDate">
-        <strong>Confirmed:</strong> {{ selectedInterview.confirmedDate | date: 'short' }}
-      </li>
-    </ul>
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <div class="interview-details-grid">
+          <!-- Date & Time Section -->
+          <div class="detail-card">
+            <div class="detail-header">
+              <h3>Date & Time</h3>
+            </div>
+            <div class="detail-content">
+              <div class="detail-item">
+                <div class="detail-label">Proposed Date</div>
+                <div class="detail-value">{{ selectedInterview.proposedDate | date: 'EEEE, MMMM d, yyyy' }}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Time</div>
+                <div class="detail-value">{{ selectedInterview.proposedDate | date: 'h:mm a' }}</div>
+              </div>
+              <div class="detail-item" *ngIf="selectedInterview.confirmedDate">
+                <div class="detail-label">Confirmed Date</div>
+                <div class="detail-value confirmed">{{ selectedInterview.confirmedDate | date: 'short' }}</div>
+              </div>
+            </div>
+          </div>
 
-    <div class="modal-actions">
-      <button class="btn btn-cancel" (click)="closeModal()">Close</button>
+          <!-- Location Section -->
+          <div class="detail-card">
+            <div class="detail-header">
+              <h3>Location</h3>
+            </div>
+            <div class="detail-content">
+              <div class="detail-item">
+                <div class="detail-value location">{{ selectedInterview.location }}</div>
+              </div>
+            </div>
+          </div>
 
-      <!-- Show Confirm/Cancel if status is PENDING -->
-      <ng-container *ngIf="selectedInterview.status === 'PENDING'">
-        <button class="btn btn-confirm" (click)="confirm(selectedInterview.interviewId)">Confirm</button>
-        <button class="btn btn-danger" (click)="cancel(selectedInterview.interviewId)">Cancel</button>
-      </ng-container>
+          <!-- Notes Section -->
+          <div class="detail-card full-width" *ngIf="selectedInterview.notes">
+            <div class="detail-header">
+              <h3>Additional Notes</h3>
+            </div>
+            <div class="detail-content">
+              <div class="notes-content">
+                {{ selectedInterview.notes }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="closeModal()">
+            Close
+          </button>
+
+          <!-- Action Buttons for PENDING Status -->
+          <div class="action-buttons" *ngIf="selectedInterview.status === 'PENDING'">
+            <button class="btn btn-success" (click)="confirm(selectedInterview.interviewId)">
+              Confirm Interview
+            </button>
+            <button class="btn btn-danger" (click)="cancel(selectedInterview.interviewId)">
+              Decline Interview
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

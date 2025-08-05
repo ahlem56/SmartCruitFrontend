@@ -65,5 +65,11 @@ export class ServiceEmployerService {
     );
   }
   
+  getJobAdPerformance(employerId: number): Observable<{ jobId: number, views: number, title : string }[]> {
+    return this.http.get<{ jobId: number, views: number , title : string}[]>(
+      `http://localhost:8089/SmartCruit/employer/jobAdPerformance/${employerId}`
+    );
+  }
+  
   
 }

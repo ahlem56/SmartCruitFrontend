@@ -26,7 +26,10 @@ topMatches: { candidateName: string, jobTitle: string, score: number }[] = [];
   applicationsThisWeek = 0;
   applicationsThisMonth = 0;
   upcomingInterviews = 0;
+  jobAdPerformance: { jobId: number, views: number, title: string }[] = [];
 
+  jobViewsChartData: any;
+jobViewsChartOptions: any;
   funnelChartData: any;
   funnelChartOptions: any;
   totalCandidates = 0;
@@ -108,6 +111,8 @@ autoRejectRate = 0;
       this.fetchApplicationTrends();
       this.fetchOfferStatus();
       this.fetchTopMatches();
+      this.fetchJobAdPerformance();
+
 
 
       
@@ -304,6 +309,76 @@ autoRejectRate = 0;
     });
   }
   
+  
+  fetchJobAdPerformance() {
+    this.employerService.getJobAdPerformance(this.employerId).subscribe(data => {
+      const sorted = data.sort((a, b) => b.views - a.views);
+      this.jobAdPerformance = sorted;
+  
+      this.jobViewsChartData = {
+        labels: sorted.map(ad => ad.title.length > 30 ? ad.title.slice(0, 30) + '...' : ad.title),
+        datasets: [{
+          data: sorted.map(ad => ad.views),
+          backgroundColor: sorted.map(() => this.getRandomGradientColor()),
+          borderRadius: 10,
+          borderSkipped: false,
+          hoverBackgroundColor: '#1976d2'
+        }]
+      };
+  
+      this.jobViewsChartOptions = {
+        indexAxis: 'y' as const,
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: 'Most Viewed Job Offers',
+            font: {
+              size: 18,
+              weight: 'bold'
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: (context: any) => `${context.parsed.x} views`
+            }
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1
+            },
+            title: {
+              display: true,
+              text: 'Views',
+              font: { size: 14, weight: 'bold' }
+            }
+          },
+          y: {
+            ticks: {
+              font: { size: 12 },
+              color: '#333'
+            }
+          }
+        }
+      };
+    });
+  }
+  
+  // Utility function for nice color variety
+  getRandomGradientColor(): string {
+    const gradients = [
+      'linear-gradient(90deg, #42A5F5, #478ED1)',
+      'linear-gradient(90deg, #66BB6A, #43A047)',
+      'linear-gradient(90deg, #FF7043, #F4511E)',
+      'linear-gradient(90deg, #FFA726, #FB8C00)',
+      'linear-gradient(90deg, #AB47BC, #8E24AA)'
+    ];
+    return gradients[Math.floor(Math.random() * gradients.length)];
+  }
   
   
 }

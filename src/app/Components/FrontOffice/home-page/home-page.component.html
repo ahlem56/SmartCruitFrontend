@@ -156,10 +156,9 @@
     
     <div class="companies-grid">
       <div class="company-card" *ngFor="let company of topCompanies">
-        <div class="card-content fancy-company-card">
-          
-          <!-- Logo -->
-          <div class="company-logo-container">
+        <div class="card-content fancy-company-card column-layout">
+          <!-- Logo centered -->
+          <div class="company-logo-container centered-logo">
             <div class="company-avatar">
               <img *ngIf="company.logoUrl; else defaultIcon"
                    [src]="company.logoUrl"
@@ -170,40 +169,17 @@
               </ng-template>
             </div>
           </div>
-    
-          <!-- Info -->
-          <div class="company-content">
-            <div class="company-header">
-              <h3 class="company-name">{{ company.name }}</h3>
-              <span class="badge-pill">{{ company.jobCount }}+ jobs</span>
-            </div>
-    
-            <div class="info-grid">
-              <div *ngIf="company.industry" class="info-box">
-                <i class="fas fa-industry"></i>
-                <span><strong>Industry:</strong> {{ company.industry }}</span>
-              </div>
-              <div *ngIf="company.contactEmail" class="info-box">
-                <i class="fas fa-envelope"></i>
-                <span><strong>Email:</strong> 
-                  <a href="mailto:{{ company.contactEmail }}">{{ company.contactEmail }}</a>
-                </span>
-              </div>
-              <div *ngIf="company.website" class="info-box">
-                <i class="fas fa-globe"></i>
-                <span><strong>Website:</strong> 
-                  <a href="{{ company.website }}" target="_blank">{{ company.website }}</a>
-                </span>
-              </div>
-             
-            </div>
-            
+      
+          <!-- Name and job count -->
+          <div class="company-content centered-text">
+            <h3 class="company-name">{{ company.name }}</h3>
+            <span class="job-badge">{{ company.jobCount }} open jobs</span>
           </div>
-    
         </div>
-        <div class="card-hover-effect"></div>
       </div>
+      
     </div>
+    
     
     
     
@@ -252,7 +228,7 @@
     </div>
     
     <div class="jobs-grid">
-      <div class="job-card" *ngFor="let job of featuredJobs">
+      <div class="job-card" *ngFor="let job of featuredJobs | slice:0:4">
         <div class="job-content">
           <div class="job-header">
             <div class="company-info">

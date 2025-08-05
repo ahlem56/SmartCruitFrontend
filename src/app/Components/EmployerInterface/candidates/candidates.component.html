@@ -64,7 +64,8 @@
           <td>{{ candidate.phone }}</td>
           
           <td>
-            <div class="match-circle-wrapper">
+            <div class="match-circle-wrapper interactive"
+                 (click)="showScoreDetails(candidate)">
               <svg class="match-progress" viewBox="0 0 36 36">
                 <path class="circle-bg" d="M18 2a16 16 0 1 1 0 32 16 16 0 1 1 0-32" />
                 <path class="circle-bar"
@@ -79,27 +80,27 @@
               <div class="match-description" [ngClass]="getMatchClass(candidate.matchingPercentage)">
                 {{ getMatchLabel(candidate.matchingPercentage) }}
               </div>
-
-              <button class="score-info-btn" (click)="showScoreDetails(candidate)">
-                <i class="fas fa-info-circle"></i>
-              </button>
             </div>
           </td>
           
+          
           <td class="cv-actions">
             <ng-container *ngIf="candidate.cvUrl; else noCv">
-              <button class="cv-btn-table" title="View CV" (click)="previewCv(candidate.cvUrl)">
-                <i class="fas fa-eye"></i>
-              </button>
-              
-              <a [href]="candidate.cvUrl" download class="cv-btn-table" title="Download CV">
-                <i class="fas fa-download"></i>
-              </a>
+              <div class="cv-button-group">
+                <button class="cv-btn-table" title="View CV" (click)="previewCv(candidate.cvUrl)">
+                  <i class="fas fa-eye"></i>
+                </button>
+          
+                <a [href]="candidate.cvUrl" download class="cv-btn-table" title="Download CV">
+                  <i class="fas fa-download"></i>
+                </a>
+              </div>
             </ng-container>
             <ng-template #noCv>
               <span class="no-cv-text">N/A</span>
             </ng-template>
           </td>
+          
           <!-- Inside the table row <tr> for each candidate -->
 <td>
   <a
@@ -114,23 +115,26 @@
 </td>
 
           
-          <td>
-            <div *ngIf="candidate.status === 'ACCEPTED'">
-              <div class="status-label accepted">Accepted</div>
-              <button class="interview-btn" (click)="openInterviewModal(candidate)">Schedule Interview</button>
-            </div>
+<td>
+  <div *ngIf="candidate.status === 'ACCEPTED'">
+    <div class="status-label accepted">Accepted</div>
+    <div class="action-buttons">
+      <button class="interview-btn" (click)="openInterviewModal(candidate)">Schedule Interview</button>
+    </div>
+  </div>
 
-            <div *ngIf="candidate.status === 'REJECTED'" class="status-label rejected">Rejected</div>
+  <div *ngIf="candidate.status === 'REJECTED'" class="status-label rejected">Rejected</div>
 
-            <div *ngIf="candidate.status !== 'ACCEPTED' && candidate.status !== 'REJECTED'">
-              <button class="accept-btn" (click)="acceptApplication(candidate.applicationId)">
-                <i class="fas fa-check"></i> Accept
-              </button>
-              <button class="reject-btn" (click)="rejectApplication(candidate.applicationId)">
-                <i class="fas fa-times"></i> Reject
-              </button>
-            </div>
-          </td>
+  <div *ngIf="candidate.status !== 'ACCEPTED' && candidate.status !== 'REJECTED'" class="action-buttons">
+    <button class="accept-btn" (click)="acceptApplication(candidate.applicationId)">
+      <i class="fas fa-check"></i> Accept
+    </button>
+    <button class="reject-btn" (click)="rejectApplication(candidate.applicationId)">
+      <i class="fas fa-times"></i> Reject
+    </button>
+  </div>
+</td>
+
         </tr>
       </tbody>
     </table>

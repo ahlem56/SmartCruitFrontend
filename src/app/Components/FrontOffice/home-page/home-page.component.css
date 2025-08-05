@@ -1429,28 +1429,40 @@ body {
 }
 
 
+.companies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
+  padding: 20px 0;
+}
 
 .fancy-company-card {
   display: flex;
-  gap: 20px;
-  padding: 20px;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
   border-radius: 16px;
   background-color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
 }
+
 .fancy-company-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
 
 /* Logo styling */
-.company-logo-container {
-  flex-shrink: 0;
+.centered-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
 }
+
 .company-avatar {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   background-color: #f0f2f5;
   border-radius: 12px;
   display: flex;
@@ -1458,71 +1470,37 @@ body {
   justify-content: center;
   overflow: hidden;
 }
+
 .company-logo-img1 {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
+
 .default-logo-icon {
   color: #bbb;
 }
 
-/* Company content */
-.company-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+.centered-text {
+  text-align: center;
 }
 
-.company-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
 .company-name {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  margin: 0;
   color: #222;
+  margin: 0 0 8px 0;
 }
-.badge-pill {
-  background-color: #e0ecff;
-  color: #2962ff;
+
+.job-badge {
+  background-color: #e3f2fd;
+  color: #1a73e8;
   padding: 4px 12px;
-  border-radius: 20px;
+  border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 500;
-  white-space: nowrap;
 }
 
-/* Info grid */
-.info-box span {
-  display: block;
-  color: #333;
-  font-weight: 400;
-  line-height: 0.9;
-}
-
-.info-box strong {
-  font-weight: 700;
-  color: #222;
-  margin-right: 4px;
-}
-
-.info-box a {
-  color: #2962ff;
-  font-weight: 500;
-  text-decoration: none;
-  word-break: break-word;
-  transition: color 0.2s ease;
-}
-
-.info-box a:hover {
-  color: #003ecb;
-  text-decoration: underline;
-}
 
 /* Base state: hidden */
 .feature-card,

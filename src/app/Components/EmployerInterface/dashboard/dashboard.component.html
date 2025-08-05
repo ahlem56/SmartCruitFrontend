@@ -104,5 +104,15 @@
     </div>
   </div>
   
+  <div class="chart-card">
+    <div class="chart-header">Job Ad Performance <span class="chart-context">(Views from Google Analytics)</span></div>
+    <canvas baseChart 
+      [data]="jobViewsChartData" 
+      [options]="jobViewsChartOptions" 
+      [type]="'bar'">
+    </canvas>
+  </div>
+  
+  
   
 </div>

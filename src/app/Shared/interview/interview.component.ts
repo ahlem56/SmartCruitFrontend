@@ -32,6 +32,14 @@ export class InterviewComponent implements OnInit, AfterViewInit {
   isBrowser: boolean;
   selectedInterview: Interview | null = null;
 
+  get confirmedInterviewsCount(): number {
+    return this.interviews.filter(i => i.status === 'CONFIRMED').length;
+  }
+
+  get pendingInterviewsCount(): number {
+    return this.interviews.filter(i => i.status === 'PENDING').length;
+  }
+
   constructor(
     public interviewService: InterviewService,
     @Inject(PLATFORM_ID) private platformId: Object

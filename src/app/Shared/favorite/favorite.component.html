@@ -1,38 +1,114 @@
-<div class="favorites-container">
-  <h2 class="favorites-title">
-    Your Favorite Job Offers
-  </h2>
-
-  <div *ngIf="loading" class="loading-message">
-    Loading your favorites...
-  </div>
-
-  <div *ngIf="!loading && favorites.length === 0" class="empty-state">
-    <p>No favorites yet — go explore and save jobs you love!</p>
-  </div>
-
-  <div class="job-cards" *ngIf="favorites.length > 0">
-    <div *ngFor="let job of favorites" class="job-card">
-      <div class="card-header">
-        <div class="job-title">
-          <h3>{{ job.title }}</h3>
-          <span class="badge">{{ job.jobType }}</span>
+<div class="favorites-page">
+  <!-- Enhanced Background Elements -->
+  <div class="favorites-bg-accent"></div>
+  <div class="favorites-bg-pattern"></div>
+  
+  <div class="favorites-container">
+    <!-- Enhanced Header Section -->
+    <div class="favorites-header">
+      <div class="header-content">
+        <div class="title-section">
+        
+          <div class="title-text">
+            <h2 class="favorites-title">
+              <lucide-icon name="heart" style="color: crimson; margin-right: 8px;"></lucide-icon>
+              Your Favorite Job Offers
+            </h2>
+                        <p class="subtitle">Jobs you've saved for later</p>
+          </div>
         </div>
-        <p class="company-name">
-          {{ job.company?.name || 'N/A' }}
-        </p>
+        <div class="stats-section">
+          <div class="stat-card">
+            <div class="stat-number">{{ favorites.length }}</div>
+            <div class="stat-label">Saved Jobs</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">{{ fullTimeJobsCount }}</div>
+            <div class="stat-label">Full Time</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">{{ partTimeJobsCount }}</div>
+            <div class="stat-label">Part Time</div>
+          </div>
+        </div>
       </div>
+    </div>
 
-      <div class="card-body">
-        <p>{{ job.jobLocation }}</p>
-        <p>${{ job.salary }}</p>
-        <p>Posted: {{ job.postedDate | date:'mediumDate' }}</p>
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-section">
+      <div class="loading-card">
+        <div class="loading-spinner"></div>
+        <h3>Loading your favorites...</h3>
+        <p>We're gathering all the jobs you've saved</p>
       </div>
+    </div>
 
-      <div class="card-actions">
-        <button class="details-btn" (click)="goToJobDetails(job.jobOfferId)">
-          View Details
+    <!-- Empty State -->
+    <div *ngIf="!loading && favorites.length === 0" class="empty-section">
+      <div class="empty-card">
+        <div class="empty-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="currentColor"/>
+          </svg>
+        </div>
+        <h2>No favorites yet</h2>
+        <p>Start exploring and save jobs that catch your eye!</p>
+        <button class="btn btn-primary" routerLink="/job-offers">
+          Browse Jobs
         </button>
+      </div>
+    </div>
+
+    <!-- Favorites Grid -->
+    <div *ngIf="!loading && favorites.length > 0" class="favorites-content">
+      <div class="content-header">
+        <h2>Saved Job Opportunities</h2>
+        <p>Your personalized collection of career opportunities</p>
+      </div>
+      
+      <div class="job-grid">
+        <div *ngFor="let job of favorites" class="job-card" [attr.data-job-type]="job.jobType.toLowerCase()">
+          <div class="card-header">
+            <div class="job-type-badge" [ngClass]="'badge-' + job.jobType.toLowerCase()">
+              {{ job.jobType }}
+            </div>
+            <div class="favorite-indicator">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <div class="job-title-section">
+              <h3 class="job-title">{{ job.title }}</h3>
+              <div class="company-info">
+                <div class="company-name">{{ job.company?.name || 'N/A' }}</div>
+              </div>
+            </div>
+            
+            <div class="job-details">
+              <div class="detail-item">
+                <div class="detail-label">Location</div>
+                <div class="detail-value">{{ job.jobLocation }}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Salary</div>
+                <div class="detail-value salary">${{ job.salary }}</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Posted</div>
+                <div class="detail-value">{{ job.postedDate | date:'MMM dd, yyyy' }}</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-footer">
+            <button class="btn btn-primary btn-view-details" (click)="goToJobDetails(job.jobOfferId)">
+              View Details
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

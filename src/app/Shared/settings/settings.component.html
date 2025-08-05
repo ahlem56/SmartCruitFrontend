@@ -1,64 +1,164 @@
-<div class="settings-wrapper">
-  <h2 class="page-title">User Settings</h2>
-
-  <form [formGroup]="settingsForm" (ngSubmit)="save()" class="settings-form">
-
-    <!-- Account Section -->
-    <div class="settings-section card">
-      <h3><i class="fas fa-user-circle"></i> Account</h3>
-      <div class="form-group">
-        <label>Email</label>
-        <input formControlName="email" type="email" />
-      </div>
-      <div class="form-group">
-        <label>New Password</label>
-        <input formControlName="password" type="password" placeholder="••••••••" />
-      </div>
-      <div class="form-group">
-        <label>Preferred Language</label>
-        <select formControlName="language">
-          <option value="en">English</option>
-          <option value="fr">French</option>
-        </select>
+<div class="settings-page">
+  <!-- Enhanced Background Elements -->
+  <div class="settings-bg-accent"></div>
+  <div class="settings-bg-pattern"></div>
+  
+  <div class="settings-container">
+    <!-- Enhanced Header Section -->
+    <div class="settings-header">
+      <div class="header-content">
+        <div class="title-section">
+         
+          <div class="title-text">
+            <h1 class="main-title">Account Settings</h1>
+            <p class="subtitle">Manage your preferences and account security</p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Notifications -->
-    <div class="settings-section card">
-      <h3><i class="fas fa-bell"></i> Notification Preferences</h3>
-      <div class="form-check-group" formGroupName="notifications">
-        <label><input type="checkbox" formControlName="email" /> Email</label>
-        <label><input type="checkbox" formControlName="sms" /> SMS</label>
-        <label><input type="checkbox" formControlName="app" /> In-App</label>
+    <!-- Settings Content -->
+    <div class="settings-content">
+      <form [formGroup]="settingsForm" (ngSubmit)="save()" class="settings-form">
+        
+        <!-- Account Settings Section -->
+        <div class="settings-section">
+          <div class="section-header">
+            <h2>Account Information</h2>
+            <p>Update your basic account details and credentials</p>
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input formControlName="email" type="email" class="form-input" placeholder="Enter your email address" />
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <input formControlName="password" type="password" class="form-input" placeholder="Enter new password (min 6 characters)" />
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Preferred Language</label>
+              <select formControlName="language" class="form-select">
+                <option value="en">English</option>
+                <option value="fr">French</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notification Preferences Section -->
+        <div class="settings-section">
+          <div class="section-header">
+            <h2>Notification Preferences</h2>
+            <p>Choose how you'd like to receive notifications</p>
+          </div>
+          
+          <div class="notification-options" formGroupName="notifications">
+            <div class="notification-item">
+              <div class="notification-info">
+                <div class="notification-label">Email Notifications</div>
+                <div class="notification-description">Receive updates via email</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" formControlName="email" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            
+            <div class="notification-item">
+              <div class="notification-info">
+                <div class="notification-label">SMS Notifications</div>
+                <div class="notification-description">Receive updates via text message</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" formControlName="sms" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            
+            <div class="notification-item">
+              <div class="notification-info">
+                <div class="notification-label">In-App Notifications</div>
+                <div class="notification-description">Receive updates within the application</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" formControlName="app" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Appearance Section -->
+        <div class="settings-section">
+          <div class="section-header">
+            <h2>Appearance</h2>
+            <p>Customize your viewing experience</p>
+          </div>
+          
+          <div class="appearance-option">
+            <div class="appearance-info">
+              <div class="appearance-label">Theme Mode</div>
+              <div class="appearance-description">Choose between light and dark themes</div>
+            </div>
+            <button type="button" (click)="toggleTheme()" class="theme-toggle-btn">
+              <span class="theme-text">{{ isDark ? 'Light Mode' : 'Dark Mode' }}</span>
+              <div class="theme-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 3V4M12 20V21M4 12H3M6.31412 6.31412L5.5 5.5M17.6859 6.31412L18.5 5.5M6.31412 17.69L5.5 18.5001M17.6859 17.69L18.5 18.5001M21 12H20M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Security Section -->
+        <div class="settings-section">
+          <div class="section-header">
+            <h2>Security</h2>
+            <p>Enhance your account security</p>
+          </div>
+          
+          <div class="security-option">
+            <div class="security-info">
+              <div class="security-label">Two-Factor Authentication</div>
+              <div class="security-description">Add an extra layer of security to your account</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" formControlName="twoFactorAuth" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Save Button -->
+        <div class="form-actions">
+          <button type="submit" [disabled]="settingsForm.invalid" class="btn btn-primary btn-save">
+            Save Changes
+          </button>
+        </div>
+      </form>
+
+      <!-- Danger Zone -->
+      <div class="settings-section danger-zone">
+        <div class="section-header">
+          <h2>Danger Zone</h2>
+          <p>Irreversible and destructive actions</p>
+        </div>
+        
+        <div class="danger-actions">
+          <div class="danger-info">
+            <div class="danger-label">Delete Account</div>
+            <div class="danger-description">Permanently delete your account and all associated data</div>
+          </div>
+          <button class="btn btn-danger">
+            Delete Account
+          </button>
+        </div>
       </div>
     </div>
-
-    <!-- Appearance -->
-    <div class="settings-section card">
-      <h3><i class="fas fa-moon"></i> Appearance</h3>
-      <button type="button" (click)="toggleTheme()" class="theme-toggle-btn">
-        <i class="fas" [ngClass]="isDark ? 'fa-sun' : 'fa-moon'"></i>
-        {{ isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode' }}
-      </button>
-    </div>
-
-    <!-- Security -->
-    <div class="settings-section card">
-      <h3><i class="fas fa-lock"></i> Security</h3>
-      <label><input type="checkbox" formControlName="twoFactorAuth" /> Enable Two-Factor Authentication</label>
-    </div>
-
-    <!-- Save Button -->
-    <div class="form-actions">
-      <button type="submit" [disabled]="settingsForm.invalid" class="save-btn">
-        <i class="fas fa-save"></i> Save Changes
-      </button>
-    </div>
-  </form>
-
-  <!-- Danger Zone -->
-  <div class="settings-section card danger-zone">
-    <h3><i class="fas fa-exclamation-triangle"></i> Danger Zone</h3>
-    <button class="delete-btn">Delete Account</button>
   </div>
 </div>
