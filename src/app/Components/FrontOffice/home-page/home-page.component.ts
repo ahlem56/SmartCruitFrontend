@@ -2,6 +2,7 @@ import { CommonModule, DatePipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HomeService } from '../../../Services/home.service';
+import { TestimonialsService, Testimonial } from '../../../Services/testimonials.service';
 
 @Component({
   selector: 'app-home-page',
@@ -15,6 +16,7 @@ export class HomePageComponent implements OnInit, AfterViewInit {
   topCompanies: any[] = [];
   jobCategories: any[] = [];
   featuredJobs: any[] = [];
+  testimonials: Testimonial[] = [];
 
   stats = {
     jobs: 0,
@@ -22,14 +24,38 @@ export class HomePageComponent implements OnInit, AfterViewInit {
     candidates: 0
   };
 
-  constructor(private homeService: HomeService) { }
+  constructor(private homeService: HomeService, private testimonialsService: TestimonialsService) { }
 
   ngOnInit(): void {
     this.loadStats();
     this.loadTopCompanies();
     this.loadCategories();
     this.loadFeaturedJobs();
+    this.loadTopTestimonials(); // ⬅️ add this
+
   }
+
+  loadTopTestimonials(): void {
+    // grab a reasonable page size to sort client-side
+    this.testimonialsService.getPublic(0, 50).subscribe({
+      next: (page) => {
+        this.testimonials = [...page.content]
+          .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))
+          .slice(0, 3);
+
+        // re-run animations once DOM has these cards
+        setTimeout(() => this.initScrollAnimations(), 100);
+      },
+      error: () => {
+        this.testimonials = []; // fallback
+      }
+    });
+  }
+
+  trackByTestimonialId(index: number, t: Testimonial) {
+    return t.id ?? index;
+  }
+  
 
   loadStats() {
     this.homeService.getStats().subscribe(data => this.stats = data);

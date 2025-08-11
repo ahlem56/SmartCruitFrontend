@@ -1289,3 +1289,30 @@ body {
   gap: 0.5rem;
   margin-bottom: 0.3rem;
 }
+
+
+.social-buttons { display:flex; gap:12px; justify-content:center; align-items:center; }
+
+.gwrap{
+  position:relative; display:inline-flex; align-items:center; justify-content:center;
+  padding:8px; border:0; background:transparent; border-radius:9999px; cursor:pointer;
+  transition:transform .15s ease, filter .2s ease; -webkit-tap-highlight-color:transparent;
+}
+.gwrap:active{ transform:translateY(1px) scale(.99); }
+.gwrap:focus-visible{ outline:none; filter:drop-shadow(0 0 .65rem rgba(0,136,255,.45)); }
+
+.gwrap__ring{
+  position:absolute; inset:0; border-radius:inherit; padding:1px;
+  background:linear-gradient(135deg, rgba(0,123,255,.55), rgba(0,198,255,.35));
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+}
+.gwrap__glow{
+  position:absolute; inset:-14px -16px; border-radius:24px;
+  background:radial-gradient(40% 40% at 50% 50%, rgba(0,153,255,.18), transparent 60%);
+  filter:blur(16px); opacity:.75; transition:opacity .2s ease; pointer-events:none;
+}
+.gwrap:hover .gwrap__glow{ opacity:1; }
+
+/* make the rendered Google button fill the wrapper nicely */
+#google-btn-container { display:block; }

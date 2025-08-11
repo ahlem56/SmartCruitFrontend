@@ -121,18 +121,21 @@
           </button>
         </form>
         
-        <div class="social-section">
-          <div class="divider"><span>or continue with</span></div>
-          <div class="social-buttons">
-            <div id="google-btn-container" class="custom-google-wrapper"></div>
+  <div class="social-section">
+  <div class="divider"><span>or continue with</span></div>
+  <div class="social-buttons">
+    <!-- Decorative wrapper with glow + ring; Google renders inside -->
+    <button class="gwrap" type="button" aria-label="Continue with Google">
+      <span class="gwrap__glow"></span>
+      <span class="gwrap__ring"></span>
+      <div id="google-btn-container"></div>
+    </button>
 
-            <button class="social-btn facebook" (click)="onFacebookLogin()">
-              <i class="fab fa-facebook-f"></i>
-            </button>
-            
-          
-          </div>
-        </div>
+    
+  </div>
+</div>
+
+
         
 
         

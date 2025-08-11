@@ -26,6 +26,10 @@
           <a routerLink="/backoffice/job-offers" routerLinkActive="active">
             Job Offers
           </a>
+
+          <a href="/testimonials" routerLinkActive="active">
+            Testimonials
+          </a>
         
         </ng-container>
 
@@ -39,7 +43,9 @@
             <a routerLink="/employer/job-offers" routerLinkActive="active">
               Job Offers
             </a>
-           
+            <a href="/testimonials" routerLinkActive="active">
+              Testimonials
+            </a>
           </ng-container>
 
           <!-- Candidate -->
@@ -49,6 +55,9 @@
             </a>
             <a routerLink="/job-offers" routerLinkActive="active">
               Find Jobs
+            </a>
+            <a href="/testimonials" routerLinkActive="active">
+              Testimonials
             </a>
             <a href="/support" routerLinkActive="active">
               Support
@@ -63,7 +72,7 @@
 
       <!-- Logged-In Dropdown -->
       <div class="user-bar">
-       <div class="notification-icon">
+       <div class="notification-icon" *ngIf="user.role === 'candidate' || user.role === 'employer'">
   <a routerLink="/notifications" routerLinkActive="active">
     <i class="fas fa-bell"></i>
     <span *ngIf="unreadCount > 0" class="notification-badge">{{ unreadCount }}</span>

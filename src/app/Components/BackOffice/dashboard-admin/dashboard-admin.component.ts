@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
-
+import { CountUp } from 'countup.js';
 import { JobOffersService, JobOffer } from '../../../Services/job-offers.service';
 import { DashboardService, AdminDashboardStats, UserRankDto, CompanyRankDto } from '../../../Services/dashboard.service';
 import { ApplicationService } from '../../../Services/application.service';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -24,13 +25,20 @@ export class DashboardAdminComponent implements OnInit {
   topCandidates: UserRankDto[] = [];
   topEmployers: UserRankDto[] = [];
   topCompanies: CompanyRankDto[] = [];
-  
+topMatches: { candidateName: string; jobTitle: string; score: number; cvUrl?: string,   profilePictureUrl?: string; }[] = [];
+offerChange: number = 0;
+applicationChange: number = 0;
+totalCandidates = 0;
+totalEmployers = 0;
+totalCompanies = 0;
+userGrowth: number = 0;
+topCategories: { category: string; count: number }[] = [];
+
 
   // Stats
   totalOffers = 0;
   activeOffers = 0;
   totalApplications = 0;
-  profileCompletion = 75;
 
   // Chart: Applications Over Time
   applicationsLineChartData: ChartConfiguration<'line'>['data'] = { labels: [], datasets: [] };
@@ -76,85 +84,151 @@ export class DashboardAdminComponent implements OnInit {
   constructor(
     private jobOffersService: JobOffersService,
     private dashboardService: DashboardService,
-    private applicationService: ApplicationService
+    private applicationService: ApplicationService,
   ) {}
 
   ngOnInit(): void {
     this.loadDashboardStats();
     this.loadJobOffersAndApplications();
     this.loadEngagementStats();
+    this.loadTopMatches(); 
+    this.loadTopCategories(); 
   }
+  
+  
 
-  loadDashboardStats(): void {
-    this.dashboardService.getOverview().subscribe((stats: AdminDashboardStats) => {
-      this.totalOffers = stats.totalJobs;
-      this.activeOffers = stats.activeJobs;
-      this.totalApplications = stats.totalApplications;
+loadDashboardStats(): void {
+  this.dashboardService.getOverview().subscribe((stats: AdminDashboardStats) => {
+    this.activeOffers = stats.activeJobs;
+    this.totalOffers = stats.totalJobs;
+    this.totalApplications = stats.totalApplications;
+ this.totalCandidates = stats.totalCandidates;
+    this.totalEmployers = stats.totalEmployers;
+    this.totalCompanies = stats.totalCompanies;
+    
+    const previousUsers = stats.totalUsers - stats.newUsers30d;
+this.userGrowth = previousUsers > 0
+  ? (stats.newUsers30d / previousUsers) * 100
+  : stats.newUsers30d > 0 ? 100 : 0;
 
-      this.applicationsLineChartData = {
-        labels: ['Last 30d', 'Last 7d', 'Last 24h'],
-        datasets: [{
-          data: [
-            stats.newApplications30d || 0,
-            stats.newApplications7d || 0,
-            stats.newApplications24h || 0
-          ],
-          label: 'Applications',
-          fill: true,
-          tension: 0.4,
-          borderColor: '#007bff',
-          backgroundColor: 'rgba(0,123,255,0.15)',
-          pointBackgroundColor: '#007bff',
-          pointBorderColor: '#fff',
-          pointRadius: 5
-        }]
-      };
-    });
-  }
+    // Avoid division by zero by calculating previous values
+    const previousJobs = stats.totalJobs - stats.newJobs30d;
+    this.offerChange = previousJobs > 0
+      ? (stats.newJobs30d / previousJobs) * 100
+      : stats.newJobs30d > 0 ? 100 : 0;
 
-  loadJobOffersAndApplications(): void {
-    this.jobOffersService.getJobOffers().subscribe(offers => {
-      this.jobOffers = offers;
+    const previousApps = stats.totalApplications - stats.newApplications30d;
+    this.applicationChange = previousApps > 0
+      ? (stats.newApplications30d / previousApps) * 100
+      : stats.newApplications30d > 0 ? 100 : 0;
 
-      // Top 3 Offers by Applications
-      this.topJobOffers = [...offers]
-        .sort((a, b) => (b.applicationsCount || 0) - (a.applicationsCount || 0))
-        .slice(0, 3);
+    // Animate with CountUp
+   setTimeout(() => {
+  const options = { duration: 4.0 };
 
-      this.topOffersBarChartData = {
-        labels: this.topJobOffers.map(o => o.title),
-        datasets: [{
-          data: this.topJobOffers.map(o => o.applicationsCount || 0),
-          label: 'Applications',
-          backgroundColor: '#007bff',
-          borderRadius: 8
-        }]
-      };
+  const total = new CountUp('totalOffersCounter', this.totalOffers, options);
+  const active = new CountUp('activeOffersCounter', this.activeOffers, options);
+  const apps = new CountUp('totalApplicationsCounter', this.totalApplications, options);
+  const candidates = new CountUp('totalCandidatesCounter', this.totalCandidates, options);
+  const employers = new CountUp('totalEmployersCounter', this.totalEmployers, options);
+  const companies = new CountUp('totalCompaniesCounter', this.totalCompanies, options);
+  const userGrowth = new CountUp('userGrowthCounter', this.userGrowth, { ...options, suffix: '%' });
 
-      // Job Offer Status Chart
-      const active = offers.filter(o => o.status === 'ACTIVE').length;
-      const draft = offers.filter(o => o.status === 'DRAFT').length;
-      const inactive = offers.filter(o => o.status === 'INACTIVE').length;
+  // Start them safely
+  if (!total.error) total.start();
+  if (!active.error) active.start();
+  if (!apps.error) apps.start();
+  if (!candidates.error) candidates.start();
+  if (!employers.error) employers.start();
+  if (!companies.error) companies.start();
+  if (!userGrowth.error) userGrowth.start();
+}, 0);
 
-      this.statusDoughnutChartData = {
-        labels: ['Active', 'Draft', 'Inactive'],
-        datasets: [{
-          data: [active, draft, inactive],
-          backgroundColor: ['#007bff', '#ffc107', '#ff4d4f'],
-          borderWidth: 2
-        }]
-      };
 
-      // Timeline (recent 3 offers)
-      this.activityTimeline = offers.slice(0, 3).map(o => ({
-        icon: '📝',
-        action: `Posted "${o.title}"`,
-        date: o.postedDate
-      }));
+    // Chart Data
+    this.applicationsLineChartData = {
+      labels: ['Last 30d', 'Last 7d', 'Last 24h'],
+      datasets: [{
+        data: [
+          stats.newApplications30d || 0,
+          stats.newApplications7d || 0,
+          stats.newApplications24h || 0
+        ],
+        label: 'Applications',
+        fill: true,
+        tension: 0.4,
+        borderColor: '#007bff',
+        backgroundColor: 'rgba(0,123,255,0.15)',
+        pointBackgroundColor: '#007bff',
+        pointBorderColor: '#fff',
+        pointRadius: 5
+      }]
+    };
+  });
+}
 
-      this.loadRecentApplications(offers);
-    });
-  }
+
+
+ loadJobOffersAndApplications(): void {
+  this.jobOffersService.getJobOffers().subscribe(offers => {
+    this.jobOffers = offers;
+
+    // Animate counts
+    const totalOffers = offers.length;
+    const active = offers.filter(o => o.status === 'ACTIVE').length;
+    const draft = offers.filter(o => o.status === 'DRAFT').length;
+    const inactive = offers.filter(o => o.status === 'INACTIVE').length;
+
+    const options = { duration: 4.0 }; // Adjust duration here
+
+    // Animate using CountUp (update both value and DOM)
+    setTimeout(() => {
+      const totalCounter = new CountUp('totalOffersCounter', totalOffers, options);
+      const activeCounter = new CountUp('activeOffersCounter', active, options);
+
+      if (!totalCounter.error) totalCounter.start();
+      if (!activeCounter.error) activeCounter.start();
+    }, 0);
+
+    this.totalOffers = totalOffers;
+    this.activeOffers = active;
+
+    // Top 3 Offers by Applications
+    this.topJobOffers = [...offers]
+      .sort((a, b) => (b.applicationsCount || 0) - (a.applicationsCount || 0))
+      .slice(0, 3);
+
+    this.topOffersBarChartData = {
+      labels: this.topJobOffers.map(o => o.title),
+      datasets: [{
+        data: this.topJobOffers.map(o => o.applicationsCount || 0),
+        label: 'Applications',
+        backgroundColor: '#007bff',
+        borderRadius: 8
+      }]
+    };
+
+    // Job Offer Status Chart
+    this.statusDoughnutChartData = {
+      labels: ['Active', 'Draft', 'Inactive'],
+      datasets: [{
+        data: [active, draft, inactive],
+        backgroundColor: ['#007bff', '#ffc107', '#ff4d4f'],
+        borderWidth: 2
+      }]
+    };
+
+    // Timeline (recent 3 offers)
+    this.activityTimeline = offers.slice(0, 3).map(o => ({
+      icon: '📝',
+      action: `Posted "${o.title}"`,
+      date: o.postedDate
+    }));
+
+    this.loadRecentApplications(offers);
+  });
+}
+
 
   async loadRecentApplications(offers: JobOffer[]): Promise<void> {
     const applicationFetches = offers.map(async offer => {
@@ -189,4 +263,32 @@ export class DashboardAdminComponent implements OnInit {
       this.topCompanies = stats.topCompanies; // [{ name, logoUrl }]
     });
   }
+
+
+ loadTopMatches(): void {
+  this.dashboardService.getTopMatchesGlobal().subscribe(matches => {
+    this.topMatches = matches
+      .slice(0, 5)
+      .map(match => ({
+        candidateName: `${match.firstName?.replace(/"/g, '')} ${match.lastName?.replace(/"/g, '')}`,
+        jobTitle: match.jobTitle,
+        score: match.score,
+        cvUrl: match.cvUrl,
+        profilePictureUrl: match.profilePictureUrl || 'assets/images/default-avatar.png'
+      }));
+  });
+}
+  
+getStatChangeClass(value: number): string {
+  if (value > 0) return 'stat-change positive';
+  if (value < 0) return 'stat-change negative';
+  return 'stat-change neutral';
+}
+
+loadTopCategories(): void {
+  this.dashboardService.getTopCategories().subscribe(data => {
+    this.topCategories = data;
+  });
+}
+
 }

@@ -95,7 +95,13 @@ private loadCandidateApplications(candidateId: number): void {
         industry: [this.userProfile?.industry || '', Validators.required],
         linkedinUrl: [this.userProfile?.linkedInUrl || '', [Validators.pattern(/^https?:\/\/(www\.)?linkedin\.com\/.*$/)]],
         githubUrl: [this.userProfile?.githubUrl || '', [Validators.pattern(/^https?:\/\/(www\.)?github\.com\/.*$/)]]
-      })
+      }),
+       ...(role === 'admin' && {
+          phoneNumber: [this.userProfile?.phoneNumber || '', Validators.required],
+
+      // For admins, only basic editable fields
+      // You can expand this later if needed
+    })
     });
   }
 

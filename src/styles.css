@@ -1,36 +1,345 @@
+/* styles.css (global) */
 :root {
-  --bg-color: #ffffff;
-  --text-color: #222222;
-  --card-bg: #f9fbff;
-  --accent-color: #007bff;
-  --border-color: #e0e0e0;
+  --bg: #ffffff;
+  --fg: #2D3748;        /* text-dark */
+  --muted: #718096;     /* text-muted */
+  --surface: #ffffff;   /* cards */
+  --surface-2: #F2F2F2; /* subtle blocks */
+  --border: #E2E8F0;
+
+  --primary: #0583F2;
+  --primary-600: #035AA6;
+
+  --shadow-1: 0 4px 6px -1px rgba(0,0,0,.10);
+  --shadow-2: 0 10px 15px -3px rgba(0,0,0,.10);
+
+  --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--primary-600) 100%);
 }
 
+/* Backward-compat: map old names used across the app to the new global tokens */
+:root {
+  --white: var(--surface);
+  --light-gray: var(--surface-2);
+  --text-dark: var(--fg);
+  --text-muted: var(--muted);
+  --border-color: var(--border);
+  --primary-blue: var(--primary);
+  --shadow-light: var(--shadow-1);
+  --shadow-medium: var(--shadow-2);
+}
+
+/* Dark mode overrides */
 .dark-mode {
-  --bg-color: #121212;
-  --text-color: #f1f1f1;
-  --card-bg: #1e1e1e;
-  --accent-color: #59a3f3;
-  --border-color: #333;
+  --bg: #0b1220;
+  --fg: #E5E7EB;
+  --muted: #9CA3AF;
+  --surface: #0f172a;
+  --surface-2: #111827;
+  --border: #1f2937;
+
+  --primary: #59a3f3;
+  --primary-600: #3c82d2;
+
+  --shadow-1: 0 4px 6px -1px rgba(0,0,0,.60);
+  --shadow-2: 0 10px 15px -3px rgba(0,0,0,.60);
 }
 
-/* Apply variables */
-body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
+/* Global dark mode styles that affect ALL components */
+.dark-mode * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-.profile-card,
-.profile-page-container,
-.modal-body,
-input,
-textarea,
-button {
-  background-color: var(--card-bg);
-  color: var(--text-color);
-  border-color: var(--border-color);
+/* Base elements */
+html, body {
+  background: var(--bg) !important;
+  color: var(--fg) !important;
 }
 
-a {
-  color: var(--accent-color);
+/* Common component elements - using more specific selectors */
+.dark-mode .card,
+.dark-mode .card-like,
+.dark-mode .settings-section,
+.dark-mode .form-group,
+.dark-mode .form-input,
+.dark-mode .form-select,
+.dark-mode .btn,
+.dark-mode .header,
+.dark-mode .navbar,
+.dark-mode .footer,
+.dark-mode .dashboard,
+.dark-mode .job-offers,
+.dark-mode .candidates,
+.dark-mode .employers,
+.dark-mode .applications,
+.dark-mode .profile,
+.dark-mode .settings,
+.dark-mode .login,
+.dark-mode .signup,
+.dark-mode .home-page,
+.dark-mode .job-details,
+.dark-mode .chat,
+.dark-mode .interview,
+.dark-mode .favorite,
+.dark-mode .support,
+.dark-mode .about-us,
+.dark-mode .not-found,
+.dark-mode .onboarding,
+.dark-mode .email-verification,
+.dark-mode .forgot-password,
+.dark-mode .reset-password {
+  background-color: var(--surface) !important;
+  color: var(--fg) !important;
+  border-color: var(--border) !important;
+}
+
+/* More specific component selectors */
+.dark-mode .main-header,
+.dark-mode .dashboard-pro,
+.dark-mode .home-page,
+.dark-mode .settings-page {
+  background: var(--bg) !important;
+}
+
+.dark-mode .stat-card,
+.dark-mode .stat-card-pro,
+.dark-mode .chart-card,
+.dark-mode .engagement-card {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+}
+
+.dark-mode .hero-section {
+  background: var(--surface) !important;
+}
+
+.dark-mode .feature-card,
+.dark-mode .company-card,
+.dark-mode .job-card,
+.dark-mode .category-card {
+  background: var(--surface) !important;
+  border-color: var(--border) !important;
+}
+
+/* Form elements */
+.dark-mode input,
+.dark-mode select,
+.dark-mode textarea {
+  background-color: var(--surface-2) !important;
+  color: var(--fg) !important;
+  border-color: var(--border) !important;
+}
+
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+  color: var(--muted) !important;
+}
+
+/* Buttons */
+.dark-mode .btn-primary {
+  background: var(--gradient-primary) !important;
+  color: #fff !important;
+}
+
+.dark-mode .btn-secondary {
+  background-color: var(--surface-2) !important;
+  color: var(--fg) !important;
+  border-color: var(--border) !important;
+}
+
+/* Navigation and header elements */
+.dark-mode nav,
+.dark-mode .navbar,
+.dark-mode .header {
+  background-color: var(--surface) !important;
+  border-bottom-color: var(--border) !important;
+}
+
+.dark-mode .nav-link,
+.dark-mode .navbar-nav .nav-link {
+  color: var(--fg) !important;
+}
+
+.dark-mode .nav-link:hover,
+.dark-mode .navbar-nav .nav-link:hover {
+  color: var(--primary) !important;
+}
+
+/* Cards and sections */
+.dark-mode .card,
+.dark-mode .settings-section,
+.dark-mode .dashboard-card,
+.dark-mode .job-card,
+.dark-mode .candidate-card,
+.dark-mode .employer-card {
+  background-color: var(--surface) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow-1) !important;
+}
+
+/* Tables */
+.dark-mode table,
+.dark-mode .table {
+  background-color: var(--surface) !important;
+  color: var(--fg) !important;
+}
+
+.dark-mode th,
+.dark-mode .table th {
+  background-color: var(--surface-2) !important;
+  color: var(--fg) !important;
+  border-color: var(--border) !important;
+}
+
+.dark-mode td,
+.dark-mode .table td {
+  border-color: var(--border) !important;
+}
+
+/* Modals and overlays */
+.dark-mode .modal,
+.dark-mode .modal-content,
+.dark-mode .overlay {
+  background-color: var(--surface) !important;
+  color: var(--fg) !important;
+  border-color: var(--border) !important;
+}
+
+/* Dropdowns */
+.dark-mode .dropdown-menu,
+.dark-mode .dropdown-content {
+  background-color: var(--surface) !important;
+  border-color: var(--border) !important;
+  box-shadow: var(--shadow-2) !important;
+}
+
+.dark-mode .dropdown-item {
+  color: var(--fg) !important;
+}
+
+.dark-mode .dropdown-item:hover {
+  background-color: var(--surface-2) !important;
+}
+
+/* Links */
+.dark-mode a {
+  color: var(--primary) !important;
+}
+
+.dark-mode a:hover {
+  color: var(--primary-600) !important;
+}
+
+/* Text colors */
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6 {
+  color: var(--fg) !important;
+}
+
+.dark-mode p,
+.dark-mode span,
+.dark-mode div {
+  color: var(--fg) !important;
+}
+
+.dark-mode .text-muted,
+.dark-mode .muted {
+  color: var(--muted) !important;
+}
+
+/* Icons */
+.dark-mode svg,
+.dark-mode .icon {
+  color: var(--fg) !important;
+}
+
+/* Scrollbars */
+.dark-mode ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+  background: var(--surface-2);
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* Minimal base usage so empty pages still look right */
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* Helpful shared utility classes */
+.card-like {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-1);
+  border-radius: 20px;
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: #fff;
+}
+
+/* Additional dark mode overrides for common elements */
+.dark-mode .container,
+.dark-mode .section,
+.dark-mode .content,
+.dark-mode .wrapper {
+  background-color: var(--bg) !important;
+  color: var(--fg) !important;
+}
+
+/* Ensure all text elements use the correct color */
+.dark-mode * {
+  color: var(--fg) !important;
+}
+
+/* Override any remaining hardcoded backgrounds */
+.dark-mode [style*="background"],
+.dark-mode [style*="background-color"] {
+  background-color: var(--surface) !important;
+}
+
+/* Ensure form elements are properly styled */
+.dark-mode .form-control,
+.dark-mode .input-group,
+.dark-mode .input-group-text {
+  background-color: var(--surface-2) !important;
+  color: var(--fg) !important;
+  border-color: var(--border) !important;
+}
+
+/* Ensure buttons are properly styled */
+.dark-mode .btn:not(.btn-primary) {
+  background-color: var(--surface-2) !important;
+  color: var(--fg) !important;
+  border-color: var(--border) !important;
+}
+
+/* Debug styles - add a visible indicator when dark mode is active */
+.dark-mode::before {
+  content: '🌙 Dark Mode Active';
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: var(--primary);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  z-index: 9999;
+  pointer-events: none;
 }

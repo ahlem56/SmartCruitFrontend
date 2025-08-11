@@ -254,22 +254,32 @@
         <div class="signup-prompt">
           <p>Already have an account? <a (click)="goToLogin()" class="signup-link">Sign in</a></p>
         </div>
-        <div class="social-section">
-          <div class="divider">
-            <span>or sign up with</span>
-          </div>
-          <div class="social-buttons">
-            <button type="button" class="social-btn google" (click)="signupWithGoogle()">
-              <i class="fab fa-google"></i>
-            </button>
-            <button type="button" class="social-btn facebook" (click)="signupWithFacebook()">
-              <i class="fab fa-facebook-f"></i>
-            </button>
-            <button type="button" class="social-btn linkedin" (click)="signupWithLinkedIn()">
-              <i class="fab fa-linkedin-in"></i>
-            </button>
-          </div>
-        </div>
+       <div class="social-section">
+  <div class="divider"><span>or sign up with</span></div>
+
+  <div class="social-buttons">
+    <!-- Decorative wrapper (keeps policy-compliant Google button inside) -->
+    <button class="gwrap" type="button" aria-label="Continue with Google">
+      <span class="gwrap__glow"></span>
+      <span class="gwrap__ring"></span>
+
+      <!-- Official button (no click handler here) -->
+      <asl-google-signin-button
+        type="standard"
+        shape="pill"
+        theme="filled_blue"
+        text="continue_with"
+        size="large"
+        [width]="280">
+      </asl-google-signin-button>
+    </button>
+  </div>
+
+  <p class="oauth-note">
+    We’ll never post without your permission.
+  </p>
+</div>
+
         
         
       </div>

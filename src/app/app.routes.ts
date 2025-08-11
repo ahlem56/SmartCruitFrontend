@@ -28,6 +28,7 @@ import { CandidatesBackofficeComponent } from './Components/BackOffice/candidate
 import { InterviewComponent } from './Shared/interview/interview.component';
 import { NotFoundComponent } from './Shared/not-found/not-found.component';
 import { JobOffersBackofficeComponent } from './Components/BackOffice/job-offers-backoffice/job-offers-backoffice.component';
+import { TestimonialsComponent } from './Shared/testimonials/testimonials.component';
 
 export const routes: Routes = [
   { path: '', component: HomePageComponent },
@@ -67,6 +68,7 @@ export const routes: Routes = [
   { path: 'notifications', component: NotificationComponent },
   { path: 'favorites', component: FavoriteComponent },
   { path: 'interviews', component: InterviewComponent },
+  { path: 'testimonials', component: TestimonialsComponent },
   { path: '**', component: NotFoundComponent },
 
 ]

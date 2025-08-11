@@ -1,0 +1,299 @@
+<section class="wrap testimonials-page">
+    <div class="hero" aria-label="Testimonials hero">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <h1>Voices of success</h1>
+          <p>Discover how candidates and employers accelerate hiring with SmartCruit.</p>
+          <div class="hero-cta" *ngIf="role() === 'candidate' || role() === 'employer'">
+            <button class="btn primary" (click)="openFormForCreate()" aria-label="Share your story">Share your story</button>
+          </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <img class="hero-deco-img" src="assets/FrontOffice/images/testimonials.png" alt="" role="presentation" />
+          <img class="deco-sticker deco-1" src="assets/FrontOffice/images/testimonials.png" alt="" role="presentation" />
+          <img class="deco-sticker deco-2" src="assets/FrontOffice/images/testimonials.png" alt="" role="presentation" />
+        </div>
+      </div>
+      <div class="hero-accent" aria-hidden="true"></div>
+      <svg class="hero-blob" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path fill="rgba(121,172,217,0.35)" d="M38.7,-60.8C51.9,-53.4,65.4,-44.3,71.1,-31.5C76.9,-18.6,74.9,-2,67.1,10.9C59.3,23.9,45.6,33.2,32.6,42.2C19.6,51.2,7.3,60.1,-7.3,69.6C-21.9,79.1,-43.9,89.2,-56.8,84.1C-69.7,79.1,-73.5,58.9,-77.6,41.1C-81.7,23.2,-86.1,7.7,-83.1,-7.8C-80.1,-23.3,-69.6,-38.8,-56.4,-47.1C-43.1,-55.4,-27.1,-56.6,-12.2,-61.4C2.7,-66.2,15.5,-74.5,28.6,-73.9C41.7,-73.3,55,-63.8,38.7,-60.8Z" transform="translate(100 100)" />
+      </svg>
+      <svg class="wave-sep" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0,32L60,69.3C120,107,240,181,360,186.7C480,192,600,128,720,122.7C840,117,960,171,1080,186.7C1200,203,1320,181,1380,170.7L1440,160L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z" fill="var(--sc-white)"/></svg>
+      <!-- Featured slider -->
+      <div class="featured" *ngIf="featuredTestimonials() as feats" role="region" aria-label="Featured testimonials" (mouseenter)="stopAutoplay()" (mouseleave)="startAutoplay()">
+        <div class="slides" [style.--idx]="currentSlide()">
+          <div class="slide" *ngFor="let ft of feats; let i = index" [class.active]="i === currentSlide()">
+            <div class="quote-mark">“</div>
+            <p class="feat-text">{{ ft.content }}</p>
+            <div class="feat-meta">
+              <span class="mini-avatar">
+                <img *ngIf="ft.authorProfilePictureUrl" [src]="ft.authorProfilePictureUrl" alt="{{ ft.authorName || 'User' }} avatar" />
+              </span>
+              <span class="name">{{ ft.authorName || 'Anonymous' }}</span>
+              <span class="stars mini">
+                <span *ngFor="let s of stars" [class.filled]="s <= ft.rating">★</span>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="dots" *ngIf="feats.length > 1">
+          <button *ngFor="let ft of feats; let i=index" class="dot" [class.active]="i === currentSlide()" (click)="goToSlide(i)" [attr.aria-label]="'Go to slide ' + (i+1)"></button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Messages -->
+    <p class="msg error" *ngIf="errorMsg()">{{ errorMsg() }}</p>
+    <p class="msg success" *ngIf="successMsg()">{{ successMsg() }}</p>
+  
+    <!-- ========== Candidate / Employer View ========== -->
+    <ng-container *ngIf="role() === 'candidate' || role() === 'employer'">
+      <div class="toolbar">
+        <button class="btn primary" (click)="openFormForCreate()">
+          {{ myTestimonial() ? 'Edit my testimonial' : 'Create a testimonial' }}
+        </button>
+        <button class="btn danger" *ngIf="myTestimonial()" (click)="deleteMine()">Delete mine</button>
+      </div>
+  
+      <!-- Inline modal-ish form -->
+      <div class="card form-card" *ngIf="showForm()" role="dialog" aria-modal="true" aria-label="Create or edit testimonial">
+        <h3>{{ editingId() ? 'Edit your testimonial' : 'Share your experience' }}</h3>
+        <form (ngSubmit)="submit()" #f="ngForm">
+          <label>Rating</label>
+          <div class="rating-select">
+            <select [(ngModel)]="form().rating" name="rating" required aria-label="Select rating" (focus)="hoverRating.set(form().rating)" (blur)="hoverRating.set(null)">
+              <option [value]="5">★★★★★ (5)</option>
+              <option [value]="4">★★★★☆ (4)</option>
+              <option [value]="3">★★★☆☆ (3)</option>
+              <option [value]="2">★★☆☆☆ (2)</option>
+              <option [value]="1">★☆☆☆☆ (1)</option>
+            </select>
+          </div>
+
+          <div class="rating-stars" role="radiogroup" aria-label="Set rating by stars">
+            <button type="button" class="star-btn" *ngFor="let s of stars"
+                    [attr.aria-checked]="form().rating === s"
+                    role="radio"
+                    (mouseenter)="setHover(s)" (mouseleave)="setHover(null)" (click)="setRating(s)">
+              <span class="icon" [class.active]="(hoverRating() ?? form().rating) >= s">★</span>
+              <span class="sr-only">{{ s }} star</span>
+            </button>
+          </div>
+  
+          <label>Content</label>
+          <textarea [(ngModel)]="form().content" name="content" required minlength="10" maxlength="1000" placeholder="Tell others about your experience" aria-describedby="charHelp"></textarea>
+          <div class="char-counter" id="charHelp" aria-live="polite">
+            <div class="bar"><span [style.width.%]="(contentLength() / maxChars) * 100"></span></div>
+            <span>{{ contentLength() }} / {{ maxChars }}</span>
+          </div>
+  
+          <div class="actions">
+            <button type="submit" class="btn primary" [disabled]="loading()">{{ editingId() ? 'Update' : 'Submit' }}</button>
+            <button type="button" class="btn ghost" (click)="closeForm()">Cancel</button>
+          </div>
+        </form>
+  
+        <p class="hint" *ngIf="myTestimonial() as t">
+          Your status: <strong>{{ t.status }}</strong>
+          <ng-container *ngIf="t.moderationNote">• Note: {{ t.moderationNote }}</ng-container>
+        </p>
+      </div>
+  
+      <!-- All testimonials (approved + mine if pending/rejected) -->
+      <div *ngIf="publicPage() as pg">
+        <div class="masonry" [class.loading]="loadingPublic()">
+          <ng-container *ngIf="loadingPublic()">
+            <div class="tcard skeleton" *ngFor="let s of [1,2,3,4,5,6]">
+              <div class="tcard-header">
+                <div class="avatar"></div>
+                <div class="stars"><span></span><span></span><span></span><span></span><span></span></div>
+              </div>
+              <p class="tcontent"></p>
+              <div class="meta"><span></span><span></span></div>
+            </div>
+          </ng-container>
+
+          <div *ngIf="!loadingPublic() && myTestimonial() as t" class="tcard my fade-in" [class.has-badge]="t && (t.status !== 'APPROVED')">
+            <div class="badge" *ngIf="t.status !== 'APPROVED'">Your testimonial ({{ t.status }})</div>
+            <div class="tcard-header">
+              <div class="avatar" [ngStyle]="!t.authorProfilePictureUrl ? avatarStyle(t.authorId) : null">
+                <img *ngIf="t.authorProfilePictureUrl" [src]="t.authorProfilePictureUrl" alt="{{ t.authorName || 'User' }} avatar" />
+                <span *ngIf="!t.authorProfilePictureUrl">{{ (t.authorName || 'Anonymous').charAt(0) }}</span>
+              </div>
+              
+              <div class="stars" [attr.data-rating]="t.rating">
+                <span *ngFor="let s of stars" [class.filled]="s <= t.rating">★</span>
+              </div>
+            </div>
+
+            <p class="tcontent clamped">“{{ t.content }}”</p>
+<button
+  class="see-more"
+  *ngIf="shouldShowMore(t.content)"
+  (click)="openModal(t)"
+>
+  See more
+</button>
+
+                        <div class="meta">
+              <span class="author">{{ t.authorName || 'You' }}</span>
+              <span class="date">{{ t.createdAt | date:'mediumDate' }}</span>
+            </div>
+          </div>
+
+          <ng-container *ngFor="let t of mergedTestimonials(); trackBy: trackById">
+            <!-- skip duplicate of mine if it’s already placed above -->
+            <div class="tcard fade-in" *ngIf="!myTestimonial() || t.id !== myTestimonial()!.id || t.status === 'APPROVED'">
+              <div class="tcard-header">
+                <div class="avatar" [ngStyle]="!t.authorProfilePictureUrl ? avatarStyle(t.authorId) : null">
+                  <img *ngIf="t.authorProfilePictureUrl" [src]="t.authorProfilePictureUrl" alt="{{ t.authorName || 'User' }} avatar" />
+                  <span *ngIf="!t.authorProfilePictureUrl">{{ (t.authorName || 'Anonymous').charAt(0) }}</span>
+                </div>
+                
+                <div class="stars" [attr.data-rating]="t.rating">
+                  <span *ngFor="let s of stars" [class.filled]="s <= t.rating">★</span>
+                </div>
+              </div>
+
+              <p class="tcontent clamped">“{{ t.content }}”</p>
+              <button
+                class="see-more"
+                *ngIf="shouldShowMore(t.content)"
+                (click)="openModal(t)"
+              >
+                See more
+              </button>
+              
+
+              <div class="meta">
+                <span class="author">{{ t.authorName || 'Anonymous' }}</span>
+                <span class="date">{{ t.createdAt | date:'mediumDate' }}</span>
+              </div>
+            </div>
+          </ng-container>
+
+          <div class="empty" *ngIf="!loadingPublic() && (!mergedTestimonials() || mergedTestimonials().length === 0)">
+            <svg viewBox="0 0 200 60" aria-hidden="true"><rect x="0" y="30" width="200" height="8" rx="4" fill="var(--sc-gray-1)"/></svg>
+            <p>No testimonials yet. Be the first to share your experience.</p>
+          </div>
+        </div>
+  
+        <div class="pager">
+          <button class="btn ghost" (click)="prevPage()" [disabled]="pg.first">Prev</button>
+          <span>Page {{ pg.number + 1 }} / {{ pg.totalPages || 1 }}</span>
+          <button class="btn primary" (click)="nextPage()" [disabled]="pg.last">Next</button>
+        </div>
+      </div>
+
+      <!-- Floating create button -->
+      <button class="fab" (click)="openFormForCreate()" aria-label="Create testimonial" title="Create testimonial">+
+      </button>
+    </ng-container>
+  
+    <!-- ========== Admin View ========== -->
+    <ng-container *ngIf="role() === 'admin'">
+      <div class="admin-bar">
+        <label>Status</label>
+        <select [(ngModel)]="adminFilter" (ngModelChange)="onAdminFilterChange($event)">
+          <option [ngValue]="undefined">ALL</option>
+          <option [ngValue]="'PENDING'">PENDING</option>
+          <option [ngValue]="'APPROVED'">APPROVED</option>
+          <option [ngValue]="'REJECTED'">REJECTED</option>
+        </select>
+      </div>
+      
+  
+      <div *ngIf="adminPage() as apg" class="table-wrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Author</th>
+              <th>Rating</th>
+              <th>Content</th>
+              <th>Status</th>
+              <th>Moderation</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of apg.content">
+              <td>{{ t.id }}</td>
+              <td>{{ t.authorName }} ({{ t.authorId }})</td>
+              <td>{{ t.rating }}</td>
+              <td class="content-cell">
+                <span class="ellipsis" [title]="t.content">“{{ t.content }}”</span>
+                <button
+                  class="see-more-inline"
+                  *ngIf="shouldShowMore(t.content)"
+                  (click)="openModal(t)"
+                  aria-label="See full testimonial"
+                >
+                  See more
+                </button>
+              </td>
+                            <td>
+                <span class="status" [ngClass]="t.status?.toLowerCase()">{{ t.status }}</span>
+              </td>
+              <td>{{ t.moderationNote || '-' }}</td>
+              <td class="actions">
+                <button class="btn small primary" (click)="approve(t.id!)" [disabled]="t.status === 'APPROVED'">Approve</button>
+                <button class="btn small danger" (click)="reject(t.id!)" [disabled]="t.status === 'REJECTED'">Reject</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <div class="pager">
+          <button class="btn ghost" (click)="adminPrev()" [disabled]="apg.first">Prev</button>
+          <span>Page {{ apg.number + 1 }} / {{ apg.totalPages || 1 }}</span>
+          <button class="btn primary" (click)="adminNext()" [disabled]="apg.last">Next</button>
+        </div>
+
+
+
+      </div>
+    </ng-container>
+            <!-- Full content modal -->
+            <div
+            class="modal-backdrop"
+            *ngIf="modalOpen()"
+            (click)="closeModal()"
+            tabindex="-1"
+            (keydown.escape)="closeModal()"
+            aria-hidden="false"
+            >
+            <div
+              class="modal"
+              role="dialog"
+              aria-modal="true"
+              [attr.aria-labelledby]="'testimonial-title-' + (modalItem()?.id || 'x')"
+              (click)="$event.stopPropagation()"
+            >
+              <button class="modal-close" (click)="closeModal()" aria-label="Close">×</button>
+            
+              <div class="modal-header">
+                <div class="avatar" [ngStyle]="!modalItem()?.authorProfilePictureUrl ? avatarStyle(modalItem()?.authorId) : null">
+                  <img *ngIf="modalItem()?.authorProfilePictureUrl" [src]="modalItem()?.authorProfilePictureUrl" alt="" />
+                  <span *ngIf="!modalItem()?.authorProfilePictureUrl">{{ (modalItem()?.authorName || 'A').charAt(0) }}</span>
+                </div>
+            
+                <div class="meta-block">
+                  <h3 class="modal-title" [id]="'testimonial-title-' + (modalItem()?.id || 'x')">
+                    {{ modalItem()?.authorName || 'Anonymous' }}
+                  </h3>
+                  <div class="stars" [attr.data-rating]="modalItem()?.rating">
+                    <span *ngFor="let s of stars" [class.filled]="s <= (modalItem()?.rating || 0)">★</span>
+                  </div>
+                  <div class="date">{{ modalItem()?.createdAt | date:'mediumDate' }}</div>
+                </div>
+              </div>
+            
+              <div class="modal-content">
+                “{{ modalItem()?.content }}”
+              </div>
+            </div>
+            </div>
+
+  </section>
+  

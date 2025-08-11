@@ -1,10 +1,13 @@
 /* === Creative Dashboard Redesign === */
 
+/* Import global styles to access CSS variables */
+@import '../../../../styles.css';
+
 .dashboard-pro {
   padding: 48px 0 48px 0;
   min-height: 100vh;
   font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
-  background: linear-gradient(120deg, #e0e7ff 0%, #f7fafd 60%, #cbc2fb 100%);
+  background: var(--bg);
   position: relative;
   overflow-x: hidden;
 }
@@ -46,7 +49,7 @@
   font-size: 2.1rem;
   font-weight: 900;
   letter-spacing: -1px;
-  color: #3b5bdb;
+  color: var(--fg);
   margin-bottom: 18px;
   text-shadow: 0 2px 12px #e0e7ff77;
   display: flex;
@@ -85,11 +88,11 @@
 }
 
 .stat-card, .stat-card-pro {
-  background: rgba(255,255,255,0.82);
+  background: var(--surface);
   border-radius: 28px;
   box-shadow: 0 8px 32px 0 rgba(44, 62, 80, 0.13), 0 2px 12px 0 #fbc2eb33;
   backdrop-filter: blur(10px);
-  border: 2px solid rgba(99,102,241,0.10);
+  border: 2px solid var(--border);
   transition: box-shadow 0.28s, transform 0.18s;
   padding: 36px 28px 28px 28px;
   position: relative;
@@ -190,6 +193,7 @@
   align-items: flex-start;
   border: 2px solid #fbc2eb22;
   transition: box-shadow 0.22s, transform 0.16s;
+  
 }
 .chart-card::before {
   content: '';
@@ -507,4 +511,10 @@
   margin-top: 10px;
   max-width: 380px;
   max-height: 280px;
+}
+
+.chart-card-small canvas {
+  height: 250px !important;
+  max-height: 250px !important;
+  max-width: 500px;
 }

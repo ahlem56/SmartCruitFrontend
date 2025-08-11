@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../Services/user.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -9,15 +9,17 @@ import {
   FacebookLoginProvider,
   SocialUser
 } from '@abacritt/angularx-social-login';
+import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login'; // 👈 add this
+
 
 @Component({
   selector: 'app-signup',
   standalone: true,
   templateUrl: './signup.component.html',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,GoogleSigninButtonModule],
   styleUrls: ['./signup.component.css']
 })
-export class SignupComponent {
+export class SignupComponent implements OnInit{
   signupForm: any = {
     fullName: '',
     email: '',
@@ -40,6 +42,38 @@ export class SignupComponent {
     private router: Router,
     private authService: SocialAuthService
   ) {}
+
+
+  ngOnInit() {
+    // 🔐 This is where Google result lands when using <asl-google-signin-button>
+    this.authService.authState.subscribe((user: SocialUser | null) => {
+      if (!user) return;
+      this.userService.googleLoginDebug(user.idToken).subscribe();
+
+      // Identify which provider logged in
+      const isGoogle = user.provider === GoogleLoginProvider.PROVIDER_ID;
+
+      if (isGoogle && user.idToken) {
+        // backend expects Google ID token
+        this.userService.googleLogin(user.idToken).subscribe({
+          next: (res: any) => {
+            this.userService.saveToken(res.token);
+            this.userService.saveUser({
+              fullName: res.fullName,
+              email: res.email,
+              role: 'candidate',
+              userId: res.userId
+            });
+            this.router.navigate(['/onboarding']);
+          },
+          error: (err) => {
+            console.error('❌ Google signup error:', err);
+            alert('Signup with Google failed.');
+          }
+        });
+      }
+    });
+  }
 
   onSubmit(form: NgForm) {
     this.serverErrors = [];

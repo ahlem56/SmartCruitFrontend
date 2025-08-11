@@ -130,4 +130,9 @@ getConversationContacts(userId: number): Observable<any[]> {
   return this.http.get<any[]>(`http://localhost:8089/SmartCruit/conversations/${userId}`);
 }
 
+
+googleLoginDebug(idToken: string) {
+  return this.http.post(`${this.apiUrl}/google-login-debug`, { idToken });
+}
+
 }

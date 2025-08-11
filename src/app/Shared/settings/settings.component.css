@@ -1,24 +1,8 @@
 /* Enhanced Settings Page Styles with Professional Design */
-:root {
-  --primary-blue: #0583F2;
-  --dark-blue: #035AA6;
-  --navy-blue: #1B578C;
-  --light-blue: #79ACD9;
-  --light-gray: #F2F2F2;
-  --white: #FFFFFF;
-  --text-dark: #2D3748;
-  --text-muted: #718096;
-  --border-color: #E2E8F0;
-  --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --shadow-heavy: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  --gradient-primary: linear-gradient(135deg, var(--primary-blue) 0%, var(--dark-blue) 100%);
-  --gradient-secondary: linear-gradient(135deg, var(--light-blue) 0%, var(--navy-blue) 100%);
-}
 
 .settings-page {
-  background: linear-gradient(135deg, var(--light-gray) 0%, var(--white) 100%);
-  min-height: 100vh;
+background: var(--bg);  
+min-height: 100vh;
   padding: 0;
   position: relative;
   overflow-x: hidden;
@@ -61,7 +45,7 @@
 
 /* Enhanced Header Section */
 .settings-header {
-  background: var(--white);
+background: var(--surface); 
   border-radius: 0 0 24px 24px;
   box-shadow: var(--shadow-medium);
   margin-bottom: 32px;
@@ -159,12 +143,12 @@
 .section-header h2 {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--text-dark);
+color: var(--fg);
   margin: 0 0 8px 0;
 }
 
 .section-header p {
-  color: var(--text-muted);
+color: var(--muted);
   font-size: 1rem;
   margin: 0;
 }
@@ -223,10 +207,9 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background: var(--light-gray);
+background: var(--surface-2);
   border-radius: 16px;
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
+border: 1px solid var(--border);  transition: all 0.3s ease;
 }
 
 .notification-item:hover {
@@ -335,8 +318,8 @@ input:checked + .toggle-slider:before {
   align-items: center;
   gap: 12px;
   padding: 12px 20px;
-  background: var(--gradient-primary);
-  color: var(--white);
+background: var(--gradient-primary);
+color: #fff;
   border: none;
   border-radius: 12px;
   font-size: 0.9rem;

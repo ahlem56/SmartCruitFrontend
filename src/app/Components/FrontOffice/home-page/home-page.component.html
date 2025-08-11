@@ -319,64 +319,76 @@
       <h2 class="section-title">What Our Users Say</h2>
       <p class="section-subtitle">Real stories from real people who found their dream jobs</p>
     </div>
-    
-    <div class="testimonials-grid">
-      <div class="testimonial-card">
-        <div class="testimonial-content">
-          <div class="quote-icon">
-            <i class="fas fa-quote-left"></i>
-          </div>
-          <p class="testimonial-text">"SmartCruit helped me find my dream job in just 2 weeks! The AI matching is incredible and the application process was seamless."</p>
-          <div class="testimonial-author">
+
+    <!-- Decorative background bits -->
+    <div class="tst-decor">
+      <span class="blob b1"></span>
+      <span class="blob b2"></span>
+      <span class="grid-overlay"></span>
+    </div>
+
+    <div class="testimonials-grid tst-grid-upgrade">
+      <!-- Dynamic testimonials: top 3 highest rated -->
+      <article class="testimonial-card upgraded" *ngFor="let t of testimonials; trackBy: trackByTestimonialId">
+        <!-- Accent border -->
+        <div class="tst-border"></div>
+
+        <header class="tst-head">
+          <div class="tst-avatar-wrap">
+            <span class="tst-avatar-ring"></span>
             <div class="author-avatar">
-              <i class="fas fa-user"></i>
-            </div>
-            <div class="author-info">
-              <h4 class="author-name">Sarah Johnson</h4>
-              <p class="author-title">Senior Developer at Google</p>
+              <img *ngIf="t.authorProfilePictureUrl; else defaultAvatar"
+                   [src]="t.authorProfilePictureUrl"
+                   alt="{{ t.authorName || 'User' }} avatar" />
+              <ng-template #defaultAvatar>
+                <i class="fas fa-user"></i>
+              </ng-template>
             </div>
           </div>
+
+          <div class="tst-meta">
+            <h4 class="author-name">
+              {{ t.authorName || 'Anonymous' }}
+              <i class="fa-solid fa-badge-check verified" title="Verified"></i>
+            </h4>
+            <p class="author-title" *ngIf="t.createdAt as d">
+              {{ d | date:'mediumDate' }}
+            </p>
+
+            <!-- Rating -->
+            <div class="testimonial-rating" aria-label="Rating">
+              <ng-container *ngFor="let s of [1,2,3,4,5]">
+                <i class="fa-star"
+                   [ngClass]="(t.rating || 0) >= s ? 'fa-solid' : 'fa-regular'">
+                </i>
+              </ng-container>
+              <span class="tst-score">{{ t.rating | number:'1.0-1' }}</span>
+            </div>
+          </div>
+        </header>
+
+        <div class="testimonial-content upgraded">
+          <i class="fa-solid fa-quote-left quote-bg" aria-hidden="true"></i>
+          <p class="testimonial-text">
+            {{ t.content }}
+          </p>
         </div>
-      </div>
-      
-      <div class="testimonial-card">
+
+        <!-- Subtle shine -->
+        <span class="card-shine" aria-hidden="true"></span>
+      </article>
+
+      <!-- Optional: empty state -->
+      <article class="testimonial-card upgraded empty" *ngIf="!testimonials?.length">
         <div class="testimonial-content">
-          <div class="quote-icon">
-            <i class="fas fa-quote-left"></i>
-          </div>
-          <p class="testimonial-text">"The platform is incredibly user-friendly and the job recommendations are spot-on. I highly recommend SmartCruit to anyone looking for a career change."</p>
-          <div class="testimonial-author">
-            <div class="author-avatar">
-              <i class="fas fa-user"></i>
-            </div>
-            <div class="author-info">
-              <h4 class="author-name">Michael Chen</h4>
-              <p class="author-title">Product Manager at Microsoft</p>
-            </div>
-          </div>
+          <p class="testimonial-text">Be the first to share your experience with SmartCruit!</p>
         </div>
-      </div>
-      
-      <div class="testimonial-card">
-        <div class="testimonial-content">
-          <div class="quote-icon">
-            <i class="fas fa-quote-left"></i>
-          </div>
-          <p class="testimonial-text">"As an employer, SmartCruit has helped us find exceptional talent quickly and efficiently. The quality of candidates is outstanding."</p>
-          <div class="testimonial-author">
-            <div class="author-avatar">
-              <i class="fas fa-user"></i>
-            </div>
-            <div class="author-info">
-              <h4 class="author-name">Emily Rodriguez</h4>
-              <p class="author-title">HR Director at Apple</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      </article>
     </div>
   </div>
 </section>
+
+
 
 <!-- CTA Section -->
 <section class="cta-section">

@@ -13,6 +13,10 @@ export interface AdminDashboardStats {
   newJobs24h: number;
   newApplications24h: number;
 
+    totalCompanies: number;       // ✅ Already present
+  totalCandidates: number;      // ✅ Add this
+  totalEmployers: number;       // ✅ Add this
+
   newUsers7d: number;
   newJobs7d: number;
   newApplications7d: number;
@@ -56,5 +60,14 @@ export class DashboardService {
   getEngagementStats(): Observable<UserEngagementStats> {
   return this.http.get<UserEngagementStats>(`${this.baseUrl}/engagement`);
 }
+
+getTopMatchesGlobal(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.baseUrl}/topMatchesGlobal`);
+}
+
+getTopCategories(): Observable<{ category: string; count: number }[]> {
+  return this.http.get<{ category: string; count: number }[]>(`${this.baseUrl}/topCategories`);
+}
+
 
 }

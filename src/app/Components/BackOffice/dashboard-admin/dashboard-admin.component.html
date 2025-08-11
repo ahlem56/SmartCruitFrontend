@@ -1,54 +1,89 @@
 <div class="dashboard-pro">
   <!-- Top Stats Cards -->
   <div class="stats-row">
+   <div class="stat-card">
+  <div class="stat-header">
+    <span>Total Job Offers</span>
+    <span class="stat-context">This Month</span>
+  </div>
+  <div class="stat-value" id="totalOffersCounter">{{ totalOffers }}</div>
+  <div [ngClass]="getStatChangeClass(offerChange)">
+    {{ offerChange | number: '1.0-0' }}% from last month
+  </div>
+</div>
+
+
+<div class="stat-card">
+  <div class="stat-header">
+    <span>Total Applications</span>
+    <span class="stat-context">This Month</span>
+  </div>
+  <div class="stat-value" id="totalApplicationsCounter">{{ totalApplications }}</div>
+  <div [ngClass]="getStatChangeClass(applicationChange)">
+    {{ applicationChange | number: '1.0-0' }}% from last month
+  </div>
+</div>
+
+
+<div class="stat-card">
+  <div class="stat-header">
+    <span>Total Companies</span>
+    <span class="stat-context">Profiles</span>
+  </div>
+<div class="stat-value" id="totalCompaniesCounter">{{ totalCompanies }}</div>
+</div>
+
+
+
+
     <div class="stat-card">
-      <div class="stat-header">
-        <span>Total Job Offers</span>
-        <span class="stat-context">This Month</span>
-      </div>
-      <div class="stat-value">{{ totalOffers }}</div>
-      <div class="stat-change positive">+8% from last month</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-header">
-        <span>Active Job Offers</span>
-        <span class="stat-context">Now</span>
-      </div>
-      <div class="stat-value">{{ activeOffers }}</div>
-      <div class="stat-change neutral">0% change</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-header">
-        <span>Total Applications</span>
-        <span class="stat-context">This Month</span>
-      </div>
-      <div class="stat-value">{{ totalApplications }}</div>
-      <div class="stat-change negative">-2% from last month</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-header">
-        <span>Profile Completion</span>
-        <span class="stat-context">Your Profile</span>
-      </div>
-      <div class="progress-ring-pro">
-        <span class="progress-value">{{ profileCompletion }}%</span>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" [style.width]="profileCompletion + '%'"></div>
-        </div>
-      </div>
-      <div class="stat-change positive">+5% this week</div>
-    </div>
+  <div class="stat-header">
+    <span>Total Candidates</span>
+    <span class="stat-context">Registered</span>
+  </div>
+<div class="stat-value" id="totalCandidatesCounter">{{ totalCandidates }}</div>
+</div>
+
+
+   <div class="stat-card">
+  <div class="stat-header">
+    <span>Total Employers</span>
+    <span class="stat-context">Registered</span>
+  </div>
+<div class="stat-value" id="totalEmployersCounter">{{ totalEmployers }}</div>
+</div>
+
+<div class="stat-card">
+  <div class="stat-header">
+    <span>User Growth</span>
+    <span class="stat-context">Last 30 Days</span>
+  </div>
+<div class="stat-value" id="userGrowthCounter">{{ userGrowth | number: '1.0-0' }}%</div>
+  <div [ngClass]="getStatChangeClass(userGrowth)">
+    vs. previous month
+  </div>
+</div>
+
+
+
   </div>
 
   <!-- Charts Section -->
   <div class="charts-row">
+  
     <div class="chart-card">
       <div class="chart-header">Applications Over Time <span class="chart-context">(Last 12 months)</span></div>
       <canvas baseChart [data]="applicationsLineChartData" [options]="applicationsLineChartOptions" [type]="'line'"></canvas>
     </div>
     <div class="chart-card">
       <div class="chart-header">Job Offer Status <span class="chart-context">(Current)</span></div>
-      <canvas baseChart [data]="statusDoughnutChartData" [options]="statusDoughnutChartOptions" [type]="'doughnut'"></canvas>
+<canvas
+  baseChart
+  [data]="statusDoughnutChartData"
+  [options]="statusDoughnutChartOptions"
+  [type]="'doughnut'"
+  class="doughnut-small"
+></canvas>
     </div>
     <div class="chart-card">
       <div class="chart-header">Top Job Offers <span class="chart-context">(This Month)</span></div>
@@ -57,44 +92,115 @@
   </div>
 
   <!-- Engagement Section -->
-  <div class="engagement-row">
-    <!-- Top Candidates -->
-    <div class="engagement-card">
-      <div class="engagement-header">Top Candidates <span class="engagement-context">(This Month)</span></div>
-      <ul class="engagement-list">
-        <li *ngFor="let c of topCandidates; let i = index">
-          <span class="pill">#{{ i + 1 }}</span>
-          <img [src]="c.avatarUrl || 'assets/images/default-avatar.png'" alt="Candidate Avatar" class="avatar-img" />
-          <span class="engagement-name">{{ c.name }}</span>
-          <span class="engagement-count">({{ c.count }} apps)</span>
-        </li>
-      </ul>
+ <div class="engagement-layout">
+
+  <!-- Left Side (2 columns x 2 rows) -->
+  <div class="engagement-left">
+
+    <!-- Column 1 -->
+    <div class="engagement-column">
+      <!-- Top Job Offer Categories -->
+      <div class="engagement-card category-stats-card">
+        <div class="engagement-header">
+          Top Job Offer Categories
+          <span class="engagement-context">(Ranked by Count)</span>
+        </div>
+        <ul class="category-list">
+          <li *ngFor="let c of topCategories" class="category-item">
+            <div class="category-name">{{ c.category }}</div>
+            <div class="category-bar-container">
+              <div
+                class="category-bar-fill"
+                [style.width.%]="(c.count / topCategories[0].count) * 100"
+              ></div>
+            </div>
+            <div class="category-count">{{ c.count }} offers</div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Top Active Candidates -->
+      <div class="engagement-card">
+        <div class="engagement-header">
+          Top Active Candidates
+          <span class="engagement-context">(This Month)</span>
+        </div>
+        <ul class="engagement-list">
+          <li *ngFor="let c of topCandidates">
+            <img [src]="c.avatarUrl || 'assets/images/default-avatar.png'" class="avatar-img" />
+            <span class="engagement-name">{{ c.name }}</span>
+            <span class="engagement-count">({{ c.count }} apps)</span>
+          </li>
+        </ul>
+      </div>
     </div>
 
-    <!-- Top Employers -->
-    <div class="engagement-card">
-      <div class="engagement-header">Top Employers <span class="engagement-context">(This Month)</span></div>
-      <ul class="engagement-list">
-        <li *ngFor="let e of topEmployers; let i = index">
-          <span class="pill">#{{ i + 1 }}</span>
-          <img [src]="e.avatarUrl || 'assets/images/default-avatar.png'" alt="Employer Avatar" class="avatar-img" />
-          <span class="engagement-name">{{ e.name }}</span>
-          <span class="engagement-count">({{ e.count }} jobs)</span>
-        </li>
-      </ul>
-    </div>
+    <!-- Column 2 -->
+    <div class="engagement-column">
+      <!-- Top Companies -->
+      <div class="engagement-card">
+        <div class="engagement-header">
+          Top Companies
+          <span class="engagement-context">(This Month)</span>
+        </div>
+        <ul class="engagement-list">
+          <li *ngFor="let co of topCompanies">
+            <img [src]="co.logoUrl || 'assets/images/default-company.png'" class="company-logo" />
+            <span class="engagement-name">{{ co.name }}</span>
+            <span class="engagement-count">({{ co.count }} jobs)</span>
+          </li>
+        </ul>
+      </div>
 
-    <!-- Top Companies -->
-    <div class="engagement-card">
-      <div class="engagement-header">Top Companies <span class="engagement-context">(This Month)</span></div>
+      <!-- Top Active Employers -->
+      <div class="engagement-card">
+        <div class="engagement-header">
+          Top Active Employers
+          <span class="engagement-context">(This Month)</span>
+        </div>
+        <ul class="engagement-list">
+          <li *ngFor="let e of topEmployers">
+            <img [src]="e.avatarUrl || 'assets/images/default-avatar.png'" class="avatar-img" />
+            <span class="engagement-name">{{ e.name }}</span>
+            <span class="engagement-count">({{ e.count }} jobs)</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side: Top Global Matches (Double Height) -->
+  <div class="engagement-right">
+    <div class="engagement-card large-card">
+      <div class="engagement-header">
+        Top Global Matches
+        <span class="engagement-context">(Best 5 Candidates)</span>
+      </div>
       <ul class="engagement-list">
-        <li *ngFor="let co of topCompanies; let i = index">
-          <span class="pill">#{{ i + 1 }}</span>
-          <img [src]="co.logoUrl || 'assets/images/default-company.png'" alt="Company Logo" class="company-logo" />
-          <span class="engagement-name">{{ co.name }}</span>
-          <span class="engagement-count">({{ co.count }} jobs)</span>
+        <li *ngFor="let match of topMatches" class="match-item">
+          <img
+            [src]="match.profilePictureUrl || 'assets/images/default-avatar.png'"
+            class="match-avatar"
+          />
+          <div class="match-info">
+            <div class="match-name">{{ match.candidateName }}</div>
+            <div class="match-title">{{ match.jobTitle }}</div>
+            <div class="match-score">Score: {{ match.score | number: '1.2-2' }}</div>
+          </div>
+          <a
+            *ngIf="match.cvUrl"
+            [href]="match.cvUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="match-cv-link"
+          >
+            View CV
+          </a>
         </li>
       </ul>
     </div>
   </div>
+</div>
+
+
 </div>
