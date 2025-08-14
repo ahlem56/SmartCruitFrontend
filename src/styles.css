@@ -343,3 +343,275 @@ html, body {
   z-index: 9999;
   pointer-events: none;
 }
+
+/* === SweetAlert2 enhanced success modal for application submission === */
+.swal2-container.app-submit-success__container {
+  backdrop-filter: blur(4px);
+}
+
+.swal2-popup.app-submit-success {
+  border-radius: 16px !important;
+  padding: 0 !important;
+  background: var(--surface) !important;
+  color: var(--fg) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow-2) !important;
+  width: min(840px, 92vw) !important;
+}
+
+.app-submit-success__title { display: none !important; }
+
+.app-submit-success__body {
+  padding: 0 !important;
+}
+
+.app-submit-success .success-modal { padding: 20px 22px 24px; }
+.app-submit-success .success-header { display: flex; align-items: center; gap: 14px; padding: 10px 6px 14px; border-bottom: 1px solid var(--border); }
+.app-submit-success .success-icon { width: 36px; height: 36px; border-radius: 50%; background: #e6f6ef; color: #0f9d58; display: grid; place-items: center; font-weight: 700; }
+.app-submit-success .success-title { font-size: 18px; font-weight: 700; }
+.app-submit-success .success-sub { font-size: 13px; }
+.app-submit-success .muted { color: var(--muted); }
+
+.app-submit-success .success-body { display: grid; gap: 18px; padding-top: 14px; }
+
+.app-submit-success .score-card { display: flex; align-items: center; gap: 16px; }
+.app-submit-success .score-ring { --size: 84px; width: var(--size); height: var(--size); border-radius: 50%; background:
+  conic-gradient(var(--primary) calc(var(--p) * 1%), #e5e7eb 0);
+  display: grid; place-items: center; box-shadow: inset 0 0 0 10px #fff; }
+.app-submit-success .score-value { font-weight: 800; font-size: 22px; }
+.app-submit-success .score-value span { font-size: 12px; font-weight: 600; color: var(--muted); margin-left: 1px; }
+.app-submit-success .score-label { font-size: 13px; color: var(--muted); }
+
+.app-submit-success .section { display: grid; gap: 10px; }
+.app-submit-success .section-title { font-size: 14px; font-weight: 700; }
+.app-submit-success .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.app-submit-success .chip { background: var(--surface-2); border: 1px solid var(--border); padding: 6px 10px; border-radius: 999px; font-size: 12px; }
+.app-submit-success .good-news { color: #0f9d58; font-weight: 600; }
+
+.app-submit-success .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.app-submit-success .success-card { display: flex; align-items: center; gap: 10px; text-decoration: none; border: 1px solid var(--border); background: var(--surface); border-radius: 12px; padding: 10px; transition: transform .2s ease, box-shadow .2s ease; }
+.app-submit-success .success-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+.app-submit-success .company-logo, .app-submit-success .course-thumb { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; }
+.app-submit-success .job-title, .app-submit-success .course-title { font-weight: 700; color: var(--fg); }
+.app-submit-success .job-sub, .app-submit-success .course-sub { font-size: 12px; color: var(--muted); }
+
+.app-submit-success .cta-row { display: flex; gap: 10px; justify-content: flex-end; padding-top: 8px; }
+.app-submit-success .cta { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); text-decoration: none; font-weight: 600; }
+.app-submit-success .btn-primary { background: var(--gradient-primary); color: #fff; border-color: transparent; }
+.app-submit-success .btn-secondary { background: var(--surface-2); color: var(--fg); }
+
+/* SweetAlert2 animations */
+.swal2-animate-popup-show { animation: popup-in .24s cubic-bezier(.2,.8,.2,1); }
+.swal2-animate-popup-hide { animation: popup-out .2s ease forwards; }
+@keyframes popup-in { from { transform: translateY(4px) scale(.98); opacity: 0 } to { transform: translateY(0) scale(1); opacity: 1 } }
+@keyframes popup-out { to { transform: translateY(6px) scale(.98); opacity: 0 } }
+
+
+/* ==== SweetAlert (global) styles for suggestion cards ==== */
+.swal2-container .sc-modal { display: grid; gap: 1.25rem; text-align: left; }
+
+.swal2-container .sc-section-title {
+  font-size: 0.95rem; font-weight: 700; margin: 0 0 0.5rem 0; color: #0f172a;
+}
+
+.swal2-container .sc-muted { color: #64748b; margin: 0.25rem 0 0 0; }
+
+/* Score area */
+.swal2-container .sc-score {
+  display: grid; grid-template-columns: auto 1fr; gap: 1rem; align-items: center;
+}
+.swal2-container .sc-meter { display: block; }
+.swal2-container .sc-score-text { display: grid; gap: 0.25rem; }
+.swal2-container .sc-score-label { font-size: 0.8rem; color: #64748b; font-weight: 600; }
+.swal2-container .sc-score-value { font-size: 1.75rem; font-weight: 800; opacity: 0; transition: opacity 240ms ease; }
+
+/* Chips */
+.swal2-container .sc-chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.swal2-container .sc-chip {
+  display: inline-flex; align-items: center; padding: 0.35rem 0.6rem;
+  font-size: 1.45rem; font-weight: 600; color: #0f172a;
+  background: #eef2ff; border: 1px solid #e0e7ff; border-radius: 999px;
+}
+
+/* Grid for jobs/courses */
+.swal2-container .sc-card-grid {
+  display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 0.75rem;
+}
+.swal2-container .sc-card-grid--compact { grid-template-columns: repeat(2, minmax(0,1fr)); }
+
+@media (max-width: 540px) {
+  .swal2-container .sc-card-grid,
+  .swal2-container .sc-card-grid--compact { grid-template-columns: 1fr; }
+}
+
+/* Cards */
+.swal2-container .sc-card {
+  display: grid; grid-template-rows: auto 1fr; gap: 0.5rem;
+  border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;
+  text-decoration: none !important; background: #fff;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.swal2-container .sc-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(2,6,23,.06); }
+
+/* Prevent nested elements getting underlines from <a> */
+.swal2-container .sc-card * { text-decoration: none !important; }
+
+.swal2-container .sc-card--horizontal { grid-template-columns: 96px 1fr; grid-template-rows: auto; }
+
+/* Media area: HARD LIMIT image sizes */
+.swal2-container .sc-card-media { display: grid; place-items: center; padding: 0.9rem; background: #f8fafc; }
+.swal2-container .sc-card-media img {
+  width: 48px; height: 48px; max-width: 48px; max-height: 48px;
+  object-fit: cover; border-radius: 8px; display: block;
+}
+
+/* Thumbnails (YouTube) should fill their mini panel but stay short */
+.swal2-container .sc-card-media--thumb { padding: 0; background: #000; }
+.swal2-container .sc-card-media--thumb img {
+  width: 100%; height: 100%; max-height: 100px; object-fit: cover; border-radius: 0; display: block;
+}
+
+/* Body */
+.swal2-container .sc-card-body { padding: 0.75rem 0.9rem 1rem 0.9rem; }
+.swal2-container .sc-card-title { font-weight: 700; color: #0f172a; line-height: 1.2; }
+.swal2-container .sc-card-subtitle { color: #64748b; margin-top: 0.2rem; font-size: 0.9rem; }
+
+/* Buttons & title polish (optional) */
+.swal2-container .btn-primary {
+  background-color: #007bff !important; color:#fff !important; border-radius:10px !important;
+  padding:.7rem 1.1rem !important; font-weight:700 !important;
+}
+.swal2-container .btn-secondary {
+  background:#f1f5f9 !important; color:#0f172a !important; border-radius:10px !important;
+  padding:.7rem 1.1rem !important; font-weight:700 !important; border:1px solid #e2e8f0 !important;
+}
+.swal2-container .sc-title { font-weight: 800 !important; letter-spacing: .2px; }
+
+/* === Courses grid (SweetAlert scope) === */
+.swal2-container .sc-course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.swal2-container .sc-course-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  text-decoration: none !important;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.swal2-container .sc-course-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(2,6,23,.06);
+}
+
+.swal2-container .sc-course-thumb {
+  flex: 0 0 120px;
+  width: 120px;
+  aspect-ratio: 16 / 9;              /* keeps the video feel */
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+.swal2-container .sc-course-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;                  /* no letterboxing */
+  display: block;
+}
+
+.swal2-container .sc-course-body { min-width: 0; } /* allow text to clamp */
+.swal2-container .sc-course-title {
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.3;
+  display: -webkit-box;               /* clamp to 2 lines */
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.swal2-container .sc-course-sub {
+  color: #64748b;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Optional: tighten job cards to match */
+.swal2-container .sc-card-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.swal2-container .sc-card { border-radius: 12px; }
+
+/* Keep existing sc-* rules you already added; these complement them. */
+
+
+/* --- Center the score block --- */
+.swal2-container .sc-score--center {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  margin-top: .25rem;
+  margin-bottom: .25rem;
+}
+
+.swal2-container .sc-meter { display: block; }
+
+/* value inside the circle */
+.swal2-container .sc-meter-value {
+  font-weight: 800;
+  font-size: 24px;           /* adjust if you want it larger */
+  fill: #0f172a;             /* dark text */
+}
+
+/* caption under the ring */
+.swal2-container .sc-score-caption {
+  margin-top: .35rem;
+}
+.swal2-container .sc-score-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: .2px;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+/* polish headings & body copy inside the popup */
+.swal2-container .swal2-title.sc-title {
+  font-weight: 800 !important;
+  letter-spacing: .2px;
+}
+.swal2-container .sc-section-title {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: .25rem 0 .4rem 0;
+}
+.swal2-container .sc-chip {
+  font-size: .85rem;
+}
+
+/* Force the score block to a single centered column when using --center */
+.swal2-container .sc-score.sc-score--center {
+  display: grid;                     /* keep grid, but… */
+  grid-template-columns: 1fr !important;   /* …collapse to one column */
+  justify-items: center;             /* center items horizontally */
+  align-items: center;
+  gap: .5rem;                        /* space between ring and caption */
+  text-align: center;
+  margin: .25rem auto .75rem auto;   /* center the whole block */
+  width: 100%;
+}
+
+/* Make sure the SVG itself doesn't align strangely */
+.swal2-container .sc-score.sc-score--center .sc-meter {
+  display: block;
+  margin: 0 auto;                    /* center the ring */
+}
+
+/* Caption polish */
+.swal2-container .sc-score.sc-score--center .sc-score-caption {
+  margin-top: .25rem;
+}

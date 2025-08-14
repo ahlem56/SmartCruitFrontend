@@ -867,3 +867,178 @@
   padding: 0.6rem 1.2rem;
   font-size: 1rem;
 }
+
+
+/* ===== SmartCruit SweetAlert UI polish ===== */
+.sc-swal {
+  padding: 1.25rem !important;
+}
+
+.sc-title {
+  font-weight: 800 !important;
+  letter-spacing: 0.2px;
+}
+
+.btn-primary {
+  background-color: #007bff !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  padding: 0.7rem 1.1rem !important;
+  font-weight: 700 !important;
+}
+
+.btn-secondary {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-radius: 10px !important;
+  padding: 0.7rem 1.1rem !important;
+  font-weight: 700 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+/* Layout inside the SweetAlert HTML */
+.sc-modal {
+  display: grid;
+  gap: 1.25rem;
+  text-align: left;
+}
+
+.sc-section-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: #0f172a;
+}
+
+.sc-muted {
+  color: #64748b;
+  margin: 0.25rem 0 0 0;
+}
+
+/* Score meter block */
+.sc-score {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+.sc-meter {
+  display: block;
+}
+.sc-score-text {
+  display: grid;
+  gap: 0.25rem;
+}
+.sc-score-label {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 600;
+}
+.sc-score-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  opacity: 0;
+  transition: opacity 240ms ease;
+}
+
+/* Chips (missing skills) */
+.sc-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.sc-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0f172a;
+  background: #eef2ff;
+  border: 1px solid #e0e7ff;
+  border-radius: 999px;
+}
+
+/* Cards grid for jobs/courses */
+.sc-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.sc-card-grid--compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 540px) {
+  .sc-card-grid {
+    grid-template-columns: 1fr;
+  }
+  .sc-card-grid--compact {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sc-card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  background: #fff;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.sc-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.06);
+}
+
+.sc-card--horizontal {
+  grid-template-columns: 96px 1fr;
+  grid-template-rows: auto;
+}
+
+.sc-card-media {
+  display: grid;
+  place-items: center;
+  padding: 0.9rem;
+  background: #f8fafc;
+}
+.sc-card-media img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.sc-card-media--thumb {
+  padding: 0;
+  background: #000;
+}
+.sc-card-media--thumb img {
+  width: 100%;
+  height: 100%;
+  max-height: 100px;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.sc-card-body {
+  padding: 0.75rem 0.9rem 1rem 0.9rem;
+}
+.sc-card-title {
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+}
+.sc-card-subtitle {
+  color: #64748b;
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+}
+
+/* Success inline note */
+.sc-success {
+  margin: 0.25rem 0 0 0;
+  color: #16a34a;
+  font-weight: 600;
+}

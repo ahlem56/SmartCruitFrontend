@@ -30,6 +30,9 @@ export interface JobOffer {
     profilePictureUrl?: string;
     industry?: string;
     contact?: string;
+    linkedInUrl?: string;
+    githubUrl?: string;
+
   };
 
   company?: {

@@ -180,13 +180,33 @@
         <h3>{{ jobOffer.employer.fullName || 'Employer #' + jobOffer.employer.userId }}</h3>
         <p><strong>Email:</strong> {{ jobOffer.employer.email }}</p>
         <p><strong>Industry:</strong> {{ jobOffer.employer.industry || 'N/A' }}</p>
-        <p><strong>Contact:</strong> {{ jobOffer.employer.contact || 'N/A' }}</p>
-
+<!-- 🔹 Social links -->
+    <div class="social-links">
+      <a *ngIf="jobOffer.employer.linkedInUrl"
+         [href]="jobOffer.employer.linkedInUrl"
+         target="_blank"
+         class="linkedin">
+        <i class="fab fa-linkedin"></i>
+      </a>
+      <a *ngIf="jobOffer.employer.githubUrl"
+         [href]="jobOffer.employer.githubUrl"
+         target="_blank"
+         class="github">
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
         <button class="view-profile-btn" (click)="viewEmployerProfile(jobOffer.employer.userId)">
           <i class="fas fa-user"></i> View Employer Profile
         </button>
       </div>
     </div>
+
+ <!-- Chat button -->
+  <button class="chat-btn" *ngIf="jobOffer?.employer?.userId" (click)="messageEmployer()">
+    <i class="fas fa-comments"></i> Message Employer
+  </button>
+</div>
+
 
     <!-- Company Info -->
     <div *ngIf="jobOffer.company" class="company-box">
@@ -217,12 +237,7 @@
     </div>
   </div>
 
-  <!-- Chat button -->
-  <button class="chat-btn" *ngIf="jobOffer?.employer?.userId" (click)="messageEmployer()">
-    <i class="fas fa-comments"></i> Message Employer
-  </button>
-</div>
-
+ 
 
 
         </div>

@@ -22,6 +22,7 @@ export class JobDetailsComponent implements OnInit {
   loading = true;
   error = false;
   showApplicationModal = false;
+  isSubmitting = false;
 
   applicationForm = {
     firstName: '',
@@ -96,87 +97,182 @@ export class JobDetailsComponent implements OnInit {
   }
 
   submitApplication(): void {
-    if (!this.validateForm() || !this.jobOffer) return;
-
+    if (!this.validateForm() || !this.jobOffer || this.isSubmitting) return;
+  
     const currentUser = this.userService.getCurrentUser();
     if (!currentUser?.userId) {
-      alert('You must be logged in to apply.');
+      Swal.fire({
+        icon: 'info',
+        title: 'Sign in required',
+        text: 'You must be logged in to apply.',
+        confirmButtonText: 'OK'
+      });
       return;
     }
-
+  
+    this.isSubmitting = true;
+  
     const { userId } = currentUser;
     const jobOfferId = this.jobOffer.jobOfferId;
     const cvFile = this.applicationForm.cvFile!;
-
+  
     this.applicationService.applyToJob(userId, jobOfferId, cvFile, { ...this.applicationForm }).subscribe({
       next: (res) => {
         this.closeApplicationModal();
         this.showSuccessModal(res);
+  
+        // ✅ Analytics: submission tracked
+        try {
+          gtag('event', 'application_submitted', {
+            job_id: jobOfferId,
+            user_id: userId,
+            score: this.formatPercent(res?.score),
+          });
+        } catch (_) {}
+        this.isSubmitting = false;
       },
-      error: () => alert('Failed to submit application. Please try again later.')
+      error: () => {
+        this.isSubmitting = false;
+        Swal.fire({
+          icon: 'error',
+          title: 'Submission failed',
+          html: `<p class="sc-muted">We couldn’t send your application right now. Please try again in a moment.</p>`,
+          confirmButtonText: 'Try again'
+        });
+      }
     });
   }
+  
+
+  private getCopy(tone: 'professional'|'friendly'|'playful' = 'professional') {
+    switch (tone) {
+      case 'friendly':
+        return {
+          title: 'Application sent 🎉',
+          scoreLabel: 'Match score',
+          missingTitle: 'Things to brush up on',
+          jobsTitle: 'Jobs you might like',
+          coursesTitle: 'Courses worth a peek',
+          confirm: 'Awesome',
+          deny: 'See more jobs'
+        };
+      case 'playful':
+        return {
+          title: 'Boom! Application away 🚀',
+          scoreLabel: 'Match-o-meter',
+          missingTitle: 'Level‑up targets',
+          jobsTitle: 'Hot picks for you',
+          coursesTitle: 'Quick skill boosts',
+          confirm: 'Nice!',
+          deny: 'Browse more'
+        };
+      default: // professional
+        return {
+          title: 'Application submitted',
+          scoreLabel: 'Match score',
+          missingTitle: 'Missing skills',
+          jobsTitle: 'Recommended roles',
+          coursesTitle: 'Recommended courses',
+          confirm: 'Done',
+          deny: 'Explore more jobs'
+        };
+    }
+  }
+  
 
   showSuccessModal(response: any): void {
-    const score = Math.round((response?.score ?? 0) * 100);
-    const missingSkills = response?.missingSkills || [];
-    const suggestedJobs = response?.suggestedJobs || [];
-    const suggestedCourses = response?.suggestedCourses || [];
-
-    const feedbackList = missingSkills.length
-      ? `<ul>${missingSkills.map((s: string) => `<li>${s}</li>`).join('')}</ul>`
-      : `<p style="color: green;">You meet all the job requirements!</p>`;
-
-    const jobSuggestions = suggestedJobs.length
-      ? suggestedJobs.slice(0, 3).map((job: any) => `
-        <a href="/job-details/${job.jobId}" target="_blank" class="suggested-job-link">
-          <img src="${job.logoUrl || 'assets/FrontOffice/images/default-company.png'}" alt="Logo" />
-          <div>
-            <strong>${job.title}</strong><br/>
-            <span>${job.company} • ${job.location}</span>
-          </div>
-        </a>`).join('')
-      : `<p>No matching jobs found.</p>`;
-
-    const courses = suggestedCourses.length
-      ? suggestedCourses.map((course: any) => `
-        <a href="${course.url}" target="_blank" class="course-link">
-          <img src="https://img.youtube.com/vi/${course.videoId}/hqdefault.jpg" alt="Thumbnail" />
-          <div>
-            <strong>${course.title}</strong><br/>
-            <span>Skill: ${course.skill}</span>
-          </div>
-        </a>`).join('')
+    const score = this.formatPercent(response?.score);
+    const missingSkills: string[] = response?.missingSkills || [];
+    const suggestedJobs: any[] = response?.suggestedJobs || [];
+    const suggestedCourses: any[] = response?.suggestedCourses || [];
+  
+    // ⬅️ choose your tone here
+    const copy = this.getCopy('professional');
+  
+    const skillsBlock = missingSkills.length
+      ? `<div class="sc-chip-row">${this.chipify(missingSkills)}</div>`
+      : `<p class="sc-success">You meet all the job requirements.</p>`;
+  
+    const jobsBlock = `
+      <h3 class="sc-section-title">${copy.jobsTitle}</h3>
+      ${this.jobCards(suggestedJobs)}
+    `;
+    const coursesBlock = suggestedCourses.length
+      ? `<h3 class="sc-section-title">${copy.coursesTitle}</h3>${this.courseCards(suggestedCourses)}`
       : '';
-
+  
     Swal.fire({
-      icon: 'success',
-      title: 'Application Submitted!',
+      title: copy.title,
       html: `
-        <p><strong>Matching Score:</strong> ${score}%</p>
-        <p><strong>Missing Skills:</strong></p>
-        ${feedbackList}
-        <p><strong>Top Job Suggestions:</strong></p>
-        ${jobSuggestions}
-        ${courses ? '<p><strong>Recommended Courses:</strong></p>' + courses : ''}
+        <div class="sc-modal sc-typo">
+          <section class="sc-score sc-score--center">
+            ${scoreMeter(score)}
+            <div class="sc-score-caption">
+              <span class="sc-score-label">${copy.scoreLabel}</span>
+            </div>
+          </section>
+  
+          <section>
+            <h3 class="sc-section-title">${copy.missingTitle}</h3>
+            ${skillsBlock}
+          </section>
+  
+          <section>${jobsBlock}</section>
+          ${coursesBlock ? `<section>${coursesBlock}</section>` : ''}
+        </div>
       `,
-      confirmButtonText: 'Close'
+      icon: 'success',
+      focusConfirm: false,
+      confirmButtonText: copy.confirm,
+      showDenyButton: true,
+      denyButtonText: copy.deny,
+      showCloseButton: true,
+      customClass: {
+        popup: 'swal2-rounded sc-swal',
+        title: 'sc-title',
+        confirmButton: 'btn-primary',
+        denyButton: 'btn-secondary'
+      },
+      didOpen: () => {
+        const v = document.querySelector('.sc-meter-value') as SVGTextElement | null;
+        if (v) v.style.opacity = '1';
+      }
+    }).then(res => {
+      if (res.isDenied) this.router.navigate(['/job-offers']);
     });
+  
+    function scoreMeter(val: number): string {
+      const size = 128, stroke = 10, r = (size - stroke) / 2;
+      const c = 2 * Math.PI * r, offset = c * (1 - val / 100);
+      const color = val >= 75 ? '#16a34a' : val >= 50 ? '#f59e0b' : '#ef4444';
+      return `
+        <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" class="sc-meter" role="img" aria-label="${val}%">
+          <circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="#e9eef5" stroke-width="${stroke}" fill="none" />
+          <circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="${color}" stroke-width="${stroke}" fill="none"
+                  stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}"
+                  transform="rotate(-90 ${size/2} ${size/2})"/>
+          <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+                class="sc-meter-value">${val}%</text>
+        </svg>`;
+    }
   }
-
   private validateForm(): boolean {
     const { firstName, lastName, email, phone, coverLetter, cvFile } = this.applicationForm;
-    if (!firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim() || !coverLetter.trim() || !cvFile) {
-      alert('Please complete all fields and upload your CV.');
+  
+    const fail = (msg: string) => {
+      Swal.fire({ icon: 'warning', title: 'Incomplete form', text: msg, confirmButtonText: 'OK' });
       return false;
+    };
+  
+    if (!firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim() || !coverLetter.trim() || !cvFile) {
+      return fail('Please complete all fields and upload your CV.');
     }
     if (!this.isValidEmail(email)) {
-      alert('Please enter a valid email address');
-      return false;
+      return fail('Please enter a valid email address.');
     }
     return true;
   }
-
+  
   private isValidEmail(email: string): boolean {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
@@ -223,4 +319,69 @@ export class JobDetailsComponent implements OnInit {
   viewEmployerProfile(employerId: number): void {
     this.router.navigate(['/backoffice/employer-profile', employerId]);
   }
+
+  private formatPercent(x: number | undefined | null): number {
+    const v = Math.round(((x ?? 0) as number) * 100);
+    return Math.max(0, Math.min(100, v));
+  }
+  
+  private chipify(list: string[]): string {
+    return list.map(s => `<span class="sc-chip" title="${s}">${s}</span>`).join('');
+  }
+  
+  private jobCards(jobs: any[]): string {
+    if (!jobs || !jobs.length) return `<p class="sc-muted">No matching jobs found.</p>`;
+    return `
+      <div class="sc-card-grid">
+        ${jobs.slice(0, 3).map(job => `
+          <a href="/job-details/${job.jobId}" class="sc-card" target="_blank" rel="noopener">
+            <div class="sc-card-media">
+              <img src="${job.logoUrl || 'assets/FrontOffice/images/default-company.png'}" alt="${job.company || 'Company'} logo" loading="lazy" />
+            </div>
+            <div class="sc-card-body">
+              <div class="sc-card-title">${job.title || 'Job'}</div>
+              <div class="sc-card-subtitle">${job.company || ''} ${job.location ? `• ${job.location}` : ''}</div>
+            </div>
+          </a>
+        `).join('')}
+      </div>
+    `;
+  }
+  
+ // Put these helpers with your other privates
+private clamp(text: any, max = 90): string {
+  const s = (text ?? '').toString().trim();
+  return s.length > max ? s.slice(0, max - 1) + '…' : s;
+}
+private safeSkill(s: any): string {
+  const t = (s ?? '').toString().trim();
+  return t || 'General';
+}
+
+private courseCards(courses: any[]): string {
+  if (!courses?.length) return '';
+  return `
+    <div class="sc-course-grid">
+      ${courses.slice(0, 6).map(c => {
+        const title = this.clamp(c?.title || 'Course');
+        const skill = this.safeSkill(c?.skill);
+        const v = (c?.videoId || '').toString().trim();
+        const thumb = v ? `https://img.youtube.com/vi/${v}/hqdefault.jpg` : 'assets/FrontOffice/images/course-fallback.jpg';
+        const url = c?.url || (v ? `https://www.youtube.com/watch?v=${v}` : '#');
+        return `
+          <a href="${url}" class="sc-course-card" target="_blank" rel="noopener">
+            <div class="sc-course-thumb">
+              <img src="${thumb}" alt="${title} thumbnail" loading="lazy" />
+            </div>
+            <div class="sc-course-body">
+              <div class="sc-course-title">${title}</div>
+              <div class="sc-course-sub">Skill: ${skill}</div>
+            </div>
+          </a>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
 }
